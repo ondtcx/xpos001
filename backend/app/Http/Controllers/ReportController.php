@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CashMovement;
 use App\Models\CashSession;
 use App\Models\InventoryLot;
+use App\Models\InventoryMovement;
 use App\Models\Purchase;
 use App\Models\Receivable;
 use App\Models\ReceivablePayment;
@@ -12,6 +13,7 @@ use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Support\Money;
 use Carbon\Carbon;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -109,11 +111,435 @@ class ReportController extends Controller
         ]);
     }
 
+    public function exportSalesSummaryCsv(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveDateRange($request);
+        $sales = Sale::query()
+            ->with(['customer', 'creator', 'voider', 'items'])
+            ->whereBetween('sold_at', [$start, $end])
+            ->latest('sold_at')
+            ->get();
+
+        $fileName = sprintf('ventas_resumen_%s_%s.csv', $start->format('Ymd'), $end->format('Ymd'));
+
+        return $this->streamCsvDownload($fileName, [
+            'venta_id',
+            'fecha',
+            'cliente',
+            'usuario',
+            'estado',
+            'total',
+            'pagado',
+            'fiado',
+            'items',
+            'tiene_override_precio',
+            'tiene_warning_stock',
+            'tiene_warning_costo',
+            'motivo_anulacion',
+            'anulada_por',
+            'anulada_en',
+            'notas',
+        ], function ($output) use ($sales) {
+            foreach ($sales as $sale) {
+                fputcsv($output, [
+                    $sale->id,
+                    optional($sale->sold_at)->format('Y-m-d H:i:s'),
+                    $sale->customer?->name ?? 'Venta anónima',
+                    $sale->creator?->name ?? '—',
+                    $sale->isVoided() ? 'anulada' : ($sale->credit_amount > 0 ? 'con_saldo_pendiente' : 'cobrada'),
+                    Money::centsToDollars($sale->total_amount),
+                    Money::centsToDollars($sale->paid_amount),
+                    Money::centsToDollars($sale->credit_amount),
+                    $sale->items->count(),
+                    $sale->items->contains(fn ($item) => $item->has_manual_price_override) ? 'si' : 'no',
+                    $sale->items->contains(fn ($item) => $item->has_stock_warning) ? 'si' : 'no',
+                    $sale->items->contains(fn ($item) => $item->has_cost_warning) ? 'si' : 'no',
+                    $sale->void_reason,
+                    $sale->voider?->name,
+                    optional($sale->voided_at)->format('Y-m-d H:i:s'),
+                    $sale->notes,
+                ]);
+            }
+        });
+    }
+
+    public function exportSalesLinesCsv(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveDateRange($request);
+        $items = SaleItem::query()
+            ->with(['sale.customer', 'sale.creator', 'variant.product'])
+            ->whereHas('sale', fn ($query) => $query->whereBetween('sold_at', [$start, $end]))
+            ->orderBy('sale_id')
+            ->orderBy('id')
+            ->get();
+
+        $fileName = sprintf('ventas_lineas_%s_%s.csv', $start->format('Ymd'), $end->format('Ymd'));
+
+        return $this->streamCsvDownload($fileName, [
+            'venta_id',
+            'linea_id',
+            'fecha',
+            'cliente',
+            'usuario',
+            'estado_venta',
+            'producto',
+            'variante',
+            'descripcion',
+            'cantidad',
+            'precio_original',
+            'precio_aplicado',
+            'override_precio',
+            'motivo_override',
+            'warning_stock',
+            'warning_costo',
+            'costo_total',
+            'utilidad_total',
+            'motivo_anulacion_venta',
+        ], function ($output) use ($items) {
+            foreach ($items as $item) {
+                $sale = $item->sale;
+
+                fputcsv($output, [
+                    $sale?->id,
+                    $item->id,
+                    optional($sale?->sold_at)->format('Y-m-d H:i:s'),
+                    $sale?->customer?->name ?? 'Venta anónima',
+                    $sale?->creator?->name ?? '—',
+                    $sale?->isVoided() ? 'anulada' : ($sale?->credit_amount > 0 ? 'con_saldo_pendiente' : 'cobrada'),
+                    $item->variant?->product?->name,
+                    $item->variant?->name,
+                    $item->description_snapshot,
+                    number_format((float) $item->quantity, 3, '.', ''),
+                    Money::centsToDollars($item->original_unit_price_amount ?? $item->unit_price_amount),
+                    Money::centsToDollars($item->unit_price_amount),
+                    $item->has_manual_price_override ? 'si' : 'no',
+                    $item->manual_price_reason,
+                    $item->has_stock_warning ? 'si' : 'no',
+                    $item->has_cost_warning ? 'si' : 'no',
+                    Money::centsToDollars((int) $item->total_cost_amount),
+                    Money::centsToDollars((int) $item->total_profit_amount),
+                    $sale?->void_reason,
+                ]);
+            }
+        });
+    }
+
+    public function exportPurchasesSummaryCsv(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveDateRange($request);
+        $purchases = Purchase::query()
+            ->with(['supplier', 'creator', 'voider', 'lots'])
+            ->whereBetween('purchased_at', [$start, $end])
+            ->latest('purchased_at')
+            ->get();
+
+        $fileName = sprintf('compras_resumen_%s_%s.csv', $start->format('Ymd'), $end->format('Ymd'));
+
+        return $this->streamCsvDownload($fileName, [
+            'compra_id',
+            'fecha',
+            'proveedor',
+            'usuario',
+            'modo',
+            'tipo_pago',
+            'estado',
+            'factura',
+            'subtotal',
+            'descuento_global',
+            'impuestos_globales',
+            'costos_extra',
+            'total',
+            'lotes_creados',
+            'motivo_anulacion',
+            'anulada_por',
+            'anulada_en',
+            'notas',
+        ], function ($output) use ($purchases) {
+            foreach ($purchases as $purchase) {
+                fputcsv($output, [
+                    $purchase->id,
+                    optional($purchase->purchased_at)->format('Y-m-d H:i:s'),
+                    $purchase->supplier?->name ?? '—',
+                    $purchase->creator?->name ?? '—',
+                    $purchase->isDetailed() ? 'detallada' : 'rapida',
+                    $purchase->payment_type,
+                    $purchase->isVoided() ? 'anulada' : 'confirmada',
+                    $purchase->invoice_number,
+                    Money::centsToDollars($purchase->subtotal_amount),
+                    Money::centsToDollars($purchase->global_discount_amount),
+                    Money::centsToDollars(($purchase->global_tax_iva_amount ?? 0) + ($purchase->global_tax_ice_amount ?? 0) + ($purchase->global_tax_other_amount ?? 0)),
+                    Money::centsToDollars($purchase->extra_costs_amount),
+                    Money::centsToDollars($purchase->total_amount),
+                    $purchase->lots->count(),
+                    $purchase->void_reason,
+                    $purchase->voider?->name,
+                    optional($purchase->voided_at)->format('Y-m-d H:i:s'),
+                    $purchase->notes,
+                ]);
+            }
+        });
+    }
+
+    public function exportPurchasesLinesCsv(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveDateRange($request);
+        $items = \App\Models\PurchaseItem::query()
+            ->with(['purchase.supplier', 'purchase.creator', 'variant.product'])
+            ->whereHas('purchase', fn ($query) => $query->whereBetween('purchased_at', [$start, $end]))
+            ->orderBy('purchase_id')
+            ->orderBy('id')
+            ->get();
+
+        $fileName = sprintf('compras_lineas_%s_%s.csv', $start->format('Ymd'), $end->format('Ymd'));
+
+        return $this->streamCsvDownload($fileName, [
+            'compra_id',
+            'linea_id',
+            'fecha',
+            'proveedor',
+            'usuario',
+            'estado_compra',
+            'modo_compra',
+            'producto',
+            'variante',
+            'tipo_linea',
+            'cantidad',
+            'bonificacion',
+            'total_recibido',
+            'costo_unitario_base',
+            'subtotal_linea',
+            'descuento_linea',
+            'iva_linea',
+            'ice_linea',
+            'otro_impuesto_linea',
+            'descuento_global_prorrateado',
+            'iva_global_prorrateado',
+            'ice_global_prorrateado',
+            'otro_global_prorrateado',
+            'extras_prorrateados',
+            'costo_unitario_final',
+            'costo_total',
+            'vencimiento',
+            'notas_linea',
+            'motivo_anulacion_compra',
+        ], function ($output) use ($items) {
+            foreach ($items as $item) {
+                $purchase = $item->purchase;
+
+                fputcsv($output, [
+                    $purchase?->id,
+                    $item->id,
+                    optional($purchase?->purchased_at)->format('Y-m-d H:i:s'),
+                    $purchase?->supplier?->name ?? '—',
+                    $purchase?->creator?->name ?? '—',
+                    $purchase?->isVoided() ? 'anulada' : 'confirmada',
+                    $purchase?->isDetailed() ? 'detallada' : 'rapida',
+                    $item->variant?->product?->name,
+                    $item->variant?->name,
+                    $item->isBonusLine() ? 'bonificacion' : 'normal',
+                    number_format((float) $item->quantity, 3, '.', ''),
+                    number_format((float) $item->bonus_quantity, 3, '.', ''),
+                    $item->receivedQuantity(),
+                    Money::centsToDollars($item->unit_cost_base_amount ?? 0),
+                    Money::centsToDollars($item->line_subtotal_amount ?? 0),
+                    Money::centsToDollars($item->line_discount_amount ?? 0),
+                    Money::centsToDollars(($item->tax_iva_amount ?? 0) + ($item->tax_vat_amount ?? 0)),
+                    Money::centsToDollars(($item->tax_ice_amount ?? 0) + ($item->tax_fixed_amount ?? 0)),
+                    Money::centsToDollars($item->tax_other_amount ?? 0),
+                    Money::centsToDollars($item->allocated_global_discount_amount ?? 0),
+                    Money::centsToDollars($item->allocated_global_tax_iva_amount ?? 0),
+                    Money::centsToDollars($item->allocated_global_tax_ice_amount ?? 0),
+                    Money::centsToDollars($item->allocated_global_tax_other_amount ?? 0),
+                    Money::centsToDollars($item->allocated_extra_costs_amount ?? 0),
+                    Money::centsToDollars($item->unit_cost_final_amount ?? 0),
+                    Money::centsToDollars($item->total_cost_amount ?? 0),
+                    optional($item->expiration_date)->format('Y-m-d'),
+                    $item->notes,
+                    $purchase?->void_reason,
+                ]);
+            }
+        });
+    }
+
+    public function exportReceivablesCsv(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveDateRange($request);
+        $receivables = Receivable::query()
+            ->with(['customer', 'sale.creator'])
+            ->whereBetween('opened_at', [$start, $end])
+            ->latest('opened_at')
+            ->get();
+
+        $fileName = sprintf('fiados_%s_%s.csv', $start->format('Ymd'), $end->format('Ymd'));
+
+        return $this->streamCsvDownload($fileName, [
+            'cuenta_id',
+            'fecha_apertura',
+            'cliente',
+            'venta_id',
+            'usuario_venta',
+            'monto_original',
+            'saldo_pendiente',
+            'estado',
+            'cancelada_por_anulacion',
+            'cancelada_en',
+            'motivo_cancelacion',
+        ], function ($output) use ($receivables) {
+            foreach ($receivables as $receivable) {
+                fputcsv($output, [
+                    $receivable->id,
+                    optional($receivable->opened_at)->format('Y-m-d H:i:s'),
+                    $receivable->customer?->name ?? '—',
+                    $receivable->sale?->id,
+                    $receivable->sale?->creator?->name ?? '—',
+                    Money::centsToDollars($receivable->original_amount),
+                    Money::centsToDollars($receivable->pending_amount),
+                    $receivable->status,
+                    $receivable->isCancelled() ? 'si' : 'no',
+                    optional($receivable->cancelled_at)->format('Y-m-d H:i:s'),
+                    $receivable->cancel_reason,
+                ]);
+            }
+        });
+    }
+
+    public function exportReceivablePaymentsCsv(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveDateRange($request);
+        $payments = ReceivablePayment::query()
+            ->with(['receivable.customer', 'receivable.sale', 'creator'])
+            ->whereBetween('paid_at', [$start, $end])
+            ->latest('paid_at')
+            ->get();
+
+        $fileName = sprintf('abonos_%s_%s.csv', $start->format('Ymd'), $end->format('Ymd'));
+
+        return $this->streamCsvDownload($fileName, [
+            'abono_id',
+            'cuenta_id',
+            'venta_id',
+            'fecha_abono',
+            'cliente',
+            'usuario_registro',
+            'metodo_pago',
+            'monto',
+            'esta_revertido',
+            'fecha_reversa',
+            'motivo_reversa',
+            'notas',
+        ], function ($output) use ($payments) {
+            foreach ($payments as $payment) {
+                fputcsv($output, [
+                    $payment->id,
+                    $payment->receivable_id,
+                    $payment->receivable?->sale?->id,
+                    optional($payment->paid_at)->format('Y-m-d H:i:s'),
+                    $payment->receivable?->customer?->name ?? '—',
+                    $payment->creator?->name ?? '—',
+                    $payment->payment_method,
+                    Money::centsToDollars($payment->amount),
+                    $payment->is_reversed ? 'si' : 'no',
+                    optional($payment->reversed_at)->format('Y-m-d H:i:s'),
+                    $payment->reversal_reason,
+                    $payment->notes,
+                ]);
+            }
+        });
+    }
+
+    public function exportLotsCsv(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveDateRange($request);
+        $lots = InventoryLot::query()
+            ->with(['variant.product'])
+            ->whereBetween('received_at', [$start, $end])
+            ->latest('received_at')
+            ->get();
+
+        $fileName = sprintf('lotes_%s_%s.csv', $start->format('Ymd'), $end->format('Ymd'));
+
+        return $this->streamCsvDownload($fileName, [
+            'lote_id',
+            'fecha_recepcion',
+            'producto',
+            'variante',
+            'origen_tipo',
+            'origen_id',
+            'cantidad_inicial',
+            'cantidad_disponible',
+            'bonificacion',
+            'costo_final_unitario',
+            'precio_sugerido_venta',
+            'estimado',
+            'vencimiento',
+            'estado',
+        ], function ($output) use ($lots) {
+            foreach ($lots as $lot) {
+                fputcsv($output, [
+                    $lot->id,
+                    optional($lot->received_at)->format('Y-m-d H:i:s'),
+                    $lot->variant?->product?->name,
+                    $lot->variant?->name,
+                    $lot->origin_type,
+                    $lot->origin_id,
+                    number_format((float) $lot->initial_quantity, 3, '.', ''),
+                    number_format((float) $lot->available_quantity, 3, '.', ''),
+                    number_format((float) $lot->bonus_quantity, 3, '.', ''),
+                    Money::centsToDollars($lot->unit_cost_final_amount),
+                    Money::centsToDollars($lot->suggested_sale_price_amount ?? 0),
+                    $lot->is_estimated ? 'si' : 'no',
+                    optional($lot->expiration_date)->format('Y-m-d'),
+                    $lot->status,
+                ]);
+            }
+        });
+    }
+
+    public function exportLotMovementsCsv(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveDateRange($request);
+        $movements = InventoryMovement::query()
+            ->with(['lot.variant.product'])
+            ->whereBetween('movement_at', [$start, $end])
+            ->latest('movement_at')
+            ->get();
+
+        $fileName = sprintf('lote_movimientos_%s_%s.csv', $start->format('Ymd'), $end->format('Ymd'));
+
+        return $this->streamCsvDownload($fileName, [
+            'movimiento_id',
+            'fecha_movimiento',
+            'lote_id',
+            'producto',
+            'variante',
+            'tipo_movimiento',
+            'cantidad',
+            'costo_unitario',
+            'referencia_tipo',
+            'referencia_id',
+            'notas',
+        ], function ($output) use ($movements) {
+            foreach ($movements as $movement) {
+                fputcsv($output, [
+                    $movement->id,
+                    optional($movement->movement_at)->format('Y-m-d H:i:s'),
+                    $movement->lot_id,
+                    $movement->lot?->variant?->product?->name,
+                    $movement->lot?->variant?->name,
+                    $movement->movement_type,
+                    number_format((float) $movement->quantity, 3, '.', ''),
+                    Money::centsToDollars($movement->unit_cost_amount ?? 0),
+                    $movement->reference_type,
+                    $movement->reference_id,
+                    $movement->notes,
+                ]);
+            }
+        });
+    }
+
     private function buildReportData(Request $request): array
     {
-        $today = Carbon::today();
-        $start = Carbon::parse($request->input('start_date', $today->toDateString()))->startOfDay();
-        $end = Carbon::parse($request->input('end_date', $today->toDateString()))->endOfDay();
+        [$start, $end] = $this->resolveDateRange($request);
 
         $salesInRange = Sale::query()->whereBetween('sold_at', [$start, $end]);
         $confirmedSalesInRange = (clone $salesInRange)->where('status', Sale::STATUS_CONFIRMED);
@@ -285,5 +711,27 @@ class ReportController extends Controller
             'cashManualTotal',
             'cashNetTotal',
         );
+    }
+
+    private function resolveDateRange(Request $request): array
+    {
+        $today = Carbon::today();
+
+        return [
+            Carbon::parse($request->input('start_date', $today->toDateString()))->startOfDay(),
+            Carbon::parse($request->input('end_date', $today->toDateString()))->endOfDay(),
+        ];
+    }
+
+    private function streamCsvDownload(string $fileName, array $headers, Closure $writer): StreamedResponse
+    {
+        return response()->streamDownload(function () use ($headers, $writer) {
+            $output = fopen('php://output', 'w');
+            fputcsv($output, $headers);
+            $writer($output);
+            fclose($output);
+        }, $fileName, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 }

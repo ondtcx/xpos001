@@ -36,10 +36,30 @@
                 </div>
                 <div class="flex items-end gap-3 md:col-span-2">
                     <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Filtrar</button>
-                    <a href="{{ route('reports.export.csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Exportar CSV</a>
+                    <a href="{{ route('reports.export.csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">CSV ejecutivo</a>
                     <a href="{{ route('reports.print', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" target="_blank" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Vista imprimible</a>
                 </div>
             </form>
+
+            <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <h3 class="font-semibold text-gray-900">Exportaciones CSV</h3>
+                        <p class="mt-1 text-sm text-gray-500">Mantén el resumen ejecutivo y agrega descargas auditivas por dominio. En esta fase ya salen ventas por cabecera y por línea.</p>
+                    </div>
+                    <div class="grid gap-3 md:grid-cols-9">
+                        <a href="{{ route('reports.export.csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Resumen ejecutivo</a>
+                        <a href="{{ route('reports.export.sales-summary-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ventas por cabecera</a>
+                        <a href="{{ route('reports.export.sales-lines-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ventas por línea</a>
+                        <a href="{{ route('reports.export.purchases-summary-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Compras por cabecera</a>
+                        <a href="{{ route('reports.export.purchases-lines-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Compras por línea</a>
+                        <a href="{{ route('reports.export.receivables-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Fiados por cuenta</a>
+                        <a href="{{ route('reports.export.receivable-payments-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Abonos de fiado</a>
+                        <a href="{{ route('reports.export.lots-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Lotes actuales</a>
+                        <a href="{{ route('reports.export.lot-movements-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Movimientos por lote</a>
+                    </div>
+                </div>
+            </div>
 
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                 <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">

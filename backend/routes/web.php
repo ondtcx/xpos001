@@ -54,6 +54,14 @@ Route::middleware('auth')->group(function () {
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/print', [ReportController::class, 'print'])->name('reports.print');
     Route::get('reports/export/csv', [ReportController::class, 'exportCsv'])->name('reports.export.csv');
+    Route::get('reports/export/sales-summary-csv', [ReportController::class, 'exportSalesSummaryCsv'])->name('reports.export.sales-summary-csv');
+    Route::get('reports/export/sales-lines-csv', [ReportController::class, 'exportSalesLinesCsv'])->name('reports.export.sales-lines-csv');
+    Route::get('reports/export/purchases-summary-csv', [ReportController::class, 'exportPurchasesSummaryCsv'])->name('reports.export.purchases-summary-csv');
+    Route::get('reports/export/purchases-lines-csv', [ReportController::class, 'exportPurchasesLinesCsv'])->name('reports.export.purchases-lines-csv');
+    Route::get('reports/export/receivables-csv', [ReportController::class, 'exportReceivablesCsv'])->name('reports.export.receivables-csv');
+    Route::get('reports/export/receivable-payments-csv', [ReportController::class, 'exportReceivablePaymentsCsv'])->name('reports.export.receivable-payments-csv');
+    Route::get('reports/export/lots-csv', [ReportController::class, 'exportLotsCsv'])->name('reports.export.lots-csv');
+    Route::get('reports/export/lot-movements-csv', [ReportController::class, 'exportLotMovementsCsv'])->name('reports.export.lot-movements-csv');
     Route::get('cash', [CashSessionController::class, 'index'])->name('cash.index');
     Route::get('cash/open', [CashSessionController::class, 'create'])->name('cash.create');
     Route::post('cash', [CashSessionController::class, 'store'])->name('cash.store');
