@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InventoryLot;
+use App\Http\Requests\Purchases\StoreDetailedPurchaseRequest;
+use App\Http\Requests\Purchases\UpdateDetailedPurchaseRequest;
 use App\Models\InventoryMovement;
 use App\Models\ProductVariant;
 use App\Models\Purchase;
-use App\Models\PurchaseItem;
 use App\Models\Supplier;
-use App\Models\SupplierVariantRef;
-use App\Support\Money;
+use App\Support\Purchases\CreateQuickPurchaseService;
 use App\Support\Purchases\CreateDetailedPurchase;
 use App\Support\Purchases\PurchaseCorrectionService;
 use App\Support\Purchases\UpdateDetailedPurchase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PurchaseController extends Controller
@@ -101,7 +98,7 @@ class PurchaseController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, CreateQuickPurchaseService $creator): RedirectResponse
     {
         $validated = $request->validate([
             'supplier_id' => ['nullable', 'exists:suppliers,id'],
@@ -118,200 +115,23 @@ class PurchaseController extends Controller
             'items.*.notes' => ['nullable', 'string'],
         ]);
 
-        $purchase = DB::transaction(function () use ($validated, $request) {
-            $subtotal = 0;
-
-            $purchase = Purchase::query()->create([
-                'supplier_id' => $validated['supplier_id'] ?? null,
-                'invoice_number' => $validated['invoice_number'] ?? null,
-                'purchased_at' => $validated['purchased_at'],
-                'payment_type' => $validated['payment_type'],
-                'entry_mode' => Purchase::ENTRY_MODE_QUICK,
-                'is_credit' => (bool) ($validated['is_credit'] ?? false),
-                'subtotal_amount' => 0,
-                'global_discount_amount' => 0,
-                'global_tax_amount' => 0,
-                'extra_costs_amount' => 0,
-                'total_amount' => 0,
-                'notes' => $validated['notes'] ?? null,
-                'created_by' => $request->user()->id,
-            ]);
-
-            foreach ($validated['items'] as $item) {
-                $unitCostAmount = Money::dollarsToCents($item['unit_cost']);
-                $lineSubtotal = (int) round(((float) $item['quantity']) * $unitCostAmount);
-                $subtotal += $lineSubtotal;
-
-                $purchaseItem = PurchaseItem::query()->create([
-                    'purchase_id' => $purchase->id,
-                    'variant_id' => $item['variant_id'],
-                    'quantity' => $item['quantity'],
-                    'unit_cost_base_amount' => $unitCostAmount,
-                    'line_subtotal_amount' => $lineSubtotal,
-                    'line_discount_amount' => 0,
-                    'tax_vat_amount' => 0,
-                    'tax_fixed_amount' => 0,
-                    'tax_other_amount' => 0,
-                    'gift_quantity' => 0,
-                    'total_cost_amount' => $lineSubtotal,
-                    'expiration_date' => $item['expiration_date'] ?? null,
-                    'notes' => $item['notes'] ?? null,
-                ]);
-
-                $lot = InventoryLot::query()->create([
-                    'variant_id' => $item['variant_id'],
-                    'purchase_item_id' => $purchaseItem->id,
-                    'origin_type' => 'purchase',
-                    'origin_id' => $purchase->id,
-                    'received_at' => $validated['purchased_at'],
-                    'expiration_date' => $item['expiration_date'] ?? null,
-                    'initial_quantity' => $item['quantity'],
-                    'available_quantity' => $item['quantity'],
-                    'bonus_quantity' => 0,
-                    'unit_cost_final_amount' => $unitCostAmount,
-                    'suggested_sale_price_amount' => null,
-                    'is_estimated' => false,
-                    'status' => 'active',
-                ]);
-
-                InventoryMovement::query()->create([
-                    'variant_id' => $item['variant_id'],
-                    'lot_id' => $lot->id,
-                    'movement_type' => 'purchase_entry',
-                    'quantity' => $item['quantity'],
-                    'unit_cost_amount' => $unitCostAmount,
-                    'reference_type' => 'purchase',
-                    'reference_id' => $purchase->id,
-                    'movement_at' => $validated['purchased_at'],
-                    'notes' => $item['notes'] ?? null,
-                    'created_by' => $request->user()->id,
-                ]);
-
-                if (! empty($validated['supplier_id'])) {
-                    SupplierVariantRef::query()->updateOrCreate(
-                        [
-                            'supplier_id' => $validated['supplier_id'],
-                            'variant_id' => $item['variant_id'],
-                        ],
-                        [
-                            'last_purchase_price_amount' => $unitCostAmount,
-                            'last_purchase_at' => $validated['purchased_at'],
-                        ],
-                    );
-                }
-            }
-
-            $purchase->update([
-                'subtotal_amount' => $subtotal,
-                'total_amount' => $subtotal,
-            ]);
-
-            return $purchase;
-        });
+        $purchase = $creator->handle($validated, $request->user()->id);
 
         return redirect()->route('purchases.index')->with('status', "Compra #{$purchase->id} registrada correctamente.");
     }
 
-    public function storeDetailed(Request $request, CreateDetailedPurchase $creator): RedirectResponse
+    public function storeDetailed(StoreDetailedPurchaseRequest $request, CreateDetailedPurchase $creator): RedirectResponse
     {
-        $validated = $request->validate([
-            'supplier_id' => ['nullable', 'exists:suppliers,id'],
-            'invoice_number' => [
-                'nullable',
-                'string',
-                'max:255',
-                Rule::unique('purchases')->where(function ($query) use ($request) {
-                    return $query->where('supplier_id', $request->input('supplier_id'));
-                }),
-            ],
-            'purchased_at' => ['required', 'date'],
-            'payment_type' => ['required', Rule::in(['cash', 'transfer', 'credit'])],
-            'global_discount_amount' => ['nullable', 'numeric', 'gte:0'],
-            'global_tax_iva_amount' => ['nullable', 'numeric', 'gte:0'],
-            'global_tax_ice_amount' => ['nullable', 'numeric', 'gte:0'],
-            'global_tax_other_amount' => ['nullable', 'numeric', 'gte:0'],
-            'extra_costs_amount' => ['nullable', 'numeric', 'gte:0'],
-            'notes' => ['nullable', 'string'],
-            'items' => ['required', 'array', 'min:1'],
-            'items.*.line_type' => ['required', Rule::in([PurchaseItem::LINE_TYPE_NORMAL, PurchaseItem::LINE_TYPE_BONUS])],
-            'items.*.variant_id' => ['required', 'exists:product_variants,id'],
-            'items.*.quantity' => ['required', 'numeric', 'gt:0'],
-            'items.*.bonus_quantity' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.unit_cost' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.manual_total_cost' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.line_discount_amount' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.tax_iva_amount' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.tax_ice_amount' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.tax_other_amount' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.eligible_for_global_iva' => ['nullable', 'boolean'],
-            'items.*.eligible_for_global_ice' => ['nullable', 'boolean'],
-            'items.*.eligible_for_global_other' => ['nullable', 'boolean'],
-            'items.*.expiration_date' => ['nullable', 'date'],
-            'items.*.notes' => ['nullable', 'string'],
-        ]);
-
-        foreach ($validated['items'] as $index => $item) {
-            if (($item['line_type'] ?? PurchaseItem::LINE_TYPE_NORMAL) === PurchaseItem::LINE_TYPE_NORMAL && ! array_key_exists('unit_cost', $item)) {
-                return back()->withErrors(["items.$index.unit_cost" => 'El costo unitario es obligatorio en líneas normales.'])->withInput();
-            }
-
-            if (($item['line_type'] ?? PurchaseItem::LINE_TYPE_NORMAL) === PurchaseItem::LINE_TYPE_BONUS && ! array_key_exists('manual_total_cost', $item)) {
-                return back()->withErrors(["items.$index.manual_total_cost" => 'El costo manual total es obligatorio en líneas de bonificación.'])->withInput();
-            }
-        }
+        $validated = $request->validated();
 
         $purchase = $creator->handle($validated, $request->user()->id);
 
         return redirect()->route('purchases.index')->with('status', "Compra detallada #{$purchase->id} registrada correctamente.");
     }
 
-    public function updateDetailed(Request $request, Purchase $purchase, UpdateDetailedPurchase $updater): RedirectResponse
+    public function updateDetailed(UpdateDetailedPurchaseRequest $request, Purchase $purchase, UpdateDetailedPurchase $updater): RedirectResponse
     {
-        $validated = $request->validate([
-            'supplier_id' => ['nullable', 'exists:suppliers,id'],
-            'invoice_number' => [
-                'nullable',
-                'string',
-                'max:255',
-                Rule::unique('purchases')->ignore($purchase->id)->where(function ($query) use ($request) {
-                    return $query->where('supplier_id', $request->input('supplier_id'));
-                }),
-            ],
-            'purchased_at' => ['required', 'date'],
-            'payment_type' => ['required', Rule::in(['cash', 'transfer', 'credit'])],
-            'global_discount_amount' => ['nullable', 'numeric', 'gte:0'],
-            'global_tax_iva_amount' => ['nullable', 'numeric', 'gte:0'],
-            'global_tax_ice_amount' => ['nullable', 'numeric', 'gte:0'],
-            'global_tax_other_amount' => ['nullable', 'numeric', 'gte:0'],
-            'extra_costs_amount' => ['nullable', 'numeric', 'gte:0'],
-            'notes' => ['nullable', 'string'],
-            'items' => ['required', 'array', 'min:1'],
-            'items.*.line_type' => ['required', Rule::in([PurchaseItem::LINE_TYPE_NORMAL, PurchaseItem::LINE_TYPE_BONUS])],
-            'items.*.variant_id' => ['required', 'exists:product_variants,id'],
-            'items.*.quantity' => ['required', 'numeric', 'gt:0'],
-            'items.*.bonus_quantity' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.unit_cost' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.manual_total_cost' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.line_discount_amount' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.tax_iva_amount' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.tax_ice_amount' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.tax_other_amount' => ['nullable', 'numeric', 'gte:0'],
-            'items.*.eligible_for_global_iva' => ['nullable', 'boolean'],
-            'items.*.eligible_for_global_ice' => ['nullable', 'boolean'],
-            'items.*.eligible_for_global_other' => ['nullable', 'boolean'],
-            'items.*.expiration_date' => ['nullable', 'date'],
-            'items.*.notes' => ['nullable', 'string'],
-        ]);
-
-        foreach ($validated['items'] as $index => $item) {
-            if (($item['line_type'] ?? PurchaseItem::LINE_TYPE_NORMAL) === PurchaseItem::LINE_TYPE_NORMAL && ! array_key_exists('unit_cost', $item)) {
-                return back()->withErrors(["items.$index.unit_cost" => 'El costo unitario es obligatorio en líneas normales.'])->withInput();
-            }
-
-            if (($item['line_type'] ?? PurchaseItem::LINE_TYPE_NORMAL) === PurchaseItem::LINE_TYPE_BONUS && ! array_key_exists('manual_total_cost', $item)) {
-                return back()->withErrors(["items.$index.manual_total_cost" => 'El costo manual total es obligatorio en líneas de bonificación.'])->withInput();
-            }
-        }
+        $validated = $request->validated();
 
         $purchase = $updater->handle($purchase, $validated, $request->user()->id);
 
