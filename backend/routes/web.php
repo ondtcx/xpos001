@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('base-units', BaseUnitController::class)->except(['show', 'destroy']);
     Route::resource('products', ProductController::class)->except(['show', 'destroy']);
     Route::resource('suppliers', SupplierController::class)->except(['show', 'destroy']);
-    Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store']);
+    Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'show', 'store']);
     Route::get('purchases/detailed/create', [PurchaseController::class, 'createDetailed'])->name('purchases.detailed.create');
     Route::post('purchases/detailed', [PurchaseController::class, 'storeDetailed'])->name('purchases.detailed.store');
     Route::get('purchases/{purchase}/detailed/edit', [PurchaseController::class, 'editDetailed'])->name('purchases.detailed.edit');
@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('opening-inventory', OpeningInventoryController::class)->only(['index', 'create', 'store']);
     Route::resource('inventory-lots', InventoryLotController::class)->only(['index']);
     Route::resource('customers', CustomerController::class)->except(['show', 'destroy']);
-    Route::resource('sales', SaleController::class)->only(['index', 'create', 'store']);
+    Route::resource('sales', SaleController::class)->only(['index', 'create', 'show', 'store']);
     Route::get('sales/search/presentations', [SaleController::class, 'search'])->name('sales.search');
     Route::post('sales/{sale}/void', [SaleController::class, 'void'])->name('sales.void');
     Route::resource('receivables', ReceivableController::class)->only(['index', 'show']);

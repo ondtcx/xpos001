@@ -46,6 +46,35 @@ class PurchaseController extends Controller
         ]);
     }
 
+    public function show(Purchase $purchase, PurchaseCorrectionService $correctionService): View
+    {
+        $purchase->load([
+            'supplier',
+            'creator',
+            'voider',
+            'items.variant.product',
+            'lots.variant.product',
+        ]);
+
+        $lotIds = $purchase->lots->pluck('id');
+
+        $consumptionMovements = $lotIds->isEmpty()
+            ? collect()
+            : InventoryMovement::query()
+                ->with('variant.product')
+                ->whereIn('lot_id', $lotIds)
+                ->where('quantity', '<', 0)
+                ->orderBy('movement_at')
+                ->get()
+                ->groupBy('lot_id');
+
+        return view('purchases.show', [
+            'purchase' => $purchase,
+            'hasConsumedLots' => $correctionService->hasConsumedLots($purchase),
+            'consumptionMovements' => $consumptionMovements,
+        ]);
+    }
+
     public function createDetailed(): View
     {
         return view('purchases.detailed-form', [

@@ -52,6 +52,27 @@ class SaleController extends Controller
         ]);
     }
 
+    public function show(Sale $sale): View
+    {
+        $sale->load([
+            'customer',
+            'creator',
+            'voider',
+            'cashSession',
+            'items.presentation',
+            'items.variant.product',
+            'items.lotConsumptions.lot',
+            'payments',
+            'receivable.customer',
+            'receivable.payments.creator',
+        ]);
+
+        return view('sales.show', [
+            'sale' => $sale,
+            'receivable' => $sale->receivable->first(),
+        ]);
+    }
+
     public function search(Request $request): JsonResponse
     {
         $validated = $request->validate([

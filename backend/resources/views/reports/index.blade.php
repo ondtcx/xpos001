@@ -23,10 +23,63 @@
             </form>
 
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200"><p class="text-sm text-gray-500">Ventas</p><p class="mt-2 text-2xl font-semibold text-gray-900">{{ Money::format($salesTodayTotal) }}</p></div>
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200"><p class="text-sm text-gray-500">Utilidad</p><p class="mt-2 text-2xl font-semibold text-gray-900">{{ Money::format($profitToday) }}</p></div>
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200"><p class="text-sm text-gray-500">Compras</p><p class="mt-2 text-2xl font-semibold text-gray-900">{{ Money::format($purchasesTotal) }}</p></div>
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <p class="text-sm text-gray-500">Ventas netas</p>
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">{{ Money::format($salesNetTotal) }}</p>
+                    <p class="mt-2 text-xs text-gray-500">Bruto {{ Money::format($salesGrossTotal) }} · anuladas {{ Money::format($salesVoidedTotal) }}</p>
+                </div>
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <p class="text-sm text-gray-500">Utilidad confiable</p>
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">{{ Money::format($profitReliableTotal) }}</p>
+                    <p class="mt-2 text-xs text-gray-500">Excluida por warnings {{ Money::format($profitWarningTotal) }} · anulada {{ Money::format($profitVoidedTotal) }}</p>
+                </div>
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <p class="text-sm text-gray-500">Compras netas</p>
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">{{ Money::format($purchasesNetTotal) }}</p>
+                    <p class="mt-2 text-xs text-gray-500">Bruto {{ Money::format($purchasesGrossTotal) }} · anuladas {{ Money::format($purchasesVoidedTotal) }}</p>
+                </div>
                 <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200"><p class="text-sm text-gray-500">Stock total</p><p class="mt-2 text-2xl font-semibold text-gray-900">{{ number_format((float) $stockCurrent, 3, '.', '') }}</p></div>
+            </div>
+
+            <div class="grid gap-6 lg:grid-cols-3">
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <h3 class="font-semibold text-gray-900">Ventas del período</h3>
+                    <dl class="mt-4 space-y-3 text-sm">
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Brutas</dt><dd class="font-medium text-gray-900">{{ Money::format($salesGrossTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Anuladas</dt><dd class="font-medium text-red-700">{{ Money::format($salesVoidedTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4 border-t border-gray-100 pt-3"><dt class="text-gray-900 font-medium">Netas</dt><dd class="font-semibold text-gray-900">{{ Money::format($salesNetTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Cobrado bruto</dt><dd class="font-medium text-gray-900">{{ Money::format($salesGrossPaid) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Cobrado anulado</dt><dd class="font-medium text-red-700">{{ Money::format($salesVoidedPaid) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Cobrado neto</dt><dd class="font-medium text-gray-900">{{ Money::format($salesNetPaid) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Fiado bruto</dt><dd class="font-medium text-gray-900">{{ Money::format($salesGrossCredit) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Fiado anulado</dt><dd class="font-medium text-red-700">{{ Money::format($salesVoidedCredit) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Fiado neto</dt><dd class="font-medium text-gray-900">{{ Money::format($salesNetCredit) }}</dd></div>
+                    </dl>
+                </div>
+
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <h3 class="font-semibold text-gray-900">Utilidad y margen</h3>
+                    <dl class="mt-4 space-y-3 text-sm">
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Utilidad confiable</dt><dd class="font-medium text-gray-900">{{ Money::format($profitReliableTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Excluida por warnings</dt><dd class="font-medium text-amber-700">{{ Money::format($profitWarningTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Utilidad anulada</dt><dd class="font-medium text-red-700">{{ Money::format($profitVoidedTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Margen excluido por warnings</dt><dd class="font-medium text-amber-700">{{ Money::format((int) $marginExcludedByWarnings) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Margen anulado</dt><dd class="font-medium text-red-700">{{ Money::format((int) $marginVoided) }}</dd></div>
+                    </dl>
+                </div>
+
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <h3 class="font-semibold text-gray-900">Compras y cobranza</h3>
+                    <dl class="mt-4 space-y-3 text-sm">
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Compras brutas</dt><dd class="font-medium text-gray-900">{{ Money::format($purchasesGrossTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Compras anuladas</dt><dd class="font-medium text-red-700">{{ Money::format($purchasesVoidedTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4 border-t border-gray-100 pt-3"><dt class="text-gray-900 font-medium">Compras netas</dt><dd class="font-semibold text-gray-900">{{ Money::format($purchasesNetTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Abonos brutos</dt><dd class="font-medium text-gray-900">{{ Money::format($receivedPaymentsGrossTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Abonos revertidos</dt><dd class="font-medium text-red-700">{{ Money::format($receivedPaymentsReversedTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Abonos netos</dt><dd class="font-medium text-gray-900">{{ Money::format($receivedPaymentsNetTotal) }}</dd></div>
+                        <div class="flex items-center justify-between gap-4"><dt class="text-gray-500">Fiados pendientes</dt><dd class="font-medium text-gray-900">{{ Money::format($receivablesPendingTotal) }}</dd></div>
+                    </dl>
+                </div>
             </div>
 
             <div class="grid gap-6 lg:grid-cols-2">
@@ -47,7 +100,8 @@
 
                 <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                     <h3 class="font-semibold text-gray-900">Abonos recibidos</h3>
-                    <p class="mt-2 text-2xl font-semibold text-gray-900">{{ Money::format($receivedPaymentsTotal) }}</p>
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">{{ Money::format($receivedPaymentsNetTotal) }}</p>
+                    <p class="mt-2 text-sm text-gray-500">Brutos {{ Money::format($receivedPaymentsGrossTotal) }} · revertidos {{ Money::format($receivedPaymentsReversedTotal) }}</p>
                     <h4 class="mt-6 font-semibold text-gray-900">Cierres de caja</h4>
                     <div class="mt-3 space-y-3 text-sm">
                         @forelse ($cashClosures as $cash)
@@ -128,6 +182,24 @@
 
                 <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                     <h3 class="font-semibold text-gray-900">Resumen de caja por método</h3>
+                    <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                        <div class="rounded-md bg-slate-50 p-3 text-sm">
+                            <p class="text-gray-500">Operativa</p>
+                            <p class="mt-1 font-semibold text-gray-900">{{ Money::format($cashOperationalTotal) }}</p>
+                        </div>
+                        <div class="rounded-md bg-red-50 p-3 text-sm">
+                            <p class="text-red-600">Reversas</p>
+                            <p class="mt-1 font-semibold text-red-700">{{ Money::format($cashReversalTotal) }}</p>
+                        </div>
+                        <div class="rounded-md bg-amber-50 p-3 text-sm">
+                            <p class="text-amber-700">Manual / otros</p>
+                            <p class="mt-1 font-semibold text-amber-800">{{ Money::format($cashManualTotal) }}</p>
+                        </div>
+                        <div class="rounded-md bg-emerald-50 p-3 text-sm">
+                            <p class="text-emerald-700">Neto final</p>
+                            <p class="mt-1 font-semibold text-emerald-800">{{ Money::format($cashNetTotal) }}</p>
+                        </div>
+                    </div>
                     <div class="mt-4 overflow-hidden rounded-lg border border-gray-200">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
                             <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left text-gray-500">Método</th><th class="px-4 py-3 text-left text-gray-500">Movimiento</th><th class="px-4 py-3 text-left text-gray-500">Total</th></tr></thead>

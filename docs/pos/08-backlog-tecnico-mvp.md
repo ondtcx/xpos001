@@ -52,6 +52,12 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 - visibilidad operativa y auditabilidad fina en compras/ventas,
 - exportaciones más completas.
 
+### Cerrado recientemente
+
+- semántica de reportes `bruto + neto` para ventas, compras y cobranza,
+- exclusión de ventas anuladas y líneas con warning de la utilidad/margen principal,
+- separación explícita de reversas de caja frente a operación vigente.
+
 ### Diferido a iteración 2 o posterior
 
 - recargas,

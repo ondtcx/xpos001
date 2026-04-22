@@ -88,6 +88,10 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-3 text-sm">
+                                    <div class="mb-2">
+                                        <a href="{{ route('sales.show', $sale) }}" class="text-indigo-700 hover:text-indigo-900">Ver detalle</a>
+                                    </div>
+
                                     @if ($sale->isVoided())
                                         <div class="text-xs text-gray-500">
                                             <p>{{ $sale->void_reason }}</p>

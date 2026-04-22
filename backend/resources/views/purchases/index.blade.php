@@ -61,6 +61,8 @@
                                 <td class="px-4 py-3 text-sm">
                                     @if ($purchase->isConfirmed())
                                         <div class="flex flex-col items-start gap-2">
+                                            <a href="{{ route('purchases.show', $purchase) }}" class="text-indigo-700 hover:text-indigo-900">Ver detalle</a>
+
                                             @if ($purchase->can_edit_detailed)
                                                 <a href="{{ route('purchases.detailed.edit', $purchase) }}" class="text-indigo-700 hover:text-indigo-900">Editar</a>
                                             @elseif ($purchase->isDetailed())
@@ -81,6 +83,7 @@
                                         </div>
                                     @else
                                         <div class="text-xs text-gray-500">
+                                            <p><a href="{{ route('purchases.show', $purchase) }}" class="text-indigo-700 hover:text-indigo-900">Ver detalle</a></p>
                                             <p>{{ $purchase->void_reason }}</p>
                                             <p class="mt-1">por {{ $purchase->voider?->name ?? '—' }}</p>
                                         </div>

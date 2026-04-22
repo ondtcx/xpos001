@@ -26,13 +26,44 @@
     <p class="meta">Desde {{ $start->format('Y-m-d') }} hasta {{ $end->format('Y-m-d') }}</p>
 
     <div class="grid">
-        <div class="card"><strong>Ventas</strong><br>{{ Money::format($salesTodayTotal) }}</div>
-        <div class="card"><strong>Utilidad</strong><br>{{ Money::format($profitToday) }}</div>
-        <div class="card"><strong>Compras</strong><br>{{ Money::format($purchasesTotal) }}</div>
+        <div class="card"><strong>Ventas netas</strong><br>{{ Money::format($salesNetTotal) }}<br><small>Brutas {{ Money::format($salesGrossTotal) }} · anuladas {{ Money::format($salesVoidedTotal) }}</small></div>
+        <div class="card"><strong>Utilidad confiable</strong><br>{{ Money::format($profitReliableTotal) }}<br><small>Warnings {{ Money::format($profitWarningTotal) }} · anulada {{ Money::format($profitVoidedTotal) }}</small></div>
+        <div class="card"><strong>Compras netas</strong><br>{{ Money::format($purchasesNetTotal) }}<br><small>Brutas {{ Money::format($purchasesGrossTotal) }} · anuladas {{ Money::format($purchasesVoidedTotal) }}</small></div>
         <div class="card"><strong>Stock total</strong><br>{{ number_format((float) $stockCurrent, 3, '.', '') }}</div>
         <div class="card"><strong>Fiados pendientes</strong><br>{{ Money::format($receivablesPendingTotal) }}</div>
-        <div class="card"><strong>Abonos recibidos</strong><br>{{ Money::format($receivedPaymentsTotal) }}</div>
+        <div class="card"><strong>Abonos netos</strong><br>{{ Money::format($receivedPaymentsNetTotal) }}<br><small>Brutos {{ Money::format($receivedPaymentsGrossTotal) }} · revertidos {{ Money::format($receivedPaymentsReversedTotal) }}</small></div>
     </div>
+
+    <h2>Resumen bruto y neto</h2>
+    <table>
+        <thead><tr><th>Bloque</th><th>Bruto</th><th>Anulado / revertido</th><th>Neto / confiable</th></tr></thead>
+        <tbody>
+            <tr>
+                <td>Ventas</td>
+                <td>{{ Money::format($salesGrossTotal) }}</td>
+                <td>{{ Money::format($salesVoidedTotal) }}</td>
+                <td>{{ Money::format($salesNetTotal) }}</td>
+            </tr>
+            <tr>
+                <td>Compras</td>
+                <td>{{ Money::format($purchasesGrossTotal) }}</td>
+                <td>{{ Money::format($purchasesVoidedTotal) }}</td>
+                <td>{{ Money::format($purchasesNetTotal) }}</td>
+            </tr>
+            <tr>
+                <td>Abonos</td>
+                <td>{{ Money::format($receivedPaymentsGrossTotal) }}</td>
+                <td>{{ Money::format($receivedPaymentsReversedTotal) }}</td>
+                <td>{{ Money::format($receivedPaymentsNetTotal) }}</td>
+            </tr>
+            <tr>
+                <td>Utilidad</td>
+                <td>—</td>
+                <td>Warnings {{ Money::format($profitWarningTotal) }} · anulada {{ Money::format($profitVoidedTotal) }}</td>
+                <td>{{ Money::format($profitReliableTotal) }}</td>
+            </tr>
+        </tbody>
+    </table>
 
     <h2>Productos por agotarse</h2>
     <table>
@@ -80,6 +111,17 @@
             @empty
                 <tr><td colspan="4">No hay ventas en el período.</td></tr>
             @endforelse
+        </tbody>
+    </table>
+
+    <h2>Resumen de caja</h2>
+    <table>
+        <thead><tr><th>Concepto</th><th>Total</th></tr></thead>
+        <tbody>
+            <tr><td>Operativa</td><td>{{ Money::format($cashOperationalTotal) }}</td></tr>
+            <tr><td>Reversas</td><td>{{ Money::format($cashReversalTotal) }}</td></tr>
+            <tr><td>Manual / otros</td><td>{{ Money::format($cashManualTotal) }}</td></tr>
+            <tr><td>Neto final</td><td>{{ Money::format($cashNetTotal) }}</td></tr>
         </tbody>
     </table>
 </body>

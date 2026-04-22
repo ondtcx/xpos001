@@ -217,24 +217,26 @@ Estado: ✅ implementado en versión inicial
 Incluye:
 
 - ventas del día o rango,
-- utilidad del día o rango,
-- compras del período,
+- utilidad confiable del día o rango,
+- compras brutas, anuladas y netas del período,
 - stock actual total,
 - productos por agotarse,
 - fiados pendientes,
-- abonos recibidos,
+- abonos brutos, revertidos y netos,
 - cierres de caja del período,
 - margen por producto,
 - compras por proveedor,
 - movimiento por lote,
-- resumen de caja por método y tipo.
+- resumen de caja por método y tipo,
+- separación explícita entre bruto, anulado/revertido y neto en ventas/compras/cobranza,
+- utilidad y margen principales excluyendo líneas con warnings de costo/stock.
 
 Limitaciones actuales:
 
 - con exportación CSV básica y vista imprimible, pero sin Excel/PDF nativo todavía,
 - sin dashboards gráficos,
 - sin filtros avanzados por categoría/marca/usuario,
-- algunas métricas están en versión operativa inicial, no analítica avanzada.
+- algunas métricas siguen en versión operativa inicial, no analítica avanzada.
 
 ## Observaciones importantes
 
