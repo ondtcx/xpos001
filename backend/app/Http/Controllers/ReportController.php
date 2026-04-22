@@ -210,6 +210,20 @@ class ReportController extends Controller
             ->orderByDesc('total_amount')
             ->get();
 
+        $recentSales = Sale::query()
+            ->with(['customer', 'creator'])
+            ->whereBetween('sold_at', [$start, $end])
+            ->latest('sold_at')
+            ->limit(8)
+            ->get();
+
+        $recentPurchases = Purchase::query()
+            ->with(['supplier', 'creator'])
+            ->whereBetween('purchased_at', [$start, $end])
+            ->latest('purchased_at')
+            ->limit(8)
+            ->get();
+
         $lotMovements = InventoryLot::query()
             ->with(['variant.product', 'movements' => fn ($query) => $query->latest('movement_at')])
             ->latest('received_at')
@@ -262,6 +276,8 @@ class ReportController extends Controller
             'marginExcludedByWarnings',
             'marginVoided',
             'purchasesBySupplier',
+            'recentSales',
+            'recentPurchases',
             'lotMovements',
             'cashSummary',
             'cashOperationalTotal',

@@ -6,6 +6,25 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <a href="{{ route('sales.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                    <p class="text-sm text-gray-500">Ventas</p>
+                    <p class="mt-1 font-semibold text-gray-900">Ir al listado y revisar detalles</p>
+                </a>
+                <a href="{{ route('purchases.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                    <p class="text-sm text-gray-500">Compras</p>
+                    <p class="mt-1 font-semibold text-gray-900">Auditar compras y lotes creados</p>
+                </a>
+                <a href="{{ route('receivables.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                    <p class="text-sm text-gray-500">Fiados</p>
+                    <p class="mt-1 font-semibold text-gray-900">Abrir cuentas por cobrar</p>
+                </a>
+                <a href="{{ route('inventory-lots.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                    <p class="text-sm text-gray-500">Lotes</p>
+                    <p class="mt-1 font-semibold text-gray-900">Ver disponibilidad y trazabilidad</p>
+                </a>
+            </div>
+
             <form method="GET" action="{{ route('reports.index') }}" class="grid gap-4 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 md:grid-cols-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Fecha inicio</label>
@@ -91,6 +110,7 @@
                             <div class="rounded-md border border-gray-200 p-3">
                                 <p class="font-medium text-gray-900">{{ $receivable->customer->name }}</p>
                                 <p class="text-gray-600">Pendiente: {{ Money::format($receivable->pending_amount) }}</p>
+                                <a href="{{ route('receivables.show', $receivable) }}" class="mt-2 inline-flex text-xs font-medium text-indigo-700 hover:text-indigo-900">Ver detalle</a>
                             </div>
                         @empty
                             <p class="text-gray-600">No hay cuentas abiertas.</p>
@@ -127,7 +147,10 @@
                                     <tr>
                                         <td class="px-4 py-3 text-gray-900">{{ $row->variant->product->name }}</td>
                                         <td class="px-4 py-3 text-gray-700">{{ $row->variant->name }}</td>
-                                        <td class="px-4 py-3 text-gray-700">{{ number_format((float) $row->total_available, 3, '.', '') }}</td>
+                                        <td class="px-4 py-3 text-gray-700">
+                                            <div>{{ number_format((float) $row->total_available, 3, '.', '') }}</div>
+                                            <a href="{{ route('inventory-lots.index') }}" class="mt-1 inline-flex text-xs font-medium text-indigo-700 hover:text-indigo-900">Ver lotes</a>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr><td colspan="3" class="px-4 py-6 text-center text-gray-500">No hay productos críticos en el período.</td></tr>
@@ -159,6 +182,70 @@
             </div>
 
             <div class="grid gap-6 lg:grid-cols-2">
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <div class="flex items-center justify-between gap-3">
+                        <h3 class="font-semibold text-gray-900">Ventas recientes del período</h3>
+                        <a href="{{ route('sales.index') }}" class="text-sm font-medium text-indigo-700 hover:text-indigo-900">Ver todas</a>
+                    </div>
+                    <div class="mt-4 overflow-hidden rounded-lg border border-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm">
+                            <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left text-gray-500">Fecha</th><th class="px-4 py-3 text-left text-gray-500">Cliente</th><th class="px-4 py-3 text-left text-gray-500">Estado</th><th class="px-4 py-3 text-left text-gray-500">Total</th><th class="px-4 py-3 text-right text-gray-500">Acción</th></tr></thead>
+                            <tbody class="divide-y divide-gray-100 bg-white">
+                                @forelse ($recentSales as $sale)
+                                    <tr>
+                                        <td class="px-4 py-3 text-gray-700">{{ optional($sale->sold_at)->format('Y-m-d H:i') }}</td>
+                                        <td class="px-4 py-3 text-gray-900">{{ $sale->customer?->name ?? 'Venta anónima' }}</td>
+                                        <td class="px-4 py-3 text-gray-700">
+                                            @if ($sale->isVoided())
+                                                <span class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">Anulada</span>
+                                            @elseif ($sale->credit_amount > 0)
+                                                <span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800">Con saldo pendiente</span>
+                                            @else
+                                                <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">Cobrada</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-700">{{ Money::format($sale->total_amount) }}</td>
+                                        <td class="px-4 py-3 text-right"><a href="{{ route('sales.show', $sale) }}" class="text-indigo-700 hover:text-indigo-900">Ver detalle</a></td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">No hay ventas en el período.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <div class="flex items-center justify-between gap-3">
+                        <h3 class="font-semibold text-gray-900">Compras recientes del período</h3>
+                        <a href="{{ route('purchases.index') }}" class="text-sm font-medium text-indigo-700 hover:text-indigo-900">Ver todas</a>
+                    </div>
+                    <div class="mt-4 overflow-hidden rounded-lg border border-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm">
+                            <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left text-gray-500">Fecha</th><th class="px-4 py-3 text-left text-gray-500">Proveedor</th><th class="px-4 py-3 text-left text-gray-500">Estado</th><th class="px-4 py-3 text-left text-gray-500">Total</th><th class="px-4 py-3 text-right text-gray-500">Acción</th></tr></thead>
+                            <tbody class="divide-y divide-gray-100 bg-white">
+                                @forelse ($recentPurchases as $purchase)
+                                    <tr>
+                                        <td class="px-4 py-3 text-gray-700">{{ optional($purchase->purchased_at)->format('Y-m-d H:i') }}</td>
+                                        <td class="px-4 py-3 text-gray-900">{{ $purchase->supplier?->name ?? '—' }}</td>
+                                        <td class="px-4 py-3 text-gray-700">
+                                            @if ($purchase->isVoided())
+                                                <span class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">Anulada</span>
+                                            @else
+                                                <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">Confirmada</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-700">{{ Money::format($purchase->total_amount) }}</td>
+                                        <td class="px-4 py-3 text-right"><a href="{{ route('purchases.show', $purchase) }}" class="text-indigo-700 hover:text-indigo-900">Ver detalle</a></td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">No hay compras en el período.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                     <h3 class="font-semibold text-gray-900">Margen por producto</h3>
                     <div class="mt-4 overflow-hidden rounded-lg border border-gray-200">
