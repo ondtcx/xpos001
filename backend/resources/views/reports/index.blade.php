@@ -197,11 +197,11 @@
                                         <td class="px-4 py-3 text-gray-900">{{ $sale->customer?->name ?? 'Venta anónima' }}</td>
                                         <td class="px-4 py-3 text-gray-700">
                                             @if ($sale->isVoided())
-                                                <span class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">Anulada</span>
+                                                <x-status-badge tone="danger">Anulada</x-status-badge>
                                             @elseif ($sale->credit_amount > 0)
-                                                <span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800">Con saldo pendiente</span>
+                                                <x-status-badge tone="warning">Con saldo pendiente</x-status-badge>
                                             @else
-                                                <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">Cobrada</span>
+                                                <x-status-badge tone="success">Cobrada</x-status-badge>
                                             @endif
                                         </td>
                                         <td class="px-4 py-3 text-gray-700">{{ Money::format($sale->total_amount) }}</td>
@@ -230,9 +230,9 @@
                                         <td class="px-4 py-3 text-gray-900">{{ $purchase->supplier?->name ?? '—' }}</td>
                                         <td class="px-4 py-3 text-gray-700">
                                             @if ($purchase->isVoided())
-                                                <span class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">Anulada</span>
+                                                <x-status-badge tone="danger">Anulada</x-status-badge>
                                             @else
-                                                <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">Confirmada</span>
+                                                <x-status-badge tone="success">Confirmada</x-status-badge>
                                             @endif
                                         </td>
                                         <td class="px-4 py-3 text-gray-700">{{ Money::format($purchase->total_amount) }}</td>

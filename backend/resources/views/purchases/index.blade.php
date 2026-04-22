@@ -41,9 +41,9 @@
                                 <td class="px-4 py-3 text-gray-700">{{ optional($purchase->purchased_at)->format('Y-m-d H:i') }}</td>
                                 <td class="px-4 py-3">
                                     @if ($purchase->isDetailed())
-                                        <span class="rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">Detallada</span>
+                                        <x-status-badge tone="info">Detallada</x-status-badge>
                                     @else
-                                        <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Rápida</span>
+                                        <x-status-badge tone="neutral">Rápida</x-status-badge>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-gray-900">{{ $purchase->supplier?->name ?? '—' }}</td>
@@ -51,9 +51,9 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $purchase->payment_type }}</td>
                                 <td class="px-4 py-3">
                                     @if ($purchase->isVoided())
-                                        <span class="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">Anulada</span>
+                                        <x-status-badge tone="danger">Anulada</x-status-badge>
                                     @else
-                                        <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">Confirmada</span>
+                                        <x-status-badge tone="success">Confirmada</x-status-badge>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-gray-900">{{ Money::format($purchase->total_amount) }}</td>

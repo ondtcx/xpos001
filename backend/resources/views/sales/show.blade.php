@@ -25,11 +25,11 @@
                         </div>
                         <div>
                             @if ($sale->isVoided())
-                                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">Anulada</span>
+                                <x-status-badge tone="danger">Anulada</x-status-badge>
                             @elseif ($sale->credit_amount > 0)
-                                <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">Con saldo pendiente</span>
+                                <x-status-badge tone="warning">Con saldo pendiente</x-status-badge>
                             @else
-                                <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">Cobrada</span>
+                                <x-status-badge tone="success">Cobrada</x-status-badge>
                             @endif
                         </div>
                     </div>
@@ -158,13 +158,13 @@
                                     <td class="px-4 py-3 align-top text-xs text-gray-600">
                                         <div class="flex flex-wrap gap-2">
                                             @if ($item->has_manual_price_override)
-                                                <span class="rounded-full bg-indigo-100 px-2 py-1 font-medium text-indigo-700">Override</span>
+                                                <x-signal-badge tone="info">Override</x-signal-badge>
                                             @endif
                                             @if ($item->has_stock_warning)
-                                                <span class="rounded-full bg-amber-100 px-2 py-1 font-medium text-amber-800">Stock</span>
+                                                <x-signal-badge tone="warning">Stock</x-signal-badge>
                                             @endif
                                             @if ($item->has_cost_warning)
-                                                <span class="rounded-full bg-orange-100 px-2 py-1 font-medium text-orange-800">Costo</span>
+                                                <x-signal-badge tone="cost">Costo</x-signal-badge>
                                             @endif
                                             @if (! $item->has_manual_price_override && ! $item->has_stock_warning && ! $item->has_cost_warning)
                                                 <span class="text-gray-400">Sin novedades</span>

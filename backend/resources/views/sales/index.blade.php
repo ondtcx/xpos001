@@ -64,23 +64,23 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $sale->creator?->name ?? '—' }}</td>
                                 <td class="px-4 py-3 text-gray-700">
                                     @if ($sale->isVoided())
-                                        <span class="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700">Anulada</span>
+                                        <x-status-badge tone="danger">Anulada</x-status-badge>
                                     @elseif ($sale->credit_amount > 0)
-                                        <span class="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800">Con saldo pendiente</span>
+                                        <x-status-badge tone="warning">Con saldo pendiente</x-status-badge>
                                     @else
-                                        <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">Cobrada</span>
+                                        <x-status-badge tone="success">Cobrada</x-status-badge>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-xs text-gray-600">
                                     <div class="flex flex-wrap gap-2">
                                         @if ($sale->items->contains(fn ($item) => $item->has_manual_price_override))
-                                            <span class="rounded-full bg-indigo-100 px-2 py-1 font-medium text-indigo-700">Override precio</span>
+                                            <x-signal-badge tone="info">Override precio</x-signal-badge>
                                         @endif
                                         @if ($sale->items->contains(fn ($item) => $item->has_stock_warning))
-                                            <span class="rounded-full bg-amber-100 px-2 py-1 font-medium text-amber-800">Stock insuficiente</span>
+                                            <x-signal-badge tone="warning">Stock insuficiente</x-signal-badge>
                                         @endif
                                         @if ($sale->items->contains(fn ($item) => $item->has_cost_warning))
-                                            <span class="rounded-full bg-orange-100 px-2 py-1 font-medium text-orange-800">Costo pendiente</span>
+                                            <x-signal-badge tone="cost">Costo pendiente</x-signal-badge>
                                         @endif
                                         @if (! $sale->items->contains(fn ($item) => $item->has_manual_price_override || $item->has_stock_warning || $item->has_cost_warning))
                                             <span class="text-gray-400">Sin novedades</span>

@@ -25,15 +25,15 @@
                         </div>
                         <div class="flex flex-wrap gap-2">
                             @if ($purchase->isDetailed())
-                                <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700">Detallada</span>
+                                <x-status-badge tone="info">Detallada</x-status-badge>
                             @else
-                                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Rápida</span>
+                                <x-status-badge tone="neutral">Rápida</x-status-badge>
                             @endif
 
                             @if ($purchase->isVoided())
-                                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">Anulada</span>
+                                <x-status-badge tone="danger">Anulada</x-status-badge>
                             @else
-                                <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">Confirmada</span>
+                                <x-status-badge tone="success">Confirmada</x-status-badge>
                             @endif
                         </div>
                     </div>
@@ -181,7 +181,7 @@
                                     <p class="font-medium text-gray-900">Lote #{{ $lot->id }}</p>
                                     <p class="text-sm text-gray-600">{{ $lot->variant?->product?->name }} — {{ $lot->variant?->name }}</p>
                                 </div>
-                                <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">{{ $lot->status }}</span>
+                                <x-status-badge tone="neutral">{{ $lot->status }}</x-status-badge>
                             </div>
 
                             <dl class="mt-4 grid gap-3 md:grid-cols-2 text-sm">
