@@ -7,6 +7,7 @@ use App\Models\CashSession;
 use App\Models\Receivable;
 use App\Models\ReceivablePayment;
 use App\Support\Money;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +18,47 @@ class ReceivableController extends Controller
 {
     public function index(): View
     {
+        $receivables = Receivable::query()->with(['customer', 'sale', 'payments'])->latest('opened_at')->get();
+        $openReceivables = $receivables->filter(fn (Receivable $receivable) => $receivable->isOpen());
+
+        $agingBuckets = [
+            [
+                'label' => '0–7 días',
+                'count' => 0,
+                'pending_amount' => 0,
+            ],
+            [
+                'label' => '8–30 días',
+                'count' => 0,
+                'pending_amount' => 0,
+            ],
+            [
+                'label' => '31+ días',
+                'count' => 0,
+                'pending_amount' => 0,
+            ],
+        ];
+
+        foreach ($openReceivables as $receivable) {
+            $daysOpen = (int) Carbon::parse($receivable->opened_at)->startOfDay()->diffInDays(now()->startOfDay());
+
+            $bucketIndex = match (true) {
+                $daysOpen <= 7 => 0,
+                $daysOpen <= 30 => 1,
+                default => 2,
+            };
+
+            $agingBuckets[$bucketIndex]['count']++;
+            $agingBuckets[$bucketIndex]['pending_amount'] += $receivable->pending_amount;
+        }
+
         return view('receivables.index', [
-            'receivables' => Receivable::query()->with(['customer', 'sale', 'payments'])->latest('opened_at')->get(),
+            'receivables' => $receivables,
+            'receivableAging' => [
+                'open_count' => $openReceivables->count(),
+                'open_pending_amount' => (int) $openReceivables->sum('pending_amount'),
+                'buckets' => $agingBuckets,
+            ],
         ]);
     }
 
@@ -26,9 +66,32 @@ class ReceivableController extends Controller
     {
         $receivable->load(['customer', 'sale.creator', 'payments.creator']);
 
+        $paidAmount = (int) $receivable->payments->where('is_reversed', false)->sum('amount');
+        $daysOpen = (int) Carbon::parse($receivable->opened_at)->startOfDay()->diffInDays(now()->startOfDay());
+        $lastPaymentAt = $receivable->payments
+            ->where('is_reversed', false)
+            ->sortByDesc('paid_at')
+            ->first()?->paid_at;
+        $collectionProgress = $receivable->original_amount > 0
+            ? (int) round(($paidAmount / $receivable->original_amount) * 100)
+            : 0;
+        $agingLabel = match (true) {
+            ! $receivable->isOpen() => 'Cuenta cerrada',
+            $daysOpen <= 7 => 'Deuda reciente',
+            $daysOpen <= 30 => 'Seguimiento activo',
+            default => 'Deuda antigua',
+        };
+
         return view('receivables.show', [
             'receivable' => $receivable,
             'currentCashSession' => CashSession::query()->where('status', 'open')->latest('opened_at')->first(),
+            'receivableTracking' => [
+                'days_open' => $daysOpen,
+                'paid_amount' => $paidAmount,
+                'collection_progress' => $collectionProgress,
+                'last_payment_at' => $lastPaymentAt,
+                'aging_label' => $agingLabel,
+            ],
         ]);
     }
 

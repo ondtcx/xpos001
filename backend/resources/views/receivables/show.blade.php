@@ -28,6 +28,38 @@
                 </div>
 
                 <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <h3 class="font-semibold text-gray-900">Seguimiento de cobranza</h3>
+                    <dl class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-5 text-sm">
+                        <div>
+                            <dt class="text-gray-500">Antigüedad</dt>
+                            <dd class="font-medium text-gray-900">{{ $receivableTracking['days_open'] }} días</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Cobrado</dt>
+                            <dd class="font-medium text-gray-900">{{ Money::format($receivableTracking['paid_amount']) }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Avance</dt>
+                            <dd class="font-medium text-gray-900">{{ $receivableTracking['collection_progress'] }}%</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Último abono</dt>
+                            <dd class="font-medium text-gray-900">{{ optional($receivableTracking['last_payment_at'])->format('Y-m-d H:i') ?? 'Sin abonos' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Prioridad</dt>
+                            <dd @class([
+                                'font-medium',
+                                'text-emerald-700' => $receivableTracking['aging_label'] === 'Deuda reciente',
+                                'text-amber-700' => $receivableTracking['aging_label'] === 'Seguimiento activo',
+                                'text-red-700' => $receivableTracking['aging_label'] === 'Deuda antigua',
+                                'text-gray-900' => $receivableTracking['aging_label'] === 'Cuenta cerrada',
+                            ])>{{ $receivableTracking['aging_label'] }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                     <h3 class="font-semibold text-gray-900">Historial de abonos</h3>
                     <div class="mt-4 overflow-hidden rounded-lg border border-gray-200">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">

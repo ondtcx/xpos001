@@ -5,20 +5,64 @@ namespace App\Http\Controllers;
 use App\Models\CashMovement;
 use App\Models\CashSession;
 use App\Support\Money;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class CashSessionController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $validated = $request->validate([
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+        ]);
+
+        $startDate = isset($validated['start_date'])
+            ? Carbon::parse($validated['start_date'])->startOfDay()
+            : now()->startOfMonth();
+        $endDate = isset($validated['end_date'])
+            ? Carbon::parse($validated['end_date'])->endOfDay()
+            : now()->endOfDay();
+
+        $closedSessions = CashSession::query()
+            ->with('opener')
+            ->where('status', 'closed')
+            ->whereBetween('closed_at', [$startDate, $endDate])
+            ->latest('closed_at')
+            ->get();
+
+        $balancedSessions = $closedSessions->where('difference_amount', 0);
+        $shortageSessions = $closedSessions->filter(fn (CashSession $session) => (int) $session->difference_amount < 0);
+        $surplusSessions = $closedSessions->filter(fn (CashSession $session) => (int) $session->difference_amount > 0);
+        $cashMovementAnalysis = $this->buildMovementAnalysis($closedSessions);
+
         return view('cash.index', [
             'currentSession' => CashSession::query()->with('opener')->where('status', 'open')->latest('opened_at')->first(),
             'sessions' => CashSession::query()->with('opener')->latest('opened_at')->limit(20)->get(),
+            'closedSessions' => $closedSessions,
+            'cashSummary' => [
+                'closed_sessions_count' => $closedSessions->count(),
+                'expected_cash_amount' => (int) $closedSessions->sum('expected_cash_amount'),
+                'counted_cash_amount' => (int) $closedSessions->sum('counted_cash_amount'),
+                'expected_transfer_amount' => (int) $closedSessions->sum('expected_transfer_amount'),
+                'difference_amount' => (int) $closedSessions->sum('difference_amount'),
+                'balanced_sessions_count' => $balancedSessions->count(),
+                'shortage_sessions_count' => $shortageSessions->count(),
+                'surplus_sessions_count' => $surplusSessions->count(),
+                'shortage_total_amount' => abs((int) $shortageSessions->sum('difference_amount')),
+                'surplus_total_amount' => (int) $surplusSessions->sum('difference_amount'),
+                'largest_shortage_amount' => abs((int) ($shortageSessions->min('difference_amount') ?? 0)),
+                'largest_surplus_amount' => (int) ($surplusSessions->max('difference_amount') ?? 0),
+            ],
+            'cashRange' => [
+                'start_date' => $startDate->toDateString(),
+                'end_date' => $endDate->toDateString(),
+            ],
+            'cashMovementAnalysis' => $cashMovementAnalysis,
         ]);
     }
 
@@ -163,6 +207,65 @@ class CashSessionController extends Controller
         return match ($movement->movement_type) {
             'expense', 'withdrawal' => -1 * $movement->amount,
             default => $movement->amount,
+        };
+    }
+
+    private function buildMovementAnalysis($closedSessions): array
+    {
+        $movements = CashMovement::query()
+            ->whereIn('cash_session_id', $closedSessions->pluck('id'))
+            ->orderBy('created_at')
+            ->get();
+
+        $rows = [];
+
+        foreach ($movements as $movement) {
+            $type = $movement->movement_type;
+            $method = $movement->payment_method ?? 'unassigned';
+            $signedAmount = $this->signedAmount($movement);
+
+            if (! isset($rows[$type])) {
+                $rows[$type] = [
+                    'label' => $this->movementTypeLabel($type),
+                    'cash_amount' => 0,
+                    'transfer_amount' => 0,
+                    'other_amount' => 0,
+                    'total_amount' => 0,
+                ];
+            }
+
+            match ($method) {
+                'cash' => $rows[$type]['cash_amount'] += $signedAmount,
+                'transfer' => $rows[$type]['transfer_amount'] += $signedAmount,
+                default => $rows[$type]['other_amount'] += $signedAmount,
+            };
+
+            $rows[$type]['total_amount'] += $signedAmount;
+        }
+
+        return [
+            'rows' => array_values($rows),
+            'totals' => [
+                'cash_amount' => array_sum(array_column($rows, 'cash_amount')),
+                'transfer_amount' => array_sum(array_column($rows, 'transfer_amount')),
+                'other_amount' => array_sum(array_column($rows, 'other_amount')),
+                'total_amount' => array_sum(array_column($rows, 'total_amount')),
+            ],
+        ];
+    }
+
+    private function movementTypeLabel(string $type): string
+    {
+        return match ($type) {
+            'opening' => 'Apertura',
+            'sale_payment' => 'Pago de venta',
+            'sale_payment_reversal' => 'Reversa de pago de venta',
+            'receivable_payment' => 'Abono de cuenta por cobrar',
+            'receivable_payment_reversal' => 'Reversa de abono',
+            'manual_income' => 'Ingreso extraordinario',
+            'expense' => 'Gasto',
+            'withdrawal' => 'Retiro',
+            default => str($type)->replace('_', ' ')->title()->toString(),
         };
     }
 }
