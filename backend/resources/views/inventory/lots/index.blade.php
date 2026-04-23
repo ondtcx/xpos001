@@ -9,6 +9,21 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="mb-4 grid gap-4 md:grid-cols-3">
+                <a href="{{ route('opening-inventory.create') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                    <p class="text-sm text-gray-500">Inventario inicial</p>
+                    <p class="mt-1 font-semibold text-gray-900">Registrar nueva tanda</p>
+                </a>
+                <a href="{{ route('opening-inventory.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                    <p class="text-sm text-gray-500">Historial</p>
+                    <p class="mt-1 font-semibold text-gray-900">Revisar entradas de apertura</p>
+                </a>
+                <a href="{{ route('reports.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                    <p class="text-sm text-gray-500">Reportes</p>
+                    <p class="mt-1 font-semibold text-gray-900">Cruzar stock y movimiento</p>
+                </a>
+            </div>
+
             <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">

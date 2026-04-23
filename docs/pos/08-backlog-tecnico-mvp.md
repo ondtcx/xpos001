@@ -56,7 +56,9 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 
 - semántica de reportes `bruto + neto` para ventas, compras y cobranza,
 - exclusión de ventas anuladas y líneas con warning de la utilidad/margen principal,
-- separación explícita de reversas de caja frente a operación vigente.
+- separación explícita de reversas de caja frente a operación vigente,
+- consolidado histórico de caja por período con análisis de diferencias,
+- envejecimiento operativo y seguimiento enriquecido de cuentas por cobrar.
 
 ### Diferido a iteración 2 o posterior
 
@@ -434,7 +436,7 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 
 ## Epic 10 — Refinamiento de caja y cuentas por cobrar
 
-**Estado:** pendiente  
+**Estado:** completado  
 **Prioridad:** media
 
 ### Historia 10.1 — Como administrador quiero mayor visibilidad de caja
@@ -448,6 +450,12 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 - la caja puede revisarse más allá de la sesión individual,
 - el histórico permite detectar patrones de diferencia.
 
+#### Estado real implementado
+- consolidado de caja por rango para sesiones cerradas,
+- métricas de exactitud/faltantes/sobrantes/peor desvío,
+- análisis neto por tipo y método,
+- cobertura feature para consolidación.
+
 ### Historia 10.2 — Como administrador quiero seguimiento más sólido de fiados
 
 #### Tareas técnicas
@@ -458,6 +466,12 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 #### Criterios de aceptación
 - el sistema identifica deudas envejecidas,
 - el estado de cuenta es más útil para seguimiento operativo.
+
+#### Estado real implementado
+- buckets de envejecimiento `0-7`, `8-30` y `31+`,
+- resumen de cartera abierta pendiente,
+- métricas de seguimiento en detalle: días abiertos, monto cobrado, progreso y último abono,
+- cobertura feature para aging y tracking.
 
 ---
 
@@ -597,14 +611,13 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 
 ## Orden recomendado desde hoy
 
-1. Epic 10 — Refinamiento de caja y cuentas por cobrar
-2. Epic 11 — UX operativa transversal
-3. Epic 12 — Exportaciones más completas
-4. Epic 13 — Recargas
-5. Epic 14 — XML de compras
-6. Epic 15 — Retornables
-7. Epic 16 — Importación inicial desde Excel
-8. Epic 17 — Acceso móvil, red local y periféricos
+1. Epic 11 — UX operativa transversal
+2. Epic 12 — Exportaciones más completas
+3. Epic 13 — Recargas
+4. Epic 14 — XML de compras
+5. Epic 15 — Retornables
+6. Epic 16 — Importación inicial desde Excel
+7. Epic 17 — Acceso móvil, red local y periféricos
 
 ## Qué NO meter todavía
 
@@ -624,6 +637,7 @@ Solo conviene abrir iteración 2 si ya se cumple esto con evidencia:
 - caja cierra consistentemente,
 - fiado y abonos están sólidos,
 - reportes del núcleo son confiables,
+- la UX operativa transversal del núcleo ya no introduce fricción crítica,
 - las exportaciones básicas ya no son el cuello de botella principal.
 
 ## Nota de uso

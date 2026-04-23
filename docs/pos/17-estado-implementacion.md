@@ -174,16 +174,19 @@ Incluye:
 - abonos,
 - saldo pendiente,
 - integración con ventas fiadas,
-- reversa trazable de abonos cuando una venta total se anula.
+- reversa trazable de abonos cuando una venta total se anula,
+- envejecimiento de cuentas abiertas en rangos `0-7`, `8-30` y `31+` días,
+- métricas operativas de seguimiento en detalle de cobranza,
+- visibilidad de último abono, avance de cobro y prioridad por antigüedad.
 
 Limitaciones actuales:
 
-- sin alertas de deuda antigua,
-- sin estados de cuenta exportables.
+- sin estados de cuenta exportables formales,
+- sin alertas automáticas o acciones proactivas de cobranza todavía.
 
 ## 10. Caja
 
-Estado: ✅ implementado en versión inicial
+Estado: ✅ implementado en versión inicial y refinada
 
 Incluye:
 
@@ -197,14 +200,17 @@ Incluye adicionalmente:
 - vínculo automático de pagos de venta con caja abierta,
 - vínculo automático de abonos con caja abierta,
 - movimientos manuales de gasto, retiro e ingreso extraordinario,
-- cálculo de efectivo esperado y transferencias esperadas al cierre.
+- cálculo de efectivo esperado y transferencias esperadas al cierre,
+- consolidado histórico de sesiones cerradas por período,
+- visibilidad de diferencias históricas,
+- métricas de exactitud, faltantes, sobrantes y peor desvío,
+- análisis neto por tipo de movimiento y método de pago.
 
 Limitaciones actuales:
 
-- no hay reporte consolidado de caja por período,
 - no hay reapertura o corrección de cierre,
 - no existen permisos finos aún para apertura/cierre,
-- no se muestran todavía dashboards de diferencias históricas.
+- no hay dashboard gráfico; la lectura histórica sigue siendo tabular/operativa.
 
 ## 11. Recargas
 
@@ -248,18 +254,20 @@ Limitaciones actuales:
 - Ya existen mejoras de UX operativa en compras, ventas, inventario inicial y dashboard para reducir fricción en tareas frecuentes.
 - Compras ya tiene separación clara entre flujo rápido y detallado, con cálculo encapsulado fuera del controller.
 - Ventas ya tiene anulación total controlada y búsqueda POS en vivo; la anulación parcial sigue diferida por complejidad de caja/fiado/abonos.
+- Caja ya cuenta con visibilidad consolidada por período y lectura histórica de diferencias; la siguiente prioridad ya no es caja/cobranza sino el refinamiento UX transversal del núcleo.
+- Cuentas por cobrar ya exponen envejecimiento operativo y métricas de seguimiento; lo pendiente ahí pasa más por exportación formal y automatización de alertas que por visibilidad básica.
 
 ## Próximo bloque recomendado
 
-1. refinamientos del núcleo pendientes en compras/ventas
-2. cerrar refinamientos UX y visibilidad operativa derivados de compras/ventas
+1. refinamiento UX operativa transversal del núcleo
+2. cerrar fricciones pendientes en compras/ventas/inventario inicial y navegación relacionada
 3. luego exportaciones más completas y reportabilidad más fina (Excel/PDF real)
- 4. después preparación de iteración 2
+4. después preparación de iteración 2
 
 ## Enfoque actual recomendado
 
 - consolidar primero la fidelidad del núcleo antes de abrir módulos nuevos,
-- priorizar calidad de compras y ventas sobre exportaciones refinadas,
+- priorizar reducción de fricción operativa y claridad visual antes de exportaciones refinadas,
 - mantener recargas fuera de iteración 1.
 
 ## Archivos clave actuales

@@ -16,8 +16,16 @@ class OpeningInventoryController extends Controller
 {
     public function index(): View
     {
+        $entries = OpeningInventoryEntry::query()->with('variant.product')->latest('recorded_at')->get();
+
         return view('inventory.opening.index', [
-            'entries' => OpeningInventoryEntry::query()->with('variant.product')->latest('recorded_at')->get(),
+            'entries' => $entries,
+            'summary' => [
+                'entries' => $entries->count(),
+                'audited' => $entries->where('is_audited', true)->count(),
+                'pending_audit' => $entries->where('is_audited', false)->count(),
+                'units' => $entries->sum(fn (OpeningInventoryEntry $entry) => (float) $entry->quantity),
+            ],
         ]);
     }
 
@@ -39,7 +47,7 @@ class OpeningInventoryController extends Controller
             'notes' => ['nullable', 'string'],
         ]);
 
-        DB::transaction(function () use ($validated, $request) {
+        $context = DB::transaction(function () use ($validated, $request) {
             $costAmount = Money::dollarsToCents($validated['estimated_unit_cost']);
 
             $entry = OpeningInventoryEntry::query()->create([
@@ -80,8 +88,16 @@ class OpeningInventoryController extends Controller
                 'notes' => $validated['notes'] ?? null,
                 'created_by' => $request->user()->id,
             ]);
+
+            return [
+                'entry_id' => $entry->id,
+                'lot_id' => $lot->id,
+                'variant_label' => $entry->variant->product->name . ' — ' . $entry->variant->name,
+            ];
         });
 
-        return redirect()->route('opening-inventory.index')->with('status', 'Inventario inicial registrado correctamente.');
+        return redirect()->route('opening-inventory.index')
+            ->with('status', 'Inventario inicial registrado correctamente.')
+            ->with('opening_inventory_context', $context);
     }
 }

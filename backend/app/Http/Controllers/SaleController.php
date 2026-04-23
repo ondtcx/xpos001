@@ -45,9 +45,22 @@ class SaleController extends Controller
 
     public function create(): View
     {
+        $presentations = SalePresentation::query()
+            ->with(['variant.product', 'prices' => fn ($q) => $q->orderByDesc('starts_at')])
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        $availableBaseUnitsByVariant = InventoryLot::query()
+            ->selectRaw('variant_id, COALESCE(SUM(available_quantity), 0) as available_quantity')
+            ->whereIn('variant_id', $presentations->pluck('product_variant_id')->unique()->all())
+            ->groupBy('variant_id')
+            ->pluck('available_quantity', 'variant_id');
+
         return view('sales.form', [
             'customers' => Customer::query()->where('is_active', true)->orderBy('name')->get(),
-            'presentations' => SalePresentation::query()->with(['variant.product', 'prices' => fn ($q) => $q->orderByDesc('starts_at')])->where('is_active', true)->orderBy('name')->get(),
+            'presentations' => $presentations,
+            'availableBaseUnitsByVariant' => $availableBaseUnitsByVariant,
             'currentCashSession' => CashSession::query()->where('status', 'open')->latest('opened_at')->first(),
         ]);
     }
