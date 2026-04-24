@@ -25,8 +25,8 @@ class PurchaseReportExportsTest extends TestCase
         [$user, $purchase] = $this->seedPurchaseExportScenario();
 
         $response = $this->actingAs($user)->get(route('reports.export.purchases-summary-csv', [
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->toDateString(),
+            'start_date' => $purchase->purchased_at->toDateString(),
+            'end_date' => $purchase->purchased_at->toDateString(),
         ]));
 
         $response->assertOk();
@@ -49,8 +49,8 @@ class PurchaseReportExportsTest extends TestCase
         [$user, $purchase] = $this->seedPurchaseExportScenario();
 
         $response = $this->actingAs($user)->get(route('reports.export.purchases-lines-csv', [
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->toDateString(),
+            'start_date' => $purchase->purchased_at->toDateString(),
+            'end_date' => $purchase->purchased_at->toDateString(),
         ]));
 
         $response->assertOk();

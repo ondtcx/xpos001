@@ -21,8 +21,8 @@ class ReceivableReportExportsTest extends TestCase
         [$user, $receivable] = $this->seedReceivableExportScenario();
 
         $response = $this->actingAs($user)->get(route('reports.export.receivables-csv', [
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->toDateString(),
+            'start_date' => $receivable->opened_at->toDateString(),
+            'end_date' => $receivable->opened_at->toDateString(),
         ]));
 
         $response->assertOk();
@@ -42,10 +42,12 @@ class ReceivableReportExportsTest extends TestCase
     public function it_exports_receivable_payments_csv_including_reversed_payments(): void
     {
         [$user, $receivable, $payment, $reversedPayment] = $this->seedReceivableExportScenario();
+        $startDate = min($payment->paid_at->toDateString(), $reversedPayment->paid_at->toDateString());
+        $endDate = max($payment->paid_at->toDateString(), $reversedPayment->paid_at->toDateString());
 
         $response = $this->actingAs($user)->get(route('reports.export.receivable-payments-csv', [
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->toDateString(),
+            'start_date' => $startDate,
+            'end_date' => $endDate,
         ]));
 
         $response->assertOk();

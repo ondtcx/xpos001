@@ -17,6 +17,12 @@ use App\Support\Reports\Csv\PurchasesCsvExporter;
 use App\Support\Reports\Csv\ReceivablesCsvExporter;
 use App\Support\Reports\Csv\SalesCsvExporter;
 use App\Support\Reports\ReportDateRange;
+use App\Support\Reports\Pdf\PurchasesPdfExporter;
+use App\Support\Reports\Pdf\ReceivablesPdfExporter;
+use App\Support\Reports\Pdf\SalesPdfExporter;
+use App\Support\Reports\Xlsx\PurchasesXlsxExporter;
+use App\Support\Reports\Xlsx\ReceivablesXlsxExporter;
+use App\Support\Reports\Xlsx\SalesXlsxExporter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -61,6 +67,16 @@ class ReportController extends Controller
         return $exporter->downloadLines(ReportDateRange::fromRequest($request));
     }
 
+    public function exportSalesXlsx(Request $request, SalesXlsxExporter $exporter): StreamedResponse
+    {
+        return $exporter->download(ReportDateRange::fromRequest($request));
+    }
+
+    public function exportSalesPdf(Request $request, SalesPdfExporter $exporter): Response
+    {
+        return $exporter->download(ReportDateRange::fromRequest($request));
+    }
+
     public function exportPurchasesSummaryCsv(Request $request, PurchasesCsvExporter $exporter): StreamedResponse
     {
         return $exporter->downloadSummary(ReportDateRange::fromRequest($request));
@@ -71,6 +87,16 @@ class ReportController extends Controller
         return $exporter->downloadLines(ReportDateRange::fromRequest($request));
     }
 
+    public function exportPurchasesXlsx(Request $request, PurchasesXlsxExporter $exporter): StreamedResponse
+    {
+        return $exporter->download(ReportDateRange::fromRequest($request));
+    }
+
+    public function exportPurchasesPdf(Request $request, PurchasesPdfExporter $exporter): Response
+    {
+        return $exporter->download(ReportDateRange::fromRequest($request));
+    }
+
     public function exportReceivablesCsv(Request $request, ReceivablesCsvExporter $exporter): StreamedResponse
     {
         return $exporter->downloadReceivables(ReportDateRange::fromRequest($request));
@@ -79,6 +105,16 @@ class ReportController extends Controller
     public function exportReceivablePaymentsCsv(Request $request, ReceivablesCsvExporter $exporter): StreamedResponse
     {
         return $exporter->downloadPayments(ReportDateRange::fromRequest($request));
+    }
+
+    public function exportReceivablesXlsx(Request $request, ReceivablesXlsxExporter $exporter): StreamedResponse
+    {
+        return $exporter->download(ReportDateRange::fromRequest($request));
+    }
+
+    public function exportReceivablesPdf(Request $request, ReceivablesPdfExporter $exporter): Response
+    {
+        return $exporter->download(ReportDateRange::fromRequest($request));
     }
 
     public function exportLotsCsv(Request $request, LotsCsvExporter $exporter): StreamedResponse

@@ -44,10 +44,16 @@
             <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <h3 class="font-semibold text-gray-900">Exportaciones CSV</h3>
-                        <p class="mt-1 text-sm text-gray-500">Mantén el resumen ejecutivo y agrega descargas auditivas por dominio. En esta fase ya salen ventas por cabecera y por línea.</p>
+                        <h3 class="font-semibold text-gray-900">Exportaciones operativas</h3>
+                        <p class="mt-1 text-sm text-gray-500">CSV sigue disponible para trabajo técnico rápido. Excel ya sale con múltiples hojas por dominio para ventas, compras y cobranza.</p>
                     </div>
                     <div class="grid gap-3 md:grid-cols-9">
+                        <a href="{{ route('reports.export.sales-xlsx', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">Excel ventas</a>
+                        <a href="{{ route('reports.export.purchases-xlsx', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">Excel compras</a>
+                        <a href="{{ route('reports.export.receivables-xlsx', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">Excel cobranza</a>
+                        <a href="{{ route('reports.export.sales-pdf', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-rose-300 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700">PDF ventas</a>
+                        <a href="{{ route('reports.export.purchases-pdf', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-rose-300 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700">PDF compras</a>
+                        <a href="{{ route('reports.export.receivables-pdf', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-rose-300 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700">PDF cobranza</a>
                         <a href="{{ route('reports.export.csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Resumen ejecutivo</a>
                         <a href="{{ route('reports.export.sales-summary-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ventas por cabecera</a>
                         <a href="{{ route('reports.export.sales-lines-csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ventas por línea</a>

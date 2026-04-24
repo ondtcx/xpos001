@@ -24,8 +24,8 @@ class ReportExportsTest extends TestCase
         [$user, $sale] = $this->seedSaleExportScenario();
 
         $response = $this->actingAs($user)->get(route('reports.export.sales-summary-csv', [
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->toDateString(),
+            'start_date' => $sale->sold_at->toDateString(),
+            'end_date' => $sale->sold_at->toDateString(),
         ]));
 
         $response->assertOk();
@@ -46,8 +46,8 @@ class ReportExportsTest extends TestCase
         [$user, $sale] = $this->seedSaleExportScenario();
 
         $response = $this->actingAs($user)->get(route('reports.export.sales-lines-csv', [
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->toDateString(),
+            'start_date' => $sale->sold_at->toDateString(),
+            'end_date' => $sale->sold_at->toDateString(),
         ]));
 
         $response->assertOk();

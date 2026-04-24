@@ -56,10 +56,16 @@ Route::middleware('auth')->group(function () {
     Route::get('reports/export/csv', [ReportController::class, 'exportCsv'])->name('reports.export.csv');
     Route::get('reports/export/sales-summary-csv', [ReportController::class, 'exportSalesSummaryCsv'])->name('reports.export.sales-summary-csv');
     Route::get('reports/export/sales-lines-csv', [ReportController::class, 'exportSalesLinesCsv'])->name('reports.export.sales-lines-csv');
+    Route::get('reports/export/sales-xlsx', [ReportController::class, 'exportSalesXlsx'])->name('reports.export.sales-xlsx');
+    Route::get('reports/export/sales-pdf', [ReportController::class, 'exportSalesPdf'])->name('reports.export.sales-pdf');
     Route::get('reports/export/purchases-summary-csv', [ReportController::class, 'exportPurchasesSummaryCsv'])->name('reports.export.purchases-summary-csv');
     Route::get('reports/export/purchases-lines-csv', [ReportController::class, 'exportPurchasesLinesCsv'])->name('reports.export.purchases-lines-csv');
+    Route::get('reports/export/purchases-xlsx', [ReportController::class, 'exportPurchasesXlsx'])->name('reports.export.purchases-xlsx');
+    Route::get('reports/export/purchases-pdf', [ReportController::class, 'exportPurchasesPdf'])->name('reports.export.purchases-pdf');
     Route::get('reports/export/receivables-csv', [ReportController::class, 'exportReceivablesCsv'])->name('reports.export.receivables-csv');
     Route::get('reports/export/receivable-payments-csv', [ReportController::class, 'exportReceivablePaymentsCsv'])->name('reports.export.receivable-payments-csv');
+    Route::get('reports/export/receivables-xlsx', [ReportController::class, 'exportReceivablesXlsx'])->name('reports.export.receivables-xlsx');
+    Route::get('reports/export/receivables-pdf', [ReportController::class, 'exportReceivablesPdf'])->name('reports.export.receivables-pdf');
     Route::get('reports/export/lots-csv', [ReportController::class, 'exportLotsCsv'])->name('reports.export.lots-csv');
     Route::get('reports/export/lot-movements-csv', [ReportController::class, 'exportLotMovementsCsv'])->name('reports.export.lot-movements-csv');
     Route::get('cash', [CashSessionController::class, 'index'])->name('cash.index');
