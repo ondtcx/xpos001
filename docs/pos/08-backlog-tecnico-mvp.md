@@ -324,11 +324,14 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 #### Tareas técnicas
 - consulta de stock disponible,
 - alertas por umbral,
-- filtros básicos.
+- filtros básicos,
+- vista resumida por producto/variante separada de `Inventario inicial`,
+- acceso claro al detalle por lotes desde el stock actual.
 
 #### Criterios de aceptación
 - el stock puede verse por variante,
-- el sistema destaca productos críticos.
+- el sistema destaca productos críticos,
+- la navegación no confunde `stock actual` con `inventario inicial`.
 
 ### Historia 7.3 — Como administrador quiero ver fiados, abonos y cierres de caja
 
@@ -480,6 +483,13 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 **Estado:** en refinamiento  
 **Prioridad:** alta
 
+### Hallazgos recientes que deben absorberse en este epic
+
+- la semántica actual de `Inventario` induce a error porque abre `Inventario inicial` y no una vista de stock actual,
+- el detalle por lotes existe, pero falta una puerta de entrada más clara para consulta operativa diaria,
+- la venta actual sigue siendo útil para casos completos, pero muestra demasiadas excepciones por defecto para mostrador,
+- el flujo frecuente de venta debe optimizarse para: producto + cantidad + efectivo + cliente anónimo + guardar.
+
 ### Historia 11.1 — Como operador quiero menos fricción en formularios críticos
 
 #### Tareas técnicas
@@ -491,6 +501,35 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 #### Criterios de aceptación
 - las tareas frecuentes requieren menos pasos,
 - el flujo entre módulos críticos es más directo.
+
+### Historia 11.3 — Como operador quiero consultar stock actual sin confundirlo con inventario inicial
+
+#### Tareas técnicas
+- renombrar o reposicionar la entrada principal de inventario,
+- crear vista de stock actual por producto o variante,
+- mantener `Inventario inicial` como flujo específico de regularización,
+- enlazar desde stock actual hacia lotes y movimientos relevantes.
+
+#### Criterios de aceptación
+- entrar a `Inventario` muestra stock operativo actual y no solo cargas iniciales,
+- `Inventario inicial` queda identificado como flujo aparte,
+- el operador entiende sin ambigüedad dónde revisar stock y dónde registrar apertura.
+
+### Historia 11.4 — Como operador quiero una venta de mostrador realmente rápida
+
+#### Tareas técnicas
+- crear interfaz adicional de `venta rápida` reutilizando el mismo dominio actual,
+- dejar fecha no editable y cliente anónimo por defecto,
+- dejar efectivo como método base del flujo habitual,
+- ocultar por defecto override manual, pagos mixtos y confirmaciones de warning,
+- mostrar opciones adicionales solo cuando el caso lo requiera,
+- agregar cálculo opcional de vuelto cuando aplique.
+
+#### Criterios de aceptación
+- una venta frecuente puede cerrarse con muy pocos pasos,
+- los campos excepcionales solo aparecen cuando son necesarios,
+- la lógica de negocio no se duplica respecto a la venta completa,
+- la operación rápida sigue siendo trazable y compatible con caja, fiado y warnings.
 
 ### Historia 11.2 — Como operador quiero ayudas visuales más claras
 
@@ -508,7 +547,7 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 
 ## Epic 12 — Exportaciones más completas
 
-**Estado:** pendiente  
+**Estado:** en refinamiento  
 **Prioridad:** media
 
 ### Historia 12.1 — Como administrador quiero exportación real a Excel
@@ -522,6 +561,12 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 - los reportes clave pueden exportarse a Excel,
 - el archivo exportado es utilizable sin reprocesamiento manual excesivo.
 
+#### Estado real implementado
+- exportación `.xlsx` real para ventas, compras y cobranza,
+- múltiples hojas por dominio para resumen + detalle,
+- formato administrativo ligero con encabezados, autosize, freeze de fila y formato monetario/cantidades,
+- cobertura feature para validar hojas y contenido exportado.
+
 ### Historia 12.2 — Como administrador quiero exportación real a PDF
 
 #### Tareas técnicas
@@ -532,6 +577,12 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 #### Criterios de aceptación
 - los reportes clave pueden exportarse a PDF,
 - el formato es legible y consistente.
+
+#### Estado real implementado
+- PDF real para ventas, compras y cobranza,
+- una plantilla por dominio con resumen + detalle en el mismo archivo,
+- orientación por reporte según legibilidad,
+- botones PDF integrados junto a CSV y Excel.
 
 ---
 
@@ -606,18 +657,18 @@ No debe funcionar como una lista aspiracional desconectada del estado real, sino
 - no abrir recargas antes de estabilizar ventas, caja y fiado,
 - no abrir XML antes de cerrar compras detalladas manuales,
 - no abrir exportaciones complejas antes de consolidar datos del núcleo,
+- no seguir agregando exportes por checklist si no aportan valor operativo claro,
 - no implementar anulaciones sin definir reversión de inventario, pagos y caja,
 - no meter automatizaciones o periféricos antes de cerrar el flujo POS base.
 
 ## Orden recomendado desde hoy
 
-1. Epic 11 — UX operativa transversal
-2. Epic 12 — Exportaciones más completas
-3. Epic 13 — Recargas
-4. Epic 14 — XML de compras
-5. Epic 15 — Retornables
-6. Epic 16 — Importación inicial desde Excel
-7. Epic 17 — Acceso móvil, red local y periféricos
+1. Resolver fricción del núcleo en `stock actual vs inventario inicial` y `venta rápida de mostrador`
+2. Recién después reevaluar si conviene abrir Epic 13 — Recargas
+3. Epic 14 — XML de compras
+4. Epic 15 — Retornables
+5. Epic 16 — Importación inicial desde Excel
+6. Epic 17 — Acceso móvil, red local y periféricos
 
 ## Qué NO meter todavía
 

@@ -7,6 +7,7 @@
                 <p class="text-sm text-gray-500">Consulta ventas recientes y su relación con pagos y fiado.</p>
             </div>
             <div class="flex gap-3">
+                <a href="{{ route('pos.index') }}" class="rounded-md border border-indigo-300 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700">POS</a>
                 <a href="{{ route('receivables.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver fiados</a>
                 <a href="{{ route('sales.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nueva venta</a>
             </div>

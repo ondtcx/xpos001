@@ -218,7 +218,7 @@ Estado: ⏸ diferido a iteración 2
 
 ## 12. Reportes operativos
 
-Estado: ✅ implementado en versión inicial
+Estado: ✅ implementado en versión inicial y extendida
 
 Incluye:
 
@@ -235,14 +235,18 @@ Incluye:
 - movimiento por lote,
 - resumen de caja por método y tipo,
 - separación explícita entre bruto, anulado/revertido y neto en ventas/compras/cobranza,
-- utilidad y margen principales excluyendo líneas con warnings de costo/stock.
+- utilidad y margen principales excluyendo líneas con warnings de costo/stock,
+- exportación real a Excel (`.xlsx`) para ventas, compras y cobranza,
+- exportación real a PDF para ventas, compras y cobranza,
+- workbooks multihoja por dominio para resumen + detalle,
+- botones operativos de CSV / Excel / PDF coexistiendo en la pantalla de reportes.
 
 Limitaciones actuales:
 
-- con exportación CSV básica y vista imprimible, pero sin Excel/PDF nativo todavía,
 - sin dashboards gráficos,
 - sin filtros avanzados por categoría/marca/usuario,
-- algunas métricas siguen en versión operativa inicial, no analítica avanzada.
+- algunas métricas siguen en versión operativa inicial, no analítica avanzada,
+- lotes, movimientos de lote y caja todavía no tienen exportación formal en Excel/PDF.
 
 ## Observaciones importantes
 
@@ -250,24 +254,124 @@ Limitaciones actuales:
 - A partir de ese punto no se han disparado builds adicionales.
 - La implementación actual ya es suficiente para empezar a operar catálogo, proveedores, compras, inventario inicial, ventas, fiado, caja y reportes básicos.
 - El registro público quedó desactivado; los usuarios ya no pueden crearse desde `/register`.
-- Los reportes ya existen como panel operativo inicial y cuentan con exportación CSV básica y vista imprimible, aunque todavía no como módulo analítico refinado ni con Excel/PDF nativo.
+- Los reportes ya cuentan con exportación formal en CSV, Excel y PDF para ventas, compras y cobranza; la cobertura de exportes más finos para caja/lotes queda como fase posterior.
 - Ya existen mejoras de UX operativa en compras, ventas, inventario inicial y dashboard para reducir fricción en tareas frecuentes.
 - Compras ya tiene separación clara entre flujo rápido y detallado, con cálculo encapsulado fuera del controller.
+- Compras ya impactan inventario real por lotes; cada compra confirmada crea lotes y movimientos de inventario. La confusión detectada no es de dominio sino de UX: el menú `Inventario` hoy abre `Inventario inicial`, no una vista resumida de stock actual.
 - Ventas ya tiene anulación total controlada y búsqueda POS en vivo; la anulación parcial sigue diferida por complejidad de caja/fiado/abonos.
+- Ventas funciona para casos completos, pero la pantalla principal todavía expone demasiada complejidad por defecto para el flujo habitual de mostrador: fecha editable, campos de pago mixto, override manual y confirmaciones de warning visibles aun cuando no aplican.
 - Caja ya cuenta con visibilidad consolidada por período y lectura histórica de diferencias; la siguiente prioridad ya no es caja/cobranza sino el refinamiento UX transversal del núcleo.
 - Cuentas por cobrar ya exponen envejecimiento operativo y métricas de seguimiento; lo pendiente ahí pasa más por exportación formal y automatización de alertas que por visibilidad básica.
 
+## Hallazgos recientes de operación y UX
+
+### Inventario / stock
+
+- El sistema **sí** lleva compras a inventario mediante lotes y movimientos (`purchase_entry`) tanto en compras rápidas como detalladas.
+- La pantalla llamada `Inventario` no representa stock general; representa **inventario inicial** y por eso solo lista entradas creadas en `opening_inventory_entries`.
+- En el dataset demo, `Funda mediana` aparece ahí porque fue la única carga de inventario inicial sembrada; el resto del catálogo entró por compras y se observa en `Ver lotes`.
+- La siguiente mejora correcta no es alterar el dominio de inventario sino **mejorar la semántica y la navegación**:
+  - separar claramente `Inventario inicial` de `Stock actual`,
+  - dejar `Lotes` como detalle trazable,
+  - ofrecer una vista resumida por producto/variante para consulta operativa rápida.
+
+### Ventas de mostrador
+
+- La venta actual sirve como flujo completo y trazable, pero no está optimizada todavía para la operación repetitiva del día.
+- El flujo habitual deseable quedó identificado así:
+  - agregar producto,
+  - ajustar cantidad,
+  - efectivo por defecto,
+  - cliente anónimo por defecto,
+  - guardar.
+- Todo lo excepcional debería aparecer por **divulgación progresiva** y no por defecto:
+  - fecha manual,
+  - cliente nominal,
+  - pagos mixtos,
+  - override de precio,
+  - warnings de stock/costo,
+  - cálculo de vuelto.
+- La dirección recomendada es mantener el dominio actual (`CreateSaleService`) y crear una **interfaz adicional de venta rápida** en lugar de duplicar la lógica de negocio o reemplazar de golpe la pantalla completa.
+
+### POS de mostrador
+
+- Ya existe una implementación funcional de `POS` como interfaz adicional de venta rápida.
+- `POS` hoy ya permite:
+  - búsqueda y agregado rápido de productos,
+  - ajuste de cantidades,
+  - cobro en efectivo,
+  - cobro en transferencia simple,
+  - cobro mixto efectivo + transferencia,
+  - cálculo opcional de vuelto en efectivo,
+  - fiado total o parcial desde efectivo,
+  - transición a `Venta completa` cuando el caso lo requiere.
+- La base operativa quedó validada: el flujo de mostrador ya es útil y más directo que la pantalla completa para muchos casos habituales.
+- La deuda abierta principal ya no está en el dominio de ventas sino en la UX del frontend:
+  - los botones de acciones contextuales (`Asignar cliente`, `Ingresar monto recibido`, `Convertir a fiado`) todavía no se sienten consistentes en todos los recorridos,
+  - el operador espera que todos esos botones indiquen con claridad si están activados o desactivados,
+  - también espera que al volver a pulsar una acción ya usada esta se reactive o vuelva a mostrarse, sin comportamientos ambiguos,
+  - el layout lateral aún crece demasiado hacia abajo cuando se acumulan paneles abiertos,
+  - la selección de cliente sigue siendo básica y conviene evolucionarla hacia búsqueda explícita y alta rápida dentro de `POS`.
+- Conclusión actual: el frente `POS` ya no está bloqueado por reglas de negocio, sino por **consistencia de estado y composición de paneles** en la experiencia de uso.
+
+## Dataset demo para pruebas manuales
+
+Estado: ✅ disponible como seeder manual
+
+Existe un dataset demo repetible orientado a **minimarket / abarrotes** para probar la aplicación sin depender todavía de importación inicial desde Excel.
+
+### Qué carga
+
+- roles base y usuario administrador,
+- usuario operativo demo tipo `assistant`,
+- catálogo pequeño pero realista con precios plausibles en USD,
+- proveedores y clientes,
+- inventario inicial puntual,
+- compras rápidas y detalladas,
+- una compra anulada para revisar corrección,
+- ventas de contado, transferencia y fiado,
+- un abono registrado,
+- una venta con warning explícito controlado,
+- una caja histórica cerrada con diferencia leve,
+- una caja actual abierta para entrar y operar de inmediato.
+
+### Cómo ejecutarlo
+
+Desde `backend/`:
+
+```bash
+php artisan db:seed --class=Database\\Seeders\\MinimarketDemoSeeder
+```
+
+### Credenciales demo
+
+- admin: `admin` / `admin12345`
+- cajero: `cajero` / `cajero12345`
+
+### Criterio de uso
+
+- El seeder demo es **manual**, no corre dentro de `DatabaseSeeder`.
+- `DatabaseSeeder` sigue reservado para bootstrap mínimo y estable del sistema.
+- Esto evita mezclar datos base con datos ficticios de prueba.
+
+### Archivo clave
+
+- `backend/database/seeders/MinimarketDemoSeeder.php`
+- `backend/tests/Feature/MinimarketDemoSeederTest.php`
+
 ## Próximo bloque recomendado
 
-1. refinamiento UX operativa transversal del núcleo
-2. cerrar fricciones pendientes en compras/ventas/inventario inicial y navegación relacionada
-3. luego exportaciones más completas y reportabilidad más fina (Excel/PDF real)
-4. después preparación de iteración 2
+1. cerrar la decisión de no abrir fase 2 de Epic 12 salvo que aparezca una necesidad operativa concreta
+2. priorizar refinamientos del núcleo con fricción ya comprobada: `stock actual / semántica de inventario` y `venta rápida de mostrador`
+3. después reevaluar el siguiente frente funcional priorizado del backlog
 
 ## Enfoque actual recomendado
 
 - consolidar primero la fidelidad del núcleo antes de abrir módulos nuevos,
-- priorizar reducción de fricción operativa y claridad visual antes de exportaciones refinadas,
+- priorizar que cualquier nueva exportación adicional responda a una necesidad operativa concreta, no a completar por completar,
+- resolver primero la fricción entre `inventario inicial`, `lotes` y `stock actual` antes de abrir automatizaciones de inventario más avanzadas,
+- tratar la `venta rápida` como refinamiento del núcleo POS, reutilizando el dominio actual y ocultando por defecto lo excepcional,
+- dentro de `POS`, priorizar ahora consistencia de estados de botones/paneles antes de abrir nuevas excepciones operativas,
 - mantener recargas fuera de iteración 1.
 
 ## Archivos clave actuales

@@ -37,6 +37,10 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            @if (session('status'))
+                <div class="mb-4 rounded-md bg-indigo-50 px-4 py-3 text-sm text-indigo-700">{{ session('status') }}</div>
+            @endif
+
             @if (! $currentCashSession)
                 <div class="mb-4 rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-800">
                     No hay una caja abierta. Puedes preparar la venta, pero no podrás registrar pagos hasta abrir caja.

@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CashSessionController;
 use App\Http\Controllers\InventoryLotController;
 use App\Http\Controllers\OpeningInventoryController;
+use App\Http\Controllers\PosController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
@@ -46,6 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('opening-inventory', OpeningInventoryController::class)->only(['index', 'create', 'store']);
     Route::resource('inventory-lots', InventoryLotController::class)->only(['index']);
     Route::resource('customers', CustomerController::class)->except(['show', 'destroy']);
+    Route::get('pos', [PosController::class, 'index'])->name('pos.index');
+    Route::post('pos', [PosController::class, 'store'])->name('pos.store');
+    Route::get('pos/customers/search', [PosController::class, 'searchCustomers'])->name('pos.customers.search');
     Route::resource('sales', SaleController::class)->only(['index', 'create', 'show', 'store']);
     Route::get('sales/search/presentations', [SaleController::class, 'search'])->name('sales.search');
     Route::post('sales/{sale}/void', [SaleController::class, 'void'])->name('sales.void');

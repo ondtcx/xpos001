@@ -1,0 +1,62 @@
+# ----------------------------------------------------------------------
+# OS / Editor
+# ----------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ----------------------------------------------------------------------
+# Secrets (NEVER commit)
+# ----------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ----------------------------------------------------------------------
+# Laravel / PHP
+# ----------------------------------------------------------------------
+/vendor/
+/node_modules/
+/public/storage
+/public/hot
+/public/build
+
+# Storage: keep dirs, ignore runtime files
+/storage/*.key
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitkeep
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitkeep
+/storage/framework/views/*
+!/storage/framework/views/.gitkeep
+
+# Bootstrap cache
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep
+
+# PHPUnit
+/.phpunit.result.cache
+/.phpunit.cache/
+/coverage/
+
+# Composer
+/composer.phar
+
+# ----------------------------------------------------------------------
+# Node / Frontend
+# ----------------------------------------------------------------------
+/npm-debug.log
+/yarn-error.log
+/.pnpm-store/
+
+# ----------------------------------------------------------------------
+# Project-local tooling caches
+# ----------------------------------------------------------------------
+/.atl/

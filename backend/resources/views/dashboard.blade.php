@@ -105,6 +105,7 @@
                     <div class="text-sm text-gray-700">
                         <p class="font-semibold text-gray-900">Accesos rápidos</p>
                         <div class="mt-3 space-y-2">
+                            <p><a href="{{ route('pos.index') }}" class="text-indigo-700 hover:text-indigo-900">POS de mostrador</a></p>
                             <p><a href="{{ route('customers.index') }}" class="text-indigo-700 hover:text-indigo-900">Clientes y fiados</a></p>
                             <p><a href="{{ route('inventory-lots.index') }}" class="text-indigo-700 hover:text-indigo-900">Lotes de inventario</a></p>
                             <p><a href="{{ route('suppliers.index') }}" class="text-indigo-700 hover:text-indigo-900">Proveedores</a></p>

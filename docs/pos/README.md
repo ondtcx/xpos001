@@ -34,6 +34,8 @@ Este conjunto de documentos describe la propuesta funcional y técnica para cons
 - [15-bootstrap-tecnico.md](./15-bootstrap-tecnico.md): arranque técnico real del proyecto Laravel, paquetes mínimos, configuración y primeras entregas.
 - [16-plan-implementacion-ejecutable.md](./16-plan-implementacion-ejecutable.md): guía paso a paso para arrancar el proyecto y validar cada entrega inicial.
 - [17-estado-implementacion.md](./17-estado-implementacion.md): estado real del backend construido, avances completados, decisiones aplicadas y próximos pasos.
+- [18-pos-venta-rapida.md](./18-pos-venta-rapida.md): propuesta técnico-funcional de la nueva experiencia principal `POS` para venta rápida de mostrador.
+- [19-pos-venta-rapida-tareas.md](./19-pos-venta-rapida-tareas.md): plan incremental de implementación para la Fase 1 de `POS`.
 
 ## Decisiones madre
 
@@ -59,4 +61,5 @@ El MVP será exitoso si permite:
 
 - `16-plan-implementacion-ejecutable.md` resume el orden de ejecución y el avance alcanzado.
 - `17-estado-implementacion.md` registra el estado real del sistema, lo ya implementado, limitaciones vigentes y el siguiente bloque recomendado.
+- `17-estado-implementacion.md` también documenta cómo cargar el dataset demo realista de minimarket para pruebas manuales.
 - La iteración 1 ya cubre el núcleo operativo; recargas, XML y otros extras siguen diferidos a iteraciones posteriores.
