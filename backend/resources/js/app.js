@@ -1,10 +1,10 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
-import { registerPosSidebarStore } from './pos-sidebar-store';
+import { registerPosStore } from './pos-store';
 
 window.Alpine = Alpine;
 
-registerPosSidebarStore(Alpine, window.__POS_INITIAL__);
+registerPosStore(Alpine, window.__POS_INITIAL_V2__);
 
 Alpine.start();
