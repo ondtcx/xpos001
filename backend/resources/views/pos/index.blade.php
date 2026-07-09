@@ -153,124 +153,41 @@
                         </section>
                     </div>
 
-                    <aside x-data="{
-    activePanel: null,
-    pinnedPanels: [],
-    creditActive: @json((bool) $oldAllowCreditSale),
-    receivedAmount: @json($oldReceivedAmount),
-    selectedCustomerId: @json($oldCustomerId ? (int) $oldCustomerId : null),
-    selectedCustomerName: @json($oldCustomerId ? ($customers->firstWhere('id', (int) $oldCustomerId)?->name ?? '') : ''),
-    paymentMethod: @json($oldPaymentMethod),
-    fiadoAutoEnabled: @json($fiadoAutoEnabled),
-
-    // Typeahead state
-    customerQuery: @json($oldCustomerId ? ($customers->firstWhere('id', (int) $oldCustomerId)?->name ?? '') : ''),
-    customerResults: [],
-    customerLoading: false,
-    customerHighlightIndex: -1,
-
-    togglePanel(name) {
-        if (this.activePanel === name) {
-            if (!this.pinnedPanels.includes(name)) {
-                this.activePanel = null;
-            }
-        } else {
-            this.activePanel = name;
-        }
-        this.syncToHiddenInputs();
-    },
-
-    togglePin(name) {
-        const index = this.pinnedPanels.indexOf(name);
-        if (index === -1) {
-            this.pinnedPanels.push(name);
-        } else {
-            this.pinnedPanels.splice(index, 1);
-        }
-    },
-
-    syncToHiddenInputs() {
-        document.getElementById('pos-payment-method').value = this.paymentMethod;
-        document.getElementById('pos-allow-credit-sale').value = this.creditActive ? '1' : '0';
-    },
-
-    handleCreditToggle() {
-        if (this.creditActive) {
-            this.creditActive = false;
-            this.activePanel = this.activePanel === 'credit' ? null : this.activePanel;
-            this.syncToHiddenInputs();
-            return;
-        }
-
-        if (!this.fiadoAutoEnabled) {
-            this.activePanel = 'credit';
-            alert('El fiado automático está desactivado. Actívalo en configuración.');
-            return;
-        }
-
-        if (!this.selectedCustomerId) {
-            document.getElementById('pos-customer-inline-error').textContent = 'Debes seleccionar un cliente para registrar fiado desde POS.';
-            document.getElementById('pos-customer-inline-error').classList.remove('hidden');
-            this.activePanel = 'customer';
-            return;
-        }
-
-        this.creditActive = true;
-        this.activePanel = 'credit';
-        this.syncToHiddenInputs();
-    },
-
-    async searchCustomers() {
-        if (!this.customerQuery || this.customerQuery.trim().length < 1) {
-            this.customerResults = [];
-            this.customerHighlightIndex = -1;
-            return;
-        }
-
-        this.customerLoading = true;
-
-        try {
-            const response = await fetch(`/pos/customers/search?q=${encodeURIComponent(this.customerQuery)}`, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                this.customerResults = [];
-                return;
-            }
-
-            const data = await response.json();
-            this.customerResults = data.results ?? [];
-            this.customerHighlightIndex = -1;
-        } catch (e) {
-            this.customerResults = [];
-        } finally {
-            this.customerLoading = false;
-        }
-    },
-
-    selectCustomer(customer) {
-        this.selectedCustomerId = customer.id;
-        this.selectedCustomerName = customer.name;
-        this.customerQuery = customer.name;
-        this.customerResults = [];
-        this.customerHighlightIndex = -1;
-        this.syncToHiddenInputs();
-    },
-}" class="space-y-4 xl:sticky xl:top-6">
+                    <aside x-data class="space-y-4 xl:sticky xl:top-6">
+                        @once
+                            @php
+                                $initialCustomerName = '';
+                                $initialCustomerId = null;
+                                if ($oldCustomerId !== null) {
+                                    $initialCustomerId = (int) $oldCustomerId;
+                                    $found = $customers->firstWhere('id', $initialCustomerId);
+                                    if ($found) {
+                                        $initialCustomerName = $found->name;
+                                    }
+                                }
+                                $initialPayload = [
+                                    'creditActive' => $oldAllowCreditSale ? '1' : '0',
+                                    'paymentMethod' => $oldPaymentMethod,
+                                    'selectedCustomerId' => $initialCustomerId,
+                                    'selectedCustomerName' => $initialCustomerName,
+                                    'fiadoAutoEnabled' => $fiadoAutoEnabled ? '1' : '0',
+                                    'receivedAmount' => $oldReceivedAmount,
+                                    'customerQuery' => $initialCustomerName,
+                                ];
+                                $initialPayloadJson = json_encode($initialPayload, JSON_UNESCAPED_UNICODE);
+                            @endphp
+                            <script>window.__POS_INITIAL__ = {!! $initialPayloadJson !!};</script>
+                        @endonce
                         <section class="rounded-lg border border-gray-200 bg-slate-50 p-4">
                             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Resumen operativo</p>
                             <div class="mt-3 grid gap-3 text-sm">
                                 <div class="rounded-lg bg-white p-3">
                                     <p class="text-gray-500">Cliente actual</p>
-                                    <p id="pos-customer-label" class="mt-1 font-semibold text-gray-900" x-text="selectedCustomerName || 'Anónimo'">{{ $oldCustomerId ? $customers->firstWhere('id', (int) $oldCustomerId)?->name : 'Anónimo' }}</p>
+                                    <p id="pos-customer-label" class="mt-1 font-semibold text-gray-900" x-text="$store.posSidebar.selectedCustomerName || 'Anónimo'">{{ $oldCustomerId ? $customers->firstWhere('id', (int) $oldCustomerId)?->name : 'Anónimo' }}</p>
                                 </div>
                                 <div class="rounded-lg bg-white p-3">
                                     <p class="text-gray-500">Método actual</p>
-                                    <p id="pos-payment-method-label" class="mt-1 font-semibold text-gray-900" x-text="paymentMethod === 'transfer' ? 'Transferencia' : (paymentMethod === 'mixed' ? 'Mixto' : 'Efectivo')">{{ $oldPaymentMethod === 'transfer' ? 'Transferencia' : ($oldPaymentMethod === 'mixed' ? 'Mixto' : 'Efectivo') }}</p>
+                                    <p id="pos-payment-method-label" class="mt-1 font-semibold text-gray-900" x-text="$store.posSidebar.paymentMethod === 'transfer' ? 'Transferencia' : ($store.posSidebar.paymentMethod === 'mixed' ? 'Mixto' : 'Efectivo')">{{ $oldPaymentMethod === 'transfer' ? 'Transferencia' : ($oldPaymentMethod === 'mixed' ? 'Mixto' : 'Efectivo') }}</p>
                                     <p id="pos-payment-method-caption" class="mt-1 text-xs text-gray-500">En esta fase ya puedes usar mixto, pero debe cuadrar exactamente con el total.</p>
                                     <div id="pos-payment-breakdown" class="{{ $oldPaymentMethod === 'mixed' ? '' : 'hidden' }} mt-2 rounded-md bg-slate-50 px-3 py-2 text-xs text-slate-700">
                                         <p>Efectivo: <span id="pos-breakdown-cash">${{ number_format((float) $oldMixedCash, 2, '.', '') }}</span></p>
@@ -288,34 +205,34 @@
                             </div>
 
                             <div class="mt-4 flex flex-wrap gap-2">
-                                <button type="button" @click="togglePanel('customer')" :class="(activePanel === 'customer' || pinnedPanels.includes('customer')) ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700'" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.togglePanel('customer')" :class="[$store.posSidebar.isButtonActive('customer') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700', $store.posSidebar.isButtonUsed('customer') ? 'used' : '']" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     Asignar cliente
-                                    <span @click.stop="togglePin('customer')" x-show="activePanel === 'customer' || pinnedPanels.includes('customer')" class="ml-1.5 inline-flex items-center">
-                                        <svg :class="pinnedPanels.includes('customer') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <span @click.stop="$store.posSidebar.togglePin('customer')" x-show="$store.posSidebar.activePanel === 'customer' || $store.posSidebar.pinnedPanels.includes('customer')" class="ml-1.5 inline-flex items-center">
+                                        <svg :class="$store.posSidebar.pinnedPanels.includes('customer') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v18l7-5 7 5V3z"/>
                                         </svg>
                                     </span>
                                 </button>
-                                <button type="button" @click="togglePanel('payment')" :class="(activePanel === 'payment' || pinnedPanels.includes('payment')) ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700'" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.togglePanel('payment')" :class="[$store.posSidebar.isButtonActive('payment') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700', $store.posSidebar.isButtonUsed('payment') ? 'used' : '']" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     Cambiar método
-                                    <span @click.stop="togglePin('payment')" x-show="activePanel === 'payment' || pinnedPanels.includes('payment')" class="ml-1.5 inline-flex items-center">
-                                        <svg :class="pinnedPanels.includes('payment') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <span @click.stop="$store.posSidebar.togglePin('payment')" x-show="$store.posSidebar.activePanel === 'payment' || $store.posSidebar.pinnedPanels.includes('payment')" class="ml-1.5 inline-flex items-center">
+                                        <svg :class="$store.posSidebar.pinnedPanels.includes('payment') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v18l7-5 7 5V3z"/>
                                         </svg>
                                     </span>
                                 </button>
-                                <button type="button" @click="togglePanel('received')" x-show="paymentMethod === 'cash'" :class="(activePanel === 'received' || pinnedPanels.includes('received')) ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700'" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.togglePanel('received')" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="[$store.posSidebar.isButtonActive('received') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700', $store.posSidebar.isButtonUsed('received') ? 'used' : '']" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     Ingresar monto recibido
-                                    <span @click.stop="togglePin('received')" x-show="activePanel === 'received' || pinnedPanels.includes('received')" class="ml-1.5 inline-flex items-center">
-                                        <svg :class="pinnedPanels.includes('received') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <span @click.stop="$store.posSidebar.togglePin('received')" x-show="$store.posSidebar.activePanel === 'received' || $store.posSidebar.pinnedPanels.includes('received')" class="ml-1.5 inline-flex items-center">
+                                        <svg :class="$store.posSidebar.pinnedPanels.includes('received') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v18l7-5 7 5V3z"/>
                                         </svg>
                                     </span>
                                 </button>
-                                <button type="button" @click="handleCreditToggle()" x-show="paymentMethod === 'cash'" :class="creditActive ? 'border-amber-500 bg-amber-100 text-amber-900' : (pinnedPanels.includes('credit') ? 'border-amber-300 bg-amber-50 text-amber-800' : 'border-amber-300 bg-amber-50 text-amber-800')" class="rounded-md border px-3 py-2 text-sm font-medium">
-                                    <span x-text="creditActive ? 'Fiado activado' : 'Convertir a fiado'"></span>
-                                    <span @click.stop="togglePin('credit')" x-show="creditActive || pinnedPanels.includes('credit')" class="ml-1.5 inline-flex items-center">
-                                        <svg :class="pinnedPanels.includes('credit') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <button type="button" @click="$store.posSidebar.handleCreditToggle()" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="[$store.posSidebar.isButtonActive('credit') ? 'border-amber-500 bg-amber-100 text-amber-900' : 'border-amber-300 bg-amber-50 text-amber-800', $store.posSidebar.isButtonUsed('credit') ? 'used' : '']" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                    <span x-text="$store.posSidebar.creditActive ? 'Fiado activado' : 'Convertir a fiado'"></span>
+                                    <span @click.stop="$store.posSidebar.togglePin('credit')" x-show="$store.posSidebar.creditActive || $store.posSidebar.pinnedPanels.includes('credit')" class="ml-1.5 inline-flex items-center">
+                                        <svg :class="$store.posSidebar.pinnedPanels.includes('credit') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v18l7-5 7 5V3z"/>
                                         </svg>
                                     </span>
@@ -323,38 +240,41 @@
                                 <button type="button" id="continue-complete-sale" class="rounded-md border border-indigo-300 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700">Continuar en venta completa</button>
                             </div>
 
-                            <div id="pos-customer-panel" x-show="activePanel === 'customer' || pinnedPanels.includes('customer')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
+                            {{-- Sidebar vertical layout: wrapper caps the panel stack height; each panel owns its own inner scroll. --}}
+                            <div class="max-h-[calc(100vh-12rem)] overflow-y-auto pr-1">
+                            <div id="pos-customer-panel" x-show="$store.posSidebar.activePanel === 'customer' || $store.posSidebar.pinnedPanels.includes('customer')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
                                 <label class="block text-sm font-medium text-gray-700">Cliente</label>
                                 <p class="mt-1 text-xs text-gray-500">Escribí para buscar clientes por nombre o teléfono.</p>
 
-                                <div class="relative mt-2">
+                                <div class="mt-2 max-h-60 overflow-y-auto">
+                                <div class="relative" @click.outside="$store.posSidebar.customerResults = []; $store.posSidebar.customerHighlightIndex = -1">
                                     <div class="flex gap-2">
                                         <input type="text"
-                                               x-model="customerQuery"
-                                               @input.debounce.300ms="searchCustomers()"
-                                               @keydown.arrow-down.prevent="customerHighlightIndex = Math.min(customerHighlightIndex + 1, customerResults.length - 1)"
-                                               @keydown.arrow-up.prevent="customerHighlightIndex = Math.max(customerHighlightIndex - 1, -1)"
-                                               @keydown.enter.prevent="if (customerHighlightIndex >= 0) selectCustomer(customerResults[customerHighlightIndex])"
-                                               @keydown.escape.prevent="customerResults = []; customerHighlightIndex = -1"
+                                               x-model="$store.posSidebar.customerQuery"
+                                               @input.debounce.300ms="$store.posSidebar.searchCustomers()"
+                                               @keydown.arrow-down.prevent="$store.posSidebar.customerHighlightIndex = Math.min($store.posSidebar.customerHighlightIndex + 1, $store.posSidebar.customerResults.length - 1)"
+                                               @keydown.arrow-up.prevent="$store.posSidebar.customerHighlightIndex = Math.max($store.posSidebar.customerHighlightIndex - 1, -1)"
+                                               @keydown.enter.prevent="if ($store.posSidebar.customerHighlightIndex >= 0) $store.posSidebar.selectCustomer($store.posSidebar.customerResults[$store.posSidebar.customerHighlightIndex])"
+                                               @keydown.escape.prevent="$store.posSidebar.customerResults = []; $store.posSidebar.customerHighlightIndex = -1"
                                                placeholder="Buscá por nombre o teléfono..."
                                                class="block w-full rounded-md border-gray-300 shadow-sm">
 
                                         <button type="button"
-                                                @click="selectedCustomerId = null; selectedCustomerName = ''; customerQuery = ''; customerResults = []; customerHighlightIndex = -1; document.getElementById('pos-customer-inline-error')?.classList.add('hidden'); syncToHiddenInputs()"
-                                                x-show="selectedCustomerId"
+                                                @click="$store.posSidebar.clearCustomer()"
+                                                x-show="$store.posSidebar.selectedCustomerId"
                                                 class="shrink-0 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
                                             Limpiar
                                         </button>
                                     </div>
 
-                                    <div x-show="customerLoading" class="mt-1 text-xs text-gray-500">Buscando…</div>
+                                    <div x-show="$store.posSidebar.customerLoading" class="mt-1 text-xs text-gray-500">Buscando…</div>
 
-                                    <div x-show="customerResults.length > 0"
+                                    <div x-show="$store.posSidebar.customerResults.length > 0"
                                          class="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg max-h-60 overflow-y-auto">
-                                        <template x-for="(customer, index) in customerResults" :key="customer.id">
+                                        <template x-for="(customer, index) in $store.posSidebar.customerResults" :key="customer.id">
                                             <button type="button"
-                                                    @click="selectCustomer(customer)"
-                                                    :class="index === customerHighlightIndex ? 'bg-indigo-50 text-indigo-900' : 'text-gray-900 hover:bg-gray-50'"
+                                                    @click="$store.posSidebar.selectCustomer(customer)"
+                                                    :class="index === $store.posSidebar.customerHighlightIndex ? 'bg-indigo-50 text-indigo-900' : 'text-gray-900 hover:bg-gray-50'"
                                                     class="flex w-full items-center justify-between px-3 py-2 text-sm">
                                                 <span>
                                                     <span class="block font-medium" x-text="customer.name"></span>
@@ -364,26 +284,28 @@
                                         </template>
                                     </div>
 
-                                    <div x-show="customerQuery.trim().length > 0 && customerResults.length === 0 && !customerLoading"
+                                    <div x-show="$store.posSidebar.customerQuery.trim().length > 0 && $store.posSidebar.customerResults.length === 0 && !$store.posSidebar.customerLoading"
                                          class="mt-1 text-xs text-gray-500">
                                         No se encontraron clientes.
                                     </div>
                                 </div>
 
-                                <div x-show="selectedCustomerId" class="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-800">
-                                    Cliente seleccionado: <strong x-text="selectedCustomerName"></strong>
+                                <div x-show="$store.posSidebar.selectedCustomerId" class="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-800">
+                                    Cliente seleccionado: <strong x-text="$store.posSidebar.selectedCustomerName"></strong>
                                 </div>
 
-                                <input type="hidden" name="customer_id" x-model="selectedCustomerId">
+                                <input type="hidden" name="customer_id" x-model="$store.posSidebar.selectedCustomerId">
                                 <p id="pos-customer-inline-error" class="hidden mt-2 text-xs text-red-600"></p>
                                 @error('customer_id')
                                     <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
+                                </div>
                             </div>
 
-                            <div id="pos-payment-methods-panel" x-show="activePanel === 'payment' || pinnedPanels.includes('payment')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
+                            <div id="pos-payment-methods-panel" x-show="$store.posSidebar.activePanel === 'payment' || $store.posSidebar.pinnedPanels.includes('payment')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
                                 <p class="text-sm font-medium text-gray-700">Método de pago</p>
-                                <div class="mt-3 flex flex-wrap gap-2">
+                                <div class="mt-2 max-h-60 overflow-y-auto">
+                                <div class="mt-1 flex flex-wrap gap-2">
                                     <button type="button" data-payment-method="cash" class="pos-payment-choice rounded-md border px-3 py-2 text-sm font-medium {{ $oldPaymentMethod === 'cash' ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700' }}">Efectivo</button>
                                     <button type="button" data-payment-method="transfer" class="pos-payment-choice rounded-md border px-3 py-2 text-sm font-medium {{ $oldPaymentMethod === 'transfer' ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700' }}">Transferencia</button>
                                     <button type="button" data-payment-method="mixed" class="pos-payment-choice rounded-md border px-3 py-2 text-sm font-medium {{ $oldPaymentMethod === 'mixed' ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700' }}">Mixto</button>
@@ -406,19 +328,22 @@
                                         <p class="mt-3 text-xs text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
+                                </div>
                             </div>
 
-                            <div id="pos-received-panel" x-show="activePanel === 'received' || pinnedPanels.includes('received')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
+                            <div id="pos-received-panel" x-show="$store.posSidebar.isPanelVisible('received')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
                                 <label for="pos-received-amount" class="block text-sm font-medium text-gray-700">Recibido</label>
-                                <input id="pos-received-amount" name="received_amount" type="number" step="0.01" min="0" value="{{ $oldReceivedAmount }}" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm">
+                                <div class="mt-2 max-h-60 overflow-y-auto">
+                                <input id="pos-received-amount" name="received_amount" type="number" step="0.01" min="0" value="{{ $oldReceivedAmount }}" x-model="$store.posSidebar.receivedAmount" class="block w-full rounded-md border-gray-300 shadow-sm">
                                 <p id="pos-received-inline-error" class="hidden mt-3 text-xs text-red-600"></p>
                                 @error('received_amount')
                                     <p class="mt-3 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
                                 <p id="pos-change-preview" class="{{ $oldReceivedAmount !== '' ? '' : 'hidden' }} mt-3 text-xs text-emerald-700"></p>
+                                </div>
                             </div>
 
-                            <div id="pos-credit-panel" x-show="activePanel === 'credit' || pinnedPanels.includes('credit')" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                            <div id="pos-credit-panel" x-show="$store.posSidebar.isPanelVisible('credit')" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
                                 <div class="flex items-start justify-between gap-3">
                                     <div>
                                         <p class="text-sm font-medium text-amber-900">Confirmar saldo pendiente</p>
@@ -426,7 +351,8 @@
                                     </div>
                                     <button type="button" id="cancel-credit-sale" class="text-xs font-medium text-amber-700">Quitar fiado</button>
                                 </div>
-                                <div class="mt-3 rounded-md bg-white px-3 py-2 text-xs text-gray-700">
+                                <div class="mt-2 max-h-60 overflow-y-auto">
+                                <div class="mt-1 rounded-md bg-white px-3 py-2 text-xs text-gray-700">
                                     <p>Total: <span id="pos-credit-total">$0.00</span></p>
                                     <p class="mt-1">Pagado: <span id="pos-credit-confirm-paid">$0.00</span></p>
                                     <p class="mt-1">Saldo pendiente: <span id="pos-credit-confirm-pending">$0.00</span></p>
@@ -438,6 +364,8 @@
                                 @error('credit_sale')
                                     <p class="mt-3 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
+                                </div>
+                            </div>
                             </div>
                         </section>
 
@@ -554,8 +482,7 @@
             }
 
             function getAlpineData() {
-                const aside = document.querySelector('aside[x-data]');
-                return aside?.__x?.$data ?? null;
+                return window.Alpine?.store('posSidebar') ?? null;
             }
 
             function requireCustomerForCredit(message = 'Debes seleccionar un cliente para registrar fiado desde POS.') {
@@ -626,8 +553,7 @@
                     clearCreditSale();
                 }
 
-                const aside = document.querySelector('aside[x-data]');
-                const alpineData = aside?.__x?.$data;
+                const alpineData = window.Alpine?.store('posSidebar');
                 if (alpineData) {
                     alpineData.paymentMethod = method;
                     if (method !== 'cash' && alpineData.activePanel === 'received' || alpineData.activePanel === 'credit') {
@@ -936,11 +862,11 @@
                 clearCreditSale();
                 updateCreditSummary();
 
-                const aside = document.querySelector('aside[x-data]');
-                if (aside && aside.__x) {
-                    aside.__x.$data.creditActive = false;
-                    aside.__x.$data.activePanel = aside.__x.$data.activePanel === 'credit' ? null : aside.__x.$data.activePanel;
-                    aside.__x.$data.syncToHiddenInputs();
+                const store = window.Alpine?.store('posSidebar');
+                if (store) {
+                    store.creditActive = false;
+                    store.activePanel = store.activePanel === 'credit' ? null : store.activePanel;
+                    store.syncToHiddenInputs();
                 }
             });
 
@@ -967,8 +893,7 @@
                 const total = getCurrentTotal();
                 const received = Number(receivedAmountInput.value || 0);
 
-                const aside = document.querySelector('aside[x-data]');
-                const alpineData = aside?.__x?.$data;
+                const alpineData = window.Alpine?.store('posSidebar');
                 const fiadoEnabled = alpineData?.fiadoAutoEnabled ?? true;
 
                 if (paymentMethodInput.value === 'cash' && receivedAmountInput.value !== '' && received < total) {
