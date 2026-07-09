@@ -6,6 +6,7 @@ use App\Http\Requests\Sales\StorePosSaleRequest;
 use App\Models\CashSession;
 use App\Models\Customer;
 use App\Models\InventoryLot;
+use App\Models\Receivable;
 use App\Models\Sale;
 use App\Models\SalePresentation;
 use App\Models\UserSetting;
@@ -14,6 +15,7 @@ use App\Support\Sales\PosSaleDraftBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class PosController extends Controller
@@ -21,7 +23,7 @@ class PosController extends Controller
     public function index(): View
     {
         $presentations = SalePresentation::query()
-            ->with(['variant.product', 'prices' => fn ($q) => $q->orderByDesc('starts_at')])
+            ->with(['variant.product', 'variant.nearestLot', 'prices' => fn ($q) => $q->orderByDesc('starts_at')])
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
@@ -32,8 +34,19 @@ class PosController extends Controller
             ->groupBy('variant_id')
             ->pluck('available_quantity', 'variant_id');
 
+        $customers = Customer::query()
+            ->where('is_active', true)
+            ->orderBy('is_default', 'desc')
+            ->orderBy('name')
+            ->get();
+
+        $clientes = $this->buildClientesList($customers);
+        $defaultClienteId = Customer::default()->value('id');
+
         return view('pos.index', [
-            'customers' => Customer::query()->where('is_active', true)->orderBy('name')->get(),
+            'customers' => $customers,
+            'clientes' => $clientes,
+            'defaultClienteId' => $defaultClienteId,
             'presentations' => $presentations,
             'availableBaseUnitsByVariant' => $availableBaseUnitsByVariant,
             'currentCashSession' => CashSession::query()->where('status', 'open')->latest('opened_at')->first(),
@@ -53,17 +66,28 @@ class PosController extends Controller
             ->where('is_active', true)
             ->where(function ($q) use ($query) {
                 $q->where('name', 'LIKE', '%'.$query.'%')
-                  ->orWhere('phone', 'LIKE', '%'.$query.'%');
+                    ->orWhere('phone', 'LIKE', '%'.$query.'%')
+                    ->orWhere('document', 'LIKE', '%'.$query.'%');
             })
             ->limit(10)
-            ->get(['id', 'name', 'phone']);
+            ->get();
+
+        $openDebtByCustomer = Receivable::query()
+            ->selectRaw('customer_id, COALESCE(SUM(pending_amount), 0) as pending')
+            ->where('status', 'open')
+            ->whereIn('customer_id', $customers->pluck('id')->all())
+            ->groupBy('customer_id')
+            ->pluck('pending', 'customer_id');
 
         return response()->json([
             'results' => $customers->map(fn (Customer $c) => [
                 'id' => $c->id,
                 'name' => $c->name,
+                'document' => $c->document,
                 'phone' => $c->phone,
-            ]),
+                'is_default' => (bool) $c->is_default,
+                'saldo_fiado' => round(((int) ($openDebtByCustomer[$c->id] ?? 0)) / 100, 2),
+            ])->values(),
         ]);
     }
 
@@ -104,5 +128,31 @@ class PosController extends Controller
         return redirect()->route('pos.index')
             ->with('status', "Venta #{$sale->id} registrada correctamente desde POS.")
             ->with('receipt_sale_id', $sale->id);
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, Customer>  $customers
+     * @return array<int, array{id:int,name:string,document:?string,saldo_fiado:float,is_default:bool}>
+     */
+    private function buildClientesList($customers): array
+    {
+        if ($customers->isEmpty()) {
+            return [];
+        }
+
+        $openDebtByCustomer = DB::table('receivables')
+            ->selectRaw('customer_id, COALESCE(SUM(pending_amount), 0) as pending')
+            ->where('status', 'open')
+            ->whereIn('customer_id', $customers->pluck('id')->all())
+            ->groupBy('customer_id')
+            ->pluck('pending', 'customer_id');
+
+        return $customers->map(fn (Customer $c) => [
+            'id' => $c->id,
+            'name' => $c->name,
+            'document' => $c->document,
+            'saldo_fiado' => round(((int) ($openDebtByCustomer[$c->id] ?? 0)) / 100, 2),
+            'is_default' => (bool) $c->is_default,
+        ])->values()->all();
     }
 }

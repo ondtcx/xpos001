@@ -29,7 +29,7 @@ class MinimarketDemoSeederTest extends TestCase
 
         $this->assertDatabaseCount('products', 18);
         $this->assertDatabaseCount('suppliers', 3);
-        $this->assertDatabaseCount('customers', 3);
+        $this->assertDatabaseCount('customers', 4);
         $this->assertDatabaseCount('cash_sessions', 2);
 
         $this->assertDatabaseHas('cash_sessions', ['status' => 'open']);
@@ -47,5 +47,11 @@ class MinimarketDemoSeederTest extends TestCase
         $this->assertNotNull($openReceivable);
         $this->assertGreaterThan(0, $openReceivable->pending_amount);
         $this->assertSame($currentSession->id, Sale::query()->latest('sold_at')->first()->cash_session_id);
+
+        $this->assertDatabaseHas('customers', [
+            'name' => 'Cliente General',
+            'document' => '—',
+            'is_default' => true,
+        ]);
     }
 }
