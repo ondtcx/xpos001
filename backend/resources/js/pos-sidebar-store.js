@@ -20,6 +20,7 @@ export function registerPosSidebarStore(Alpine, initial = {}) {
     selectedCustomerId: init.selectedCustomerId ?? null,
     selectedCustomerName: init.selectedCustomerName || '',
     fiadoAutoEnabled: init.fiadoAutoEnabled !== false,
+    receivedAmount: init.receivedAmount || '',
     customerQuery: init.customerQuery || '',
     customerResults: [],
     customerLoading: false,
