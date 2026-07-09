@@ -168,23 +168,6 @@ class PosV2CatalogTest extends TestCase
     }
 
     #[Test]
-    public function search_endpoint_filters_by_name(): void
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $this->createPresentationScenario($user, 'Coca-Cola 500 ml', 'Bebidas', 0.75, availableQuantity: 5);
-        $this->createPresentationScenario($user, 'Agua Tesalia 600 ml', 'Bebidas', 0.50, availableQuantity: 5);
-
-        $response = $this->getJson(route('pos.customers.search', ['q' => 'Coca']));
-
-        $response->assertOk();
-        // Search endpoint is for customers; this test focuses on the index search behavior via the view data.
-        // Customers search is exercised in PosV2CustomerTest.
-        $response->assertJsonStructure(['results']);
-    }
-
-    #[Test]
     public function catalog_index_still_renders_successfully_when_a_product_has_no_stock(): void
     {
         $user = User::factory()->create();
