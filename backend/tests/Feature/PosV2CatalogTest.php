@@ -27,6 +27,10 @@ class PosV2CatalogTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
+        // New v2 view is the only view in PR 3.
+        config()->set('pos.enabled', true);
+        \App\Models\Customer::query()->create(['name' => 'Cliente General', 'document' => '—', 'is_default' => true, 'is_active' => true]);
+
         $variant = $this->createVariantWithPresentation($user, 'Leche Toni 1L');
 
         $lot = InventoryLot::query()->create([
@@ -186,12 +190,15 @@ class PosV2CatalogTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
+        config()->set('pos.enabled', true);
+        \App\Models\Customer::query()->create(['name' => 'Cliente General', 'document' => '—', 'is_default' => true, 'is_active' => true]);
+
         $this->createPresentationScenario($user, 'Café soluble 50 g', 'Abarrotes', 1.25, availableQuantity: 0);
 
         $response = $this->get(route('pos.index'));
 
         $response->assertOk();
-        // The new v2 view will show an "Agotado" chip in PR 2. PR 1 only guarantees
+        // The new v2 view shows an "Agotado" chip in PR 2; PR 3 guarantees
         // the controller handles zero-stock without throwing.
     }
 

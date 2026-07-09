@@ -157,9 +157,9 @@ class PosV2CustomerTest extends TestCase
     #[Test]
     public function pos_refuses_render_without_default_customer(): void
     {
-        // No default customer exists; legacy view should still 200 (the v2 view
-        // is added in PR 2 with the missing-default guard). This test pins the
-        // safe behavior in PR 1.
+        // New v2 view (enabled by default in PR 3) surfaces a missing-default guard.
+        config()->set('pos.enabled', true);
+
         Customer::query()->create(['name' => 'María Gómez', 'document' => '0912345678', 'is_active' => true, 'is_default' => false]);
 
         $user = User::factory()->create();
@@ -168,5 +168,54 @@ class PosV2CustomerTest extends TestCase
         $response = $this->get(route('pos.index'));
 
         $response->assertOk();
+        $response->assertSee('Falta el cliente por defecto', false);
+    }
+
+    #[Test]
+    public function dropdown_renders_with_inline_search_and_keyboard_navigation(): void
+    {
+        // Feature flag ON so the controller renders the new v2 view (in PR 3
+        // the flag defaults to true; we set it explicitly so this test pins
+        // the wiring without depending on default value).
+        config()->set('pos.enabled', true);
+
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Customer::query()->create(['name' => 'Cliente General', 'document' => '—', 'is_default' => true, 'is_active' => true]);
+        Customer::query()->create(['name' => 'María Gómez', 'document' => '0912345678', 'is_default' => false, 'is_active' => true]);
+
+        $response = $this->get(route('pos.index'));
+
+        $response->assertOk();
+        $content = $response->getContent();
+
+        // The new view exposes keyboard nav bindings on the customer dropdown input.
+        $this->assertStringContainsString('@keydown.escape.prevent="$store.posStore.clienteOpen = false"', $content);
+        $this->assertStringContainsString('@keydown.arrow-down.prevent="$store.posStore.moveClienteHighlight(1)"', $content);
+        $this->assertStringContainsString('@keydown.arrow-up.prevent="$store.posStore.moveClienteHighlight(-1)"', $content);
+        $this->assertStringContainsString('@keydown.enter.prevent="if ($store.posStore.clienteHighlight >= 0) { $store.posStore.setCliente($store.posStore.filteredClientes[$store.posStore.clienteHighlight]); }"', $content);
+    }
+
+    #[Test]
+    public function store_implements_keyboard_highlight_helper(): void
+    {
+        $store = file_get_contents(__DIR__.'/../../resources/js/pos-store.js');
+
+        $this->assertStringContainsString('moveClienteHighlight(delta)', $store);
+    }
+
+    #[Test]
+    public function selection_of_cliente_general_resets_fiado_to_efectivo(): void
+    {
+        $store = file_get_contents(__DIR__.'/../../resources/js/pos-store.js');
+
+        // When the user picks Cliente General while metodo === 'fiado', the
+        // store must reset metodo to 'efectivo' (Fiado is disabled for General).
+        $this->assertMatchesRegularExpression(
+            "/setCliente\\([\\s\\S]{0,500}if \\(this\\.metodo === 'fiado' && customer\\.id === this\\.generalId\\) \\{[\\s\\S]{0,200}this\\.metodo = 'efectivo'/",
+            $store,
+            'setCliente must reset metodo to efectivo when picking General while in Fiado'
+        );
     }
 }
