@@ -6,9 +6,10 @@
 // store and migrated the Asignar cliente + Cambiar método buttons (plus the
 // customer typeahead methods that the customer panel depends on). PR 1b
 // migrated the Ingresar monto recibido + Convertir a fiado buttons and added
-// the `receivedAmount` reactive state. PR 2 will add real `usedPanels`
-// tracking; PR 3 will refine the typeahead. Until then `isButtonUsed` is a
-// stub returning `false`.
+// the `receivedAmount` reactive state. PR 2 added real `usedPanels` tracking
+// (markUsed action + isButtonUsed getter that reads usedPanels) and a `used`
+// class binding on the 4 buttons; togglePanel now calls markUsed on the
+// open branch. PR 3 will refine the typeahead.
 
 export function registerPosSidebarStore(Alpine, initial = {}) {
   const init = initial || {};
@@ -39,7 +40,14 @@ export function registerPosSidebarStore(Alpine, initial = {}) {
       }
 
       this.activePanel = name;
+      this.markUsed(name);
       this.syncToHiddenInputs();
+    },
+
+    markUsed(name) {
+      if (!this.usedPanels.includes(name)) {
+        this.usedPanels.push(name);
+      }
     },
 
     togglePin(name) {
@@ -150,9 +158,9 @@ export function registerPosSidebarStore(Alpine, initial = {}) {
       return this.activePanel === name || this.pinnedPanels.includes(name);
     },
 
-    // PR 1: stub returns false. PR 2 will replace with `return this.usedPanels.includes(name)`.
+    // PR 2: real implementation reads usedPanels (idempotent push from markUsed).
     isButtonUsed(name) {
-      return false;
+      return this.usedPanels.includes(name);
     },
   });
 }

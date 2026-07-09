@@ -205,7 +205,7 @@
                             </div>
 
                             <div class="mt-4 flex flex-wrap gap-2">
-                                <button type="button" @click="$store.posSidebar.togglePanel('customer')" :class="$store.posSidebar.isButtonActive('customer') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700'" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.togglePanel('customer')" :class="[$store.posSidebar.isButtonActive('customer') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700', $store.posSidebar.isButtonUsed('customer') ? 'used' : '']" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     Asignar cliente
                                     <span @click.stop="$store.posSidebar.togglePin('customer')" x-show="$store.posSidebar.activePanel === 'customer' || $store.posSidebar.pinnedPanels.includes('customer')" class="ml-1.5 inline-flex items-center">
                                         <svg :class="$store.posSidebar.pinnedPanels.includes('customer') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -213,7 +213,7 @@
                                         </svg>
                                     </span>
                                 </button>
-                                <button type="button" @click="$store.posSidebar.togglePanel('payment')" :class="$store.posSidebar.isButtonActive('payment') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700'" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.togglePanel('payment')" :class="[$store.posSidebar.isButtonActive('payment') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700', $store.posSidebar.isButtonUsed('payment') ? 'used' : '']" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     Cambiar método
                                     <span @click.stop="$store.posSidebar.togglePin('payment')" x-show="$store.posSidebar.activePanel === 'payment' || $store.posSidebar.pinnedPanels.includes('payment')" class="ml-1.5 inline-flex items-center">
                                         <svg :class="$store.posSidebar.pinnedPanels.includes('payment') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -221,7 +221,7 @@
                                         </svg>
                                     </span>
                                 </button>
-                                <button type="button" @click="$store.posSidebar.togglePanel('received')" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="$store.posSidebar.isButtonActive('received') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700'" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.togglePanel('received')" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="[$store.posSidebar.isButtonActive('received') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700', $store.posSidebar.isButtonUsed('received') ? 'used' : '']" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     Ingresar monto recibido
                                     <span @click.stop="$store.posSidebar.togglePin('received')" x-show="$store.posSidebar.activePanel === 'received' || $store.posSidebar.pinnedPanels.includes('received')" class="ml-1.5 inline-flex items-center">
                                         <svg :class="$store.posSidebar.pinnedPanels.includes('received') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -229,7 +229,7 @@
                                         </svg>
                                     </span>
                                 </button>
-                                <button type="button" @click="$store.posSidebar.handleCreditToggle()" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="$store.posSidebar.isButtonActive('credit') ? 'border-amber-500 bg-amber-100 text-amber-900' : 'border-amber-300 bg-amber-50 text-amber-800'" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.handleCreditToggle()" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="[$store.posSidebar.isButtonActive('credit') ? 'border-amber-500 bg-amber-100 text-amber-900' : 'border-amber-300 bg-amber-50 text-amber-800', $store.posSidebar.isButtonUsed('credit') ? 'used' : '']" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     <span x-text="$store.posSidebar.creditActive ? 'Fiado activado' : 'Convertir a fiado'"></span>
                                     <span @click.stop="$store.posSidebar.togglePin('credit')" x-show="$store.posSidebar.creditActive || $store.posSidebar.pinnedPanels.includes('credit')" class="ml-1.5 inline-flex items-center">
                                         <svg :class="$store.posSidebar.pinnedPanels.includes('credit') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
