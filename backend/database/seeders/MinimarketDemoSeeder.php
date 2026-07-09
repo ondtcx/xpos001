@@ -555,26 +555,41 @@ class MinimarketDemoSeeder extends Seeder
     private function seedCustomers(): array
     {
         return [
+            'general' => Customer::query()->create([
+                'name' => 'Cliente General',
+                'document' => '—',
+                'phone' => null,
+                'address' => null,
+                'notes' => 'Cliente por defecto del POS. No acumula deuda.',
+                'is_active' => true,
+                'is_default' => true,
+            ]),
             'maria' => Customer::query()->create([
                 'name' => 'María Gómez',
+                'document' => '0912345678',
                 'phone' => '0981001001',
                 'address' => 'Barrio Central, casa 12',
                 'notes' => 'Cliente frecuente con fiado controlado.',
                 'is_active' => true,
+                'is_default' => false,
             ]),
             'jose' => Customer::query()->create([
                 'name' => 'José Paredes',
+                'document' => '0923456789',
                 'phone' => '0981001002',
                 'address' => 'Cdla. Los Helechos, mz 4',
                 'notes' => 'Prefiere pagar por transferencia.',
                 'is_active' => true,
+                'is_default' => false,
             ]),
             'lucia' => Customer::query()->create([
                 'name' => 'Lucía Torres',
+                'document' => '0934567890',
                 'phone' => '0981001003',
                 'address' => 'Calle Bolívar y Olmedo',
                 'notes' => 'Compra snacks y bebidas para oficina.',
                 'is_active' => true,
+                'is_default' => false,
             ]),
         ];
     }
