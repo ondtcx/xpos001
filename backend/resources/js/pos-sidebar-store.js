@@ -44,6 +44,9 @@ export function registerPosSidebarStore(Alpine, initial = {}) {
       this.syncToHiddenInputs();
     },
 
+    // Records that `name` has been used at least once this session. Idempotent:
+    // repeated calls do not duplicate entries. Drives the `used` class binding
+    // (see isButtonUsed) so a button keeps a visual hint after its panel closes.
     markUsed(name) {
       if (!this.usedPanels.includes(name)) {
         this.usedPanels.push(name);
