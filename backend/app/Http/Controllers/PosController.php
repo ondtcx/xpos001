@@ -43,15 +43,18 @@ class PosController extends Controller
         $clientes = $this->buildClientesList($customers);
         $defaultClienteId = Customer::default()->value('id');
 
-        return view('pos.index', [
-            'customers' => $customers,
-            'clientes' => $clientes,
-            'defaultClienteId' => $defaultClienteId,
-            'presentations' => $presentations,
-            'availableBaseUnitsByVariant' => $availableBaseUnitsByVariant,
-            'currentCashSession' => CashSession::query()->where('status', 'open')->latest('opened_at')->first(),
-            'fiadoAutoEnabled' => UserSetting::get(auth()->id(), 'fiado_auto_enabled', 'true') === 'true',
-        ]);
+        return view(
+            config('pos.enabled') ? 'pos.index' : 'pos._legacy',
+            [
+                'customers' => $customers,
+                'clientes' => $clientes,
+                'defaultClienteId' => $defaultClienteId,
+                'presentations' => $presentations,
+                'availableBaseUnitsByVariant' => $availableBaseUnitsByVariant,
+                'currentCashSession' => CashSession::query()->where('status', 'open')->latest('opened_at')->first(),
+                'fiadoAutoEnabled' => UserSetting::get(auth()->id(), 'fiado_auto_enabled', 'true') === 'true',
+            ]
+        );
     }
 
     public function searchCustomers(Request $request): JsonResponse
@@ -95,8 +98,38 @@ class PosController extends Controller
         StorePosSaleRequest $request,
         PosSaleDraftBuilder $draftBuilder,
         CreateSaleService $createSaleService,
-    ): RedirectResponse {
+    ): RedirectResponse|JsonResponse {
+        $isAjax = $request->expectsJson();
+
+        if ($isAjax) {
+            try {
+                $validated = $request->validated();
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Revisa los datos enviados.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            return $this->storeAjax($request, $draftBuilder, $createSaleService, $validated);
+        }
+
         $validated = $request->validated();
+
+        return $this->storeFormSubmit($request, $draftBuilder, $createSaleService, $validated);
+    }
+
+    /**
+     * Form-submit path: caja abierta is mandatory, redirects back to /pos on
+     * error. Preserved exactly for the legacy view + the 6 old Pos*Test files.
+     */
+    private function storeFormSubmit(
+        StorePosSaleRequest $request,
+        PosSaleDraftBuilder $draftBuilder,
+        CreateSaleService $createSaleService,
+        array $validated,
+    ): RedirectResponse {
         $draft = $draftBuilder->build($validated);
 
         if (($validated['action'] ?? 'checkout') === 'complete') {
@@ -128,6 +161,54 @@ class PosController extends Controller
         return redirect()->route('pos.index')
             ->with('status', "Venta #{$sale->id} registrada correctamente desde POS.")
             ->with('receipt_sale_id', $sale->id);
+    }
+
+    /**
+     * AJAX path (used by the new pos v2 view): no caja abierta check, no
+     * redirect, returns JSON. The new view's `metodo` field has already been
+     * translated to `payment_method` + `allow_credit_sale` + `confirm_credit_sale`
+     * in `StorePosSaleRequest::prepareForValidation()`.
+     */
+    private function storeAjax(
+        StorePosSaleRequest $request,
+        PosSaleDraftBuilder $draftBuilder,
+        CreateSaleService $createSaleService,
+        array $validated,
+    ): JsonResponse {
+        $draft = $draftBuilder->build($validated);
+
+        if ($draft['requires_full_sale']) {
+            return response()->json([
+                'ok' => false,
+                'message' => $draft['full_sale_reason'] ?? 'Este caso requiere venta completa para no romper trazabilidad.',
+            ], 422);
+        }
+
+        try {
+            $sale = $createSaleService->handle(
+                $draftBuilder->toCreateSalePayload($draft, $validated),
+                $request->user()->id,
+                null,
+            );
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'No se pudo cobrar la venta.',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+
+        $methodLabel = match ($validated['payment_method'] ?? 'cash') {
+            'transfer' => 'transferencia',
+            'mixed' => 'mixto',
+            default => ($validated['allow_credit_sale'] ?? false) ? 'fiado' : 'efectivo',
+        };
+
+        return response()->json([
+            'ok' => true,
+            'sale_id' => $sale->id,
+            'message' => sprintf('Venta cobrada: %s (%s).', number_format($sale->total_amount / 100, 2, '.', ','), $methodLabel),
+        ]);
     }
 
     /**
