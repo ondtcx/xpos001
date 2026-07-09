@@ -171,6 +171,7 @@
                                     'selectedCustomerId' => $initialCustomerId,
                                     'selectedCustomerName' => $initialCustomerName,
                                     'fiadoAutoEnabled' => $fiadoAutoEnabled ? '1' : '0',
+                                    'receivedAmount' => $oldReceivedAmount,
                                     'customerQuery' => $initialCustomerName,
                                 ];
                                 $initialPayloadJson = json_encode($initialPayload, JSON_UNESCAPED_UNICODE);
@@ -220,7 +221,7 @@
                                         </svg>
                                     </span>
                                 </button>
-                                <button type="button" @click="$store.posSidebar.togglePanel('received')" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="($store.posSidebar.activePanel === 'received' || $store.posSidebar.pinnedPanels.includes('received')) ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700'" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.togglePanel('received')" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="$store.posSidebar.isButtonActive('received') ? 'border-indigo-300 bg-indigo-50 text-indigo-700' : 'border-gray-300 bg-white text-gray-700'" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     Ingresar monto recibido
                                     <span @click.stop="$store.posSidebar.togglePin('received')" x-show="$store.posSidebar.activePanel === 'received' || $store.posSidebar.pinnedPanels.includes('received')" class="ml-1.5 inline-flex items-center">
                                         <svg :class="$store.posSidebar.pinnedPanels.includes('received') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -228,7 +229,7 @@
                                         </svg>
                                     </span>
                                 </button>
-                                <button type="button" @click="$store.posSidebar.handleCreditToggle()" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="$store.posSidebar.creditActive ? 'border-amber-500 bg-amber-100 text-amber-900' : ($store.posSidebar.pinnedPanels.includes('credit') ? 'border-amber-300 bg-amber-50 text-amber-800' : 'border-amber-300 bg-amber-50 text-amber-800')" class="rounded-md border px-3 py-2 text-sm font-medium">
+                                <button type="button" @click="$store.posSidebar.handleCreditToggle()" x-show="$store.posSidebar.paymentMethod === 'cash'" :class="$store.posSidebar.isButtonActive('credit') ? 'border-amber-500 bg-amber-100 text-amber-900' : 'border-amber-300 bg-amber-50 text-amber-800'" class="rounded-md border px-3 py-2 text-sm font-medium">
                                     <span x-text="$store.posSidebar.creditActive ? 'Fiado activado' : 'Convertir a fiado'"></span>
                                     <span @click.stop="$store.posSidebar.togglePin('credit')" x-show="$store.posSidebar.creditActive || $store.posSidebar.pinnedPanels.includes('credit')" class="ml-1.5 inline-flex items-center">
                                         <svg :class="$store.posSidebar.pinnedPanels.includes('credit') ? 'text-amber-500' : 'text-gray-400'" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -324,9 +325,9 @@
                                 </div>
                             </div>
 
-                            <div id="pos-received-panel" x-show="$store.posSidebar.activePanel === 'received' || $store.posSidebar.pinnedPanels.includes('received')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
+                            <div id="pos-received-panel" x-show="$store.posSidebar.isPanelVisible('received')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
                                 <label for="pos-received-amount" class="block text-sm font-medium text-gray-700">Recibido</label>
-                                <input id="pos-received-amount" name="received_amount" type="number" step="0.01" min="0" value="{{ $oldReceivedAmount }}" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm">
+                                <input id="pos-received-amount" name="received_amount" type="number" step="0.01" min="0" value="{{ $oldReceivedAmount }}" x-model="$store.posSidebar.receivedAmount" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm">
                                 <p id="pos-received-inline-error" class="hidden mt-3 text-xs text-red-600"></p>
                                 @error('received_amount')
                                     <p class="mt-3 text-xs text-red-600">{{ $message }}</p>
@@ -334,7 +335,7 @@
                                 <p id="pos-change-preview" class="{{ $oldReceivedAmount !== '' ? '' : 'hidden' }} mt-3 text-xs text-emerald-700"></p>
                             </div>
 
-                            <div id="pos-credit-panel" x-show="$store.posSidebar.activePanel === 'credit' || $store.posSidebar.pinnedPanels.includes('credit')" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                            <div id="pos-credit-panel" x-show="$store.posSidebar.isPanelVisible('credit')" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
                                 <div class="flex items-start justify-between gap-3">
                                     <div>
                                         <p class="text-sm font-medium text-amber-900">Confirmar saldo pendiente</p>
