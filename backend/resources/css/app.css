@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * POS sidebar — visual hint for buttons that have been used at least once this session.
+ * The `used` class is added by Alpine's :class binding in resources/views/pos/index.blade.php
+ * when $store.posSidebar.isButtonUsed('<name>') is true (driven by usedPanels tracking in
+ * resources/js/pos-sidebar-store.js). A small indigo dot in the top-right corner signals
+ * "this panel has been touched" without competing with the active-state border/background.
+ */
+.used {
+    position: relative;
+}
+
+.used::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #4f46e5; /* indigo-600 — visible against indigo-50, white, amber-50, amber-100 */
+}

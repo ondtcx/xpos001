@@ -99,6 +99,7 @@ export function registerPosSidebarStore(Alpine, initial = {}) {
 
       this.creditActive = true;
       this.activePanel = 'credit';
+      this.markUsed('credit');
       this.syncToHiddenInputs();
     },
 
