@@ -240,6 +240,7 @@
                                 <button type="button" id="continue-complete-sale" class="rounded-md border border-indigo-300 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700">Continuar en venta completa</button>
                             </div>
 
+                            {{-- Sidebar vertical layout: wrapper caps the panel stack height; each panel owns its own inner scroll. --}}
                             <div class="max-h-[calc(100vh-12rem)] overflow-y-auto pr-1">
                             <div id="pos-customer-panel" x-show="$store.posSidebar.activePanel === 'customer' || $store.posSidebar.pinnedPanels.includes('customer')" class="mt-4 rounded-lg border border-gray-200 bg-white p-3">
                                 <label class="block text-sm font-medium text-gray-700">Cliente</label>
