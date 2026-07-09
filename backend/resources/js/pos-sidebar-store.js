@@ -2,10 +2,18 @@
 //
 // Foundation Alpine store for the POS sidebar. Owns the reactive state of the
 // 4 contextual buttons (Asignar cliente, Ingresar monto recibido, Convertir a
-// fiado, Cambiar método) and the 4 associated panels. PR 1a introduces the
-// store and migrates the Asignar cliente + Cambiar método buttons; PR 1b will
-// migrate the remaining two. PR 2 will add `usedPanels` tracking; PR 3 will
-// refine the typeahead. Until then `isButtonUsed` is a stub returning `false`.
+// fiado, Cambiar método) and the 4 associated panels. PR 1a introduced the
+// store and migrated the Asignar cliente + Cambiar método buttons (plus the
+// customer typeahead methods that the customer panel depends on). PR 1b
+// migrated the Ingresar monto recibido + Convertir a fiado buttons and added
+// the `receivedAmount` reactive state. PR 2 added real `usedPanels` tracking
+// (markUsed action + isButtonUsed getter that reads usedPanels) and a `used`
+// class binding on the 4 buttons; togglePanel now calls markUsed on the
+// open branch. PR 3 verified the typeahead wiring (Blade input binding,
+// dropdown, keyboard nav, @click.outside) and added snapshot tests for
+// the no-quick-create invariant; the store methods (searchCustomers,
+// selectCustomer, clearCustomer) shipped with PR 1a's scope creep and
+// remained unchanged in PR 3.
 
 export function registerPosSidebarStore(Alpine, initial = {}) {
   const init = initial || {};
@@ -20,6 +28,7 @@ export function registerPosSidebarStore(Alpine, initial = {}) {
     selectedCustomerId: init.selectedCustomerId ?? null,
     selectedCustomerName: init.selectedCustomerName || '',
     fiadoAutoEnabled: init.fiadoAutoEnabled !== false,
+    receivedAmount: init.receivedAmount || '',
     customerQuery: init.customerQuery || '',
     customerResults: [],
     customerLoading: false,
@@ -35,7 +44,17 @@ export function registerPosSidebarStore(Alpine, initial = {}) {
       }
 
       this.activePanel = name;
+      this.markUsed(name);
       this.syncToHiddenInputs();
+    },
+
+    // Records that `name` has been used at least once this session. Idempotent:
+    // repeated calls do not duplicate entries. Drives the `used` class binding
+    // (see isButtonUsed) so a button keeps a visual hint after its panel closes.
+    markUsed(name) {
+      if (!this.usedPanels.includes(name)) {
+        this.usedPanels.push(name);
+      }
     },
 
     togglePin(name) {
@@ -146,9 +165,9 @@ export function registerPosSidebarStore(Alpine, initial = {}) {
       return this.activePanel === name || this.pinnedPanels.includes(name);
     },
 
-    // PR 1: stub returns false. PR 2 will replace with `return this.usedPanels.includes(name)`.
+    // PR 2: real implementation reads usedPanels (idempotent push from markUsed).
     isButtonUsed(name) {
-      return false;
+      return this.usedPanels.includes(name);
     },
   });
 }
