@@ -251,11 +251,11 @@ Si un PR muestra cambios de un PR anterior, **retarget o rebase** antes de pedir
 
 ### PR 4 — Layout vertical
 
-- [ ] 4.1 Crear tests RED `PosSidebarLayoutTest.php` (4.1.1-4.1.4)
-- [ ] 4.2 Modificar `index.blade.php`: wrapper `max-h-[calc(100vh-12rem)] overflow-y-auto` + scroll interno por panel (4.2.1)
+- [x] 4.1 Crear tests RED `PosSidebarLayoutTest.php` (4.1.1-4.1.4)
+- [x] 4.2 Modificar `index.blade.php`: wrapper `max-h-[calc(100vh-12rem)] overflow-y-auto` + scroll interno por panel (4.2.1)
 - [ ] 4.3 Verificar pin preservado con DevTools (4.2.2)
-- [ ] 4.4 Refactor: pint + `composer test` verde (4.3.1)
-- [ ] 4.5 Work-unit commits (test RED, feat GREEN)
+- [x] 4.4 Refactor: pint + `composer test` verde (4.3.1)
+- [x] 4.5 Work-unit commits (test RED, feat GREEN, refactor)
 - [ ] 4.6 Checklist manual de layout con 4 escenarios de venta
 
 ### Cierre de la cadena
