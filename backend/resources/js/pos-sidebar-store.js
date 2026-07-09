@@ -9,7 +9,11 @@
 // the `receivedAmount` reactive state. PR 2 added real `usedPanels` tracking
 // (markUsed action + isButtonUsed getter that reads usedPanels) and a `used`
 // class binding on the 4 buttons; togglePanel now calls markUsed on the
-// open branch. PR 3 will refine the typeahead.
+// open branch. PR 3 verified the typeahead wiring (Blade input binding,
+// dropdown, keyboard nav, @click.outside) and added snapshot tests for
+// the no-quick-create invariant; the store methods (searchCustomers,
+// selectCustomer, clearCustomer) shipped with PR 1a's scope creep and
+// remained unchanged in PR 3.
 
 export function registerPosSidebarStore(Alpine, initial = {}) {
   const init = initial || {};
