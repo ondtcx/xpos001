@@ -244,7 +244,7 @@
                                 <label class="block text-sm font-medium text-gray-700">Cliente</label>
                                 <p class="mt-1 text-xs text-gray-500">Escribí para buscar clientes por nombre o teléfono.</p>
 
-                                <div class="relative mt-2">
+                                <div class="relative mt-2" @click.outside="$store.posSidebar.customerResults = []; $store.posSidebar.customerHighlightIndex = -1">
                                     <div class="flex gap-2">
                                         <input type="text"
                                                x-model="$store.posSidebar.customerQuery"
