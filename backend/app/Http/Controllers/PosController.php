@@ -98,83 +98,12 @@ class PosController extends Controller
         StorePosSaleRequest $request,
         PosSaleDraftBuilder $draftBuilder,
         CreateSaleService $createSaleService,
-    ): RedirectResponse|JsonResponse {
-        $isAjax = $request->expectsJson();
-
-        if ($isAjax) {
-            try {
-                $validated = $request->validated();
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                return response()->json([
-                    'ok' => false,
-                    'message' => 'Revisa los datos enviados.',
-                    'errors' => $e->errors(),
-                ], 422);
-            }
-
-            return $this->storeAjax($request, $draftBuilder, $createSaleService, $validated);
-        }
-
-        $validated = $request->validated();
-
-        return $this->storeFormSubmit($request, $draftBuilder, $createSaleService, $validated);
-    }
-
-    /**
-     * Form-submit path: caja abierta is mandatory, redirects back to /pos on
-     * error. Preserved exactly for the legacy view + the 6 old Pos*Test files.
-     */
-    private function storeFormSubmit(
-        StorePosSaleRequest $request,
-        PosSaleDraftBuilder $draftBuilder,
-        CreateSaleService $createSaleService,
-        array $validated,
-    ): RedirectResponse {
-        $draft = $draftBuilder->build($validated);
-
-        if (($validated['action'] ?? 'checkout') === 'complete') {
-            return redirect()->route('sales.create')
-                ->withInput($draftBuilder->toFullSaleInput($draft, $validated))
-                ->with('status', 'Continuando en venta completa desde POS.');
-        }
-
-        if ($draft['requires_full_sale']) {
-            return redirect()->route('sales.create')
-                ->withInput($draftBuilder->toFullSaleInput($draft, $validated))
-                ->with('status', $draft['full_sale_reason'] ?? 'Este caso requiere venta completa para no romper trazabilidad.');
-        }
-
-        $currentCashSession = CashSession::query()->where('status', 'open')->latest('opened_at')->first();
-
-        if ($currentCashSession === null) {
-            return back()
-                ->withErrors(['pos' => 'Debes abrir una caja antes de cobrar desde POS.'])
-                ->withInput();
-        }
-
-        $sale = $createSaleService->handle(
-            $draftBuilder->toCreateSalePayload($draft, $validated),
-            $request->user()->id,
-            $currentCashSession,
-        );
-
-        return redirect()->route('pos.index')
-            ->with('status', "Venta #{$sale->id} registrada correctamente desde POS.")
-            ->with('receipt_sale_id', $sale->id);
-    }
-
-    /**
-     * AJAX path (used by the new pos v2 view): no caja abierta check, no
-     * redirect, returns JSON. The new view's `metodo` field has already been
-     * translated to `payment_method` + `allow_credit_sale` + `confirm_credit_sale`
-     * in `StorePosSaleRequest::prepareForValidation()`.
-     */
-    private function storeAjax(
-        StorePosSaleRequest $request,
-        PosSaleDraftBuilder $draftBuilder,
-        CreateSaleService $createSaleService,
-        array $validated,
     ): JsonResponse {
+        // AJAX-only path (PR 3 cutover): no caja abierta check, no redirect,
+        // returns JSON. The new view's `metodo` field has already been
+        // translated to `payment_method` + `allow_credit_sale` + `confirm_credit_sale`
+        // in `StorePosSaleRequest::prepareForValidation()`.
+        $validated = $request->validated();
         $draft = $draftBuilder->build($validated);
 
         if ($draft['requires_full_sale']) {
