@@ -19,13 +19,35 @@ class StorePosSaleRequest extends FormRequest
             ->values()
             ->all();
 
+        $paymentMethod = $this->input('payment_method', 'cash');
+        $allowCreditSale = $this->boolean('allow_credit_sale');
+        $confirmCreditSale = $this->boolean('confirm_credit_sale');
+
+        // Translate new AJAX payload field `metodo` to legacy fields the
+        // builder expects. Old form-submit view does not send `metodo`, so
+        // this is a no-op for the legacy path.
+        $metodo = $this->input('metodo');
+        if (is_string($metodo) && $metodo !== '') {
+            $paymentMethod = match ($metodo) {
+                'efectivo' => 'cash',
+                'transfer' => 'transfer',
+                'fiado' => 'cash',
+                default => $paymentMethod,
+            };
+            if ($metodo === 'fiado') {
+                $allowCreditSale = true;
+                $confirmCreditSale = true;
+            }
+        }
+
         $this->merge([
             'items' => $items,
             'action' => $this->input('action', 'checkout'),
-            'payment_method' => $this->input('payment_method', 'cash'),
+            'metodo' => $metodo,
+            'payment_method' => $paymentMethod,
             'received_amount' => $this->input('received_amount'),
-            'allow_credit_sale' => $this->boolean('allow_credit_sale'),
-            'confirm_credit_sale' => $this->boolean('confirm_credit_sale'),
+            'allow_credit_sale' => $allowCreditSale,
+            'confirm_credit_sale' => $confirmCreditSale,
             'mixed_payments' => [
                 'cash' => $this->input('mixed_payments.cash', 0),
                 'transfer' => $this->input('mixed_payments.transfer', 0),
