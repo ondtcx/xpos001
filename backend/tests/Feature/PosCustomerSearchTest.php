@@ -109,7 +109,7 @@ class PosCustomerSearchTest extends TestCase
         // panel must read its value from the Alpine store and trigger
         // `searchCustomers()` after a 300ms debounce. This is the wiring that
         // PR 1a left out and PR 3 owns.
-        $blade = file_get_contents(__DIR__.'/../../resources/views/pos/index.blade.php');
+        $blade = file_get_contents(__DIR__.'/../../resources/views/pos/_legacy.blade.php');
 
         $this->assertStringContainsString(
             'x-model="$store.posSidebar.customerQuery"',
@@ -131,7 +131,7 @@ class PosCustomerSearchTest extends TestCase
         // link, or hint for creating a new client. This snapshot guards the
         // invariant — if anyone adds "Crear cliente nuevo" back, this test
         // fails immediately.
-        $blade = file_get_contents(__DIR__.'/../../resources/views/pos/index.blade.php');
+        $blade = file_get_contents(__DIR__.'/../../resources/views/pos/_legacy.blade.php');
 
         $markers = ['crear cliente', 'alta rápida', 'nuevo cliente'];
 
