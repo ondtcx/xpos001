@@ -2,10 +2,13 @@
 //
 // Foundation Alpine store for the POS sidebar. Owns the reactive state of the
 // 4 contextual buttons (Asignar cliente, Ingresar monto recibido, Convertir a
-// fiado, Cambiar método) and the 4 associated panels. PR 1a introduces the
-// store and migrates the Asignar cliente + Cambiar método buttons; PR 1b will
-// migrate the remaining two. PR 2 will add `usedPanels` tracking; PR 3 will
-// refine the typeahead. Until then `isButtonUsed` is a stub returning `false`.
+// fiado, Cambiar método) and the 4 associated panels. PR 1a introduced the
+// store and migrated the Asignar cliente + Cambiar método buttons (plus the
+// customer typeahead methods that the customer panel depends on). PR 1b
+// migrated the Ingresar monto recibido + Convertir a fiado buttons and added
+// the `receivedAmount` reactive state. PR 2 will add real `usedPanels`
+// tracking; PR 3 will refine the typeahead. Until then `isButtonUsed` is a
+// stub returning `false`.
 
 export function registerPosSidebarStore(Alpine, initial = {}) {
   const init = initial || {};
