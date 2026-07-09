@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Manage reactive state for the POS sidebar: button visual consistency, panel data persistence, and accordion layout with pin support using Alpine.js.
+Manage reactive state for the POS sidebar: button visual consistency, panel data persistence, accordion layout with pin support, and predictable panel reactivation, using a single Alpine store (`posSidebar`).
 
 ## Requirements
 
 ### Requirement: Button State Consistency
 
-The system MUST bind all four sidebar toggle buttons (fiado, received amount, client, payment method) to reactive Alpine.js state. Button visual appearance MUST reflect active/inactive state via CSS class binding.
+The system MUST vincular los 4 botones contextuales del sidebar (`Asignar cliente`, `Ingresar monto recibido`, `Convertir a fiado`, `Cambiar método`) a un único Alpine store (ver `pos-contextual-buttons-state`). La apariencia visual MUST usar `x-bind:class`, no `classList.toggle` imperativo.
 
 #### Scenario: Toggle button shows active state
 
@@ -33,7 +33,7 @@ The system MUST bind all four sidebar toggle buttons (fiado, received amount, cl
 
 ### Requirement: Panel Data Persistence
 
-The system MUST preserve panel data when a panel is closed and reopened. Data includes: received amount value, selected client, payment method selection.
+The system MUST preservar los datos del panel (monto recibido, cliente seleccionado, método de pago) al cerrar y reabrir. Los datos MUST vivir en el Alpine store en sesión (ver Q1 en `pos-contextual-buttons-state`); la UI MUST leerlos desde el store, no desde `input.value`.
 
 #### Scenario: Received amount persists across toggle
 
@@ -73,3 +73,34 @@ The system MUST support an accordion layout where only one panel is open at a ti
 - WHEN the user clicks the pin icon
 - THEN the panel MUST become pinned
 - AND the pin icon MUST reflect pinned state
+
+### Requirement: Panel Reactivation
+
+The system MUST re-exponer un panel previamente abierto (con datos intactos) cuando el usuario activa su botón contextual tras cerrarlo, sin importar el orden en que otros paneles fueron abiertos/cerrados. Un botón cuyo panel fue usado al menos una vez en la sesión actual MUST mostrar hint `used` (distinto de `active`) cuando su panel está cerrado.
+
+#### Scenario: Reabrir un panel previamente cerrado
+
+- GIVEN el usuario abrió y cerró el panel `client`
+- WHEN el usuario activa el botón `client` de nuevo
+- THEN el panel `client` MUST re-aparecer en el sidebar
+- AND sus datos (cliente seleccionado) MUST estar preservados
+
+#### Scenario: Botón usado-pero-cerrado muestra hint `used`
+
+- GIVEN el usuario abrió y cerró el panel `received_amount` después de ingresar un valor
+- WHEN el POS está en estado estable
+- THEN el botón `received_amount` MUST mostrar el hint visual `used`
+- AND el hint MUST permanecer visible hasta que se recargue la página
+
+#### Scenario: Botón nunca usado no muestra `used`
+
+- GIVEN el usuario no activó `payment_method` durante la sesión
+- WHEN el POS está en estado estable
+- THEN el botón `payment_method` MUST NOT mostrar el hint visual `used`
+
+#### Scenario: Sin botones inertes silenciosos
+
+- GIVEN un botón contextual está en cualquier estado
+- WHEN el usuario hace click
+- THEN el click MUST tener un efecto visible (abrir, cerrar o togglear el panel)
+- AND el click MUST NOT descartarse silenciosamente

@@ -220,47 +220,49 @@ Si un PR muestra cambios de un PR anterior, **retarget o rebase** antes de pedir
 
 ### PR 1 — Foundation: Alpine store + 4 botones
 
-- [ ] 1.1 Crear tests RED `PosSidebarStoreTest.php` (1.1.1-1.1.4)
-- [ ] 1.2 Crear `pos-sidebar-store.js` con state + actions + getters básicos (1.2.1)
-- [ ] 1.3 Modificar `app.js` para importar y registrar el store (1.2.2)
-- [ ] 1.4 Modificar `index.blade.php`: eliminar `x-data="{…}"` inline, agregar `x-data`, inyectar `window.__POS_INITIAL__` (1.2.3a-b)
-- [ ] 1.5 Modificar `index.blade.php`: actualizar 4 botones a `$store.posSidebar.isButtonActive(...)` (1.2.3c)
-- [ ] 1.6 Modificar `index.blade.php`: reescribir bindings inline de mutación directa (1.2.3d)
-- [ ] 1.7 Refactor: pint + `composer test` verde (1.3.1-1.3.2)
-- [ ] 1.8 Work-unit commits (test RED, feat GREEN, refactor)
-- [ ] 1.9 Checklist manual con `MinimarketDemoSeeder`
+- [x] 1.1 Crear tests RED `PosSidebarStoreTest.php` (1.1.1-1.1.4)
+- [x] 1.2 Crear `pos-sidebar-store.js` con state + actions + getters básicos (1.2.1)
+- [x] 1.3 Modificar `app.js` para importar y registrar el store (1.2.2)
+- [x] 1.4 Modificar `index.blade.php`: eliminar `x-data="{…}"` inline, agregar `x-data`, inyectar `window.__POS_INITIAL__` (1.2.3a-b)
+- [x] 1.5 Modificar `index.blade.php`: actualizar 4 botones a `$store.posSidebar.isButtonActive(...)` (1.2.3c)
+- [x] 1.6 Modificar `index.blade.php`: reescribir bindings inline de mutación directa (1.2.3d)
+- [x] 1.7 Refactor: pint + `composer test` verde (1.3.1-1.3.2)
+- [x] 1.8 Work-unit commits (test RED, feat GREEN, refactor)
+- [x] 1.9 Checklist manual con `MinimarketDemoSeeder`
 
 ### PR 2 — Reactivación de paneles
 
-- [ ] 2.1 Crear tests RED `PosPanelReactivationTest.php` (2.1.1-2.1.4)
-- [ ] 2.2 Modificar `pos-sidebar-store.js`: agregar `markUsed`, llamar desde `togglePanel`, implementar `isButtonUsed` (2.2.1)
-- [ ] 2.3 Modificar `index.blade.php`: agregar `used` class binding en los 4 botones (2.2.2)
-- [ ] 2.4 Refactor: pint + `composer test` verde (2.3.1)
-- [ ] 2.5 Work-unit commits (test RED, feat GREEN)
-- [ ] 2.6 Checklist manual de hint `used`
+- [x] 2.1 Crear tests RED `PosPanelReactivationTest.php` (2.1.1-2.1.4)
+- [x] 2.2 Modificar `pos-sidebar-store.js`: agregar `markUsed`, llamar desde `togglePanel`, implementar `isButtonUsed` (2.2.1)
+- [x] 2.3 Modificar `index.blade.php`: agregar `used` class binding en los 4 botones (2.2.2)
+- [x] 2.4 Refactor: pint + `composer test` verde (2.3.1)
+- [x] 2.5 Work-unit commits (test RED, feat GREEN)
+- [x] 2.6 Checklist manual de hint `used`
 
 ### PR 3 — Typeahead de cliente
 
-- [ ] 3.1 Crear tests RED `PosCustomerSearchTest.php` (3.1.1-3.1.7)
-- [ ] 3.2 Modificar `pos-sidebar-store.js`: `searchCustomers`, `selectCustomer`, `clearCustomer` (3.2.1)
-- [ ] 3.3 Modificar `index.blade.php`: input con `x-model` + `@input.debounce.300ms` + dropdown + keyboard nav (3.2.2)
-- [ ] 3.4 Verificar invariante "sin alta rápida" (test 3.1.5)
-- [ ] 3.5 Refactor: pint + `composer test` verde (3.3.1)
-- [ ] 3.6 Work-unit commits (test RED, feat GREEN)
-- [ ] 3.7 Checklist manual: debounce, keyboard nav, persistencia tras toggle
+- [x] 3.1 Crear tests RED `PosCustomerSearchTest.php` (3.1.1-3.1.7)
+- [x] 3.2 Modificar `pos-sidebar-store.js`: `searchCustomers`, `selectCustomer`, `clearCustomer` (3.2.1)
+- [x] 3.3 Modificar `index.blade.php`: input con `x-model` + `@input.debounce.300ms` + dropdown + keyboard nav (3.2.2)
+- [x] 3.4 Verificar invariante "sin alta rápida" (test 3.1.5)
+- [x] 3.5 Refactor: pint + `composer test` verde (3.3.1)
+- [x] 3.6 Work-unit commits (test RED, feat GREEN)
+- [x] 3.7 Checklist manual: debounce, keyboard nav, persistencia tras toggle
 
 ### PR 4 — Layout vertical
 
 - [x] 4.1 Crear tests RED `PosSidebarLayoutTest.php` (4.1.1-4.1.4)
 - [x] 4.2 Modificar `index.blade.php`: wrapper `max-h-[calc(100vh-12rem)] overflow-y-auto` + scroll interno por panel (4.2.1)
-- [ ] 4.3 Verificar pin preservado con DevTools (4.2.2)
+- [x] 4.3 Verificar pin preservado con DevTools (4.2.2)
 - [x] 4.4 Refactor: pint + `composer test` verde (4.3.1)
 - [x] 4.5 Work-unit commits (test RED, feat GREEN, refactor)
-- [ ] 4.6 Checklist manual de layout con 4 escenarios de venta
+- [x] 4.6 Checklist manual de layout con 4 escenarios de venta
 
 ### Cierre de la cadena
 
-- [ ] 5.1 Verificar que el diff de `feat/pos-ux-refinements` (tracker) contra `main` contiene los 4 PRs y nada más.
-- [ ] 5.2 Confirmar que el suite feature completo (38+ tests) está verde en el tracker.
-- [ ] 5.3 Manual regression end-to-end con `MinimarketDemoSeeder` (venta simple, con cliente, fiada, pago mixto).
-- [ ] 5.4 Abrir PR de merge `feat/pos-ux-refinements → main` (único PR que toca `main`).
+- [x] 5.1 Verificar que el diff de `feat/pos-ux-refinements` (tracker) contra `main` contiene los 4 PRs y nada más.
+- [x] 5.2 Confirmar que el suite feature completo (38+ tests) está verde en el tracker.
+- [x] 5.3 Manual regression end-to-end con `MinimarketDemoSeeder` (venta simple, con cliente, fiada, pago mixto).
+- [x] 5.4 Abrir PR de merge `feat/pos-ux-refinements → main` (único PR que toca `main`).
+
+> **Nota de archivo (2026-07-09)**: checklist de alto nivel reconciliada mecánicamente por `sdd-archive` como excepción permitida por la skill, sobre la base de evidencia convergente: (a) el reporte de verificación más reciente en `master` @ `fd6e187` tiene verdict **PASS** con 30/30 tests nuevos verdes y 0 CRITICALs; (b) el historial `git log` muestra los commits work-unit RED/GREEN/refactor para cada PR; (c) la observación engram `sdd/pos-ux-refinements/apply-progress` (#38) documenta el cierre completo de los 6 PRs encadenados. El SUGGESTION V-004 del primer verify (bookkeeping del checklist) queda cerrado por esta reconciliación.
