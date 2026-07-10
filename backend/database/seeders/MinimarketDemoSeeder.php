@@ -86,8 +86,8 @@ class MinimarketDemoSeeder extends Seeder
         $this->createManualCashMovement($currentCashSession, $assistant, $timeline['current_manual_income_at'], 'manual_income', 3.00, 'cash', 'Ingreso extraordinario por reposición de caja demo.');
 
         $this->command?->info('Dataset demo minimarket cargado.');
-        $this->command?->info('Admin: admin / admin12345');
-        $this->command?->info('Cajero: cajero / cajero12345');
+        $this->command?->info('Admin: admin@xpos.local / admin12345');
+        $this->command?->info('Cajero: cajero@xpos.local / cajero12345');
         $this->command?->info(sprintf(
             'Resumen: %d productos, %d compras, %d ventas, %d clientes, %d cajas.',
             Product::query()->count(),

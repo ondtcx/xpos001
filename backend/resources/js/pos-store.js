@@ -130,7 +130,7 @@ export function registerPosStore(Alpine, initial = {}) {
       };
       this.clienteOpen = false;
       this.clienteHighlight = -1;
-      this.clienteQuery = customer.name || '';
+      this.clienteQuery = '';
       // If Fiado is active and we just picked Cliente General, fall back to efectivo.
       if (this.metodo === 'fiado' && customer.id === this.generalId) {
         this.metodo = 'efectivo';

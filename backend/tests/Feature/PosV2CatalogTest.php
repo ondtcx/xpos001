@@ -21,6 +21,8 @@ class PosV2CatalogTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const STORE_JS = __DIR__.'/../../resources/js/pos-store.js';
+
     #[Test]
     public function controller_eager_loads_nearest_lot_per_variant(): void
     {
@@ -168,21 +170,150 @@ class PosV2CatalogTest extends TestCase
     }
 
     #[Test]
+    // Spec scenario #1: card renders full data (name, category, USD price, stock)
+    public function card_renders_full_data(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        config()->set('pos.enabled', true);
+        Customer::query()->create(['name' => 'Cliente General', 'document' => '—', 'is_default' => true, 'is_active' => true]);
+
+        $this->createPresentationScenario($user, 'Coca-Cola 500 ml', 'Bebidas', 0.75, availableQuantity: 48);
+
+        $response = $this->get(route('pos.index'));
+        $response->assertOk();
+
+        $content = $response->getContent();
+
+        // Extract the embedded JSON initial data
+        preg_match('/window\.__POS_INITIAL_V2__\s*=\s*(\{.+?\});/s', $content, $matches);
+        $this->assertNotEmpty($matches, '__POS_INITIAL_V2__ data must be embedded in the page');
+        $initialData = json_decode($matches[1], true);
+        $this->assertNotEmpty($initialData['productos']);
+        $producto = $initialData['productos'][0];
+
+        $this->assertSame('Coca-Cola 500 ml', $producto['nombre']);
+        $this->assertSame('Bebidas', $producto['categoria']);
+        $this->assertSame(0.75, $producto['precio']);
+        $this->assertSame(48, $producto['disponibles']);
+
+        // The view binds the data via Alpine expressions
+        $this->assertStringContainsString('x-text="p.nombre"', $content);
+        $this->assertStringContainsString('x-text="p.categoria ?? \'—\'"', $content);
+        $this->assertStringContainsString('$store.posStore.formatMoney(p.precio)', $content);
+        $this->assertStringContainsString('p.disponibles + \' disp.\'', $content);
+    }
+
+    #[Test]
+    // Spec scenario #4: filter narrows the list
+    public function filter_narrows_list(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        config()->set('pos.enabled', true);
+        Customer::query()->create(['name' => 'Cliente General', 'document' => '—', 'is_default' => true, 'is_active' => true]);
+
+        $this->createPresentationScenario($user, 'Agua mineral 500 ml', 'Bebidas', 1.00, availableQuantity: 10);
+        $this->createPresentationScenario($user, 'Galletas de avena', 'Snacks', 2.50, availableQuantity: 10);
+
+        $response = $this->get(route('pos.index'));
+        $response->assertOk();
+
+        $content = $response->getContent();
+
+        // Both products must be in the store data
+        $this->assertStringContainsString('Agua mineral 500 ml', $content);
+        $this->assertStringContainsString('Galletas de avena', $content);
+
+        // The input must be bound to busqueda
+        $this->assertStringContainsString('x-model="$store.posStore.busqueda"', $content);
+        // The x-for must use filteredProductos
+        $this->assertStringContainsString('$store.posStore.filteredProductos', $content);
+
+        // The store JS must implement the filter logic
+        $js = file_get_contents(self::STORE_JS);
+        $this->assertStringContainsString('get filteredProductos()', $js);
+        $this->assertStringContainsString('haystack.includes(q)', $js);
+    }
+
+    #[Test]
+    // Spec scenario #5: no matches shows empty state
+    public function no_matches_shows_empty_state(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        config()->set('pos.enabled', true);
+        Customer::query()->create(['name' => 'Cliente General', 'document' => '—', 'is_default' => true, 'is_active' => true]);
+
+        $this->createPresentationScenario($user, 'Coca-Cola 500 ml', 'Bebidas', 1.00, availableQuantity: 10);
+
+        $response = $this->get(route('pos.index'));
+        $response->assertOk();
+
+        $content = $response->getContent();
+
+        // The empty-state template must be present
+        $this->assertStringContainsString('No se encontraron productos para', $content);
+        $this->assertStringContainsString('filteredProductos.length === 0', $content);
+    }
+
+    #[Test]
+    // Spec scenario #6: adding a new product creates a line
+    public function store_agregar_adds_new_line(): void
+    {
+        $js = file_get_contents(self::STORE_JS);
+
+        $this->assertStringContainsString('agregar(producto)', $js);
+        // New lines must be pushed with cantidad: 1
+        $this->assertMatchesRegularExpression(
+            '/cantidad:\s*1/',
+            $js,
+            'New cart lines must start with cantidad 1'
+        );
+        // Must guard against zero-stock
+        $this->assertStringContainsString('Number(producto.disponibles) <= 0', $js);
+        // Must search for existing items by id
+        $this->assertStringContainsString('this.items.find((it) => it.id === producto.id)', $js);
+    }
+
+    #[Test]
+    // Spec scenario #7: adding an existing product increments qty
+    public function store_agregar_increments_existing_line(): void
+    {
+        $js = file_get_contents(self::STORE_JS);
+
+        $this->assertStringContainsString('agregar(producto)', $js);
+        // The existing-item branch must increment by 1
+        $this->assertStringContainsString(
+            'existing.cantidad = Number(existing.cantidad) + 1',
+            $js
+        );
+        // The lookup must match by id
+        $this->assertStringContainsString('this.items.find((it) => it.id === producto.id)', $js);
+    }
+
+    #[Test]
+    // Spec scenario #8: stock 0 disables card and shows "Agotado"
     public function catalog_index_still_renders_successfully_when_a_product_has_no_stock(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
         config()->set('pos.enabled', true);
-        \App\Models\Customer::query()->create(['name' => 'Cliente General', 'document' => '—', 'is_default' => true, 'is_active' => true]);
+        Customer::query()->create(['name' => 'Cliente General', 'document' => '—', 'is_default' => true, 'is_active' => true]);
 
         $this->createPresentationScenario($user, 'Café soluble 50 g', 'Abarrotes', 1.25, availableQuantity: 0);
 
         $response = $this->get(route('pos.index'));
 
         $response->assertOk();
-        // The new v2 view shows an "Agotado" chip in PR 2; PR 3 guarantees
-        // the controller handles zero-stock without throwing.
+        // The view must show the "Agotado" chip for zero-stock products
+        $response->assertSee('Agotado');
+        // The add-to-cart button must be disabled via Alpine binding
+        $this->assertStringContainsString(':disabled="p.disponibles <= 0"', $response->getContent());
     }
 
     private function createPresentationScenario(

@@ -44,7 +44,7 @@ class PosController extends Controller
         $defaultClienteId = Customer::default()->value('id');
 
         return view(
-            config('pos.enabled') ? 'pos.index' : 'pos._legacy',
+            'pos.index',
             [
                 'customers' => $customers,
                 'clientes' => $clientes,
@@ -161,6 +161,7 @@ class PosController extends Controller
             'id' => $c->id,
             'name' => $c->name,
             'document' => $c->document,
+            'phone' => $c->phone,
             'saldo_fiado' => round(((int) ($openDebtByCustomer[$c->id] ?? 0)) / 100, 2),
             'is_default' => (bool) $c->is_default,
         ])->values()->all();
