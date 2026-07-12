@@ -1,47 +1,43 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">XPOS - Núcleo operativo</h2>
-                <p class="mt-1 text-sm text-gray-500">Catálogo, compras, ventas, fiado, caja y reportes ya viven en el mismo circuito operativo.</p>
-            </div>
-            <x-status-badge tone="success">Iteración 1 avanzada</x-status-badge>
-        </div>
+        <x-page-header title="XPOS - Núcleo operativo"
+                       description="Catálogo, compras, ventas, fiado, caja y reportes ya viven en el mismo circuito operativo.">
+            <x-slot name="action">
+                <x-status-badge tone="success">Iteración 1 avanzada</x-status-badge>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- Status card + Operations grid --}}
             <div class="grid gap-6 xl:grid-cols-3">
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 xl:col-span-2">
+                <x-partials.catalog-card class="xl:col-span-2">
                     <div class="flex items-center justify-between gap-3">
                         <div>
                             <p class="text-sm font-medium text-gray-500">Estado del producto</p>
                             <p class="mt-2 text-lg font-semibold text-gray-900">El sistema ya sostiene operación local con trazabilidad transaccional y lectura auditiva.</p>
                         </div>
-                        <x-status-badge tone="info">Local-first POS</x-status-badge>
+                        <x-status-badge tone="neutral">Local-first POS</x-status-badge>
                     </div>
 
                     <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                        <a href="{{ route('sales.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-indigo-300 hover:bg-indigo-50/30">
-                            <p class="text-sm text-gray-500">Ventas</p>
-                            <p class="mt-1 font-semibold text-gray-900">Registrar, anular y auditar ventas</p>
-                        </a>
-                        <a href="{{ route('purchases.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-indigo-300 hover:bg-indigo-50/30">
-                            <p class="text-sm text-gray-500">Compras</p>
-                            <p class="mt-1 font-semibold text-gray-900">Controlar entradas, lotes y bloqueos</p>
-                        </a>
-                        <a href="{{ route('cash.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-indigo-300 hover:bg-indigo-50/30">
-                            <p class="text-sm text-gray-500">Caja</p>
-                            <p class="mt-1 font-semibold text-gray-900">Abrir, mover y cerrar caja</p>
-                        </a>
-                        <a href="{{ route('reports.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-indigo-300 hover:bg-indigo-50/30">
-                            <p class="text-sm text-gray-500">Reportes</p>
-                            <p class="mt-1 font-semibold text-gray-900">Leer bruto/neto y saltar a detalle</p>
-                        </a>
-                    </div>
-                </div>
+                        <x-stat-card label="Ventas" href="{{ route('sales.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
+                            <p class="font-semibold text-gray-900">Registrar, anular y auditar ventas</p>
+                        </x-stat-card>
+                        <x-stat-card label="Compras" href="{{ route('purchases.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
+                            <p class="font-semibold text-gray-900">Controlar entradas, lotes y bloqueos</p>
+                        </x-stat-card>
+                        <x-stat-card label="Caja" href="{{ route('cash.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
+                            <p class="font-semibold text-gray-900">Abrir, mover y cerrar caja</p>
+                        </x-stat-card>
+                        <x-stat-card label="Reportes" href="{{ route('reports.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
+                            <p class="font-semibold text-gray-900">Leer bruto/neto y saltar a detalle</p>
+                        </x-stat-card>
+                    </x-partials.catalog-card>
 
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                {{-- Criteria card --}}
+                <x-partials.catalog-card>
                     <p class="text-sm font-medium text-gray-500">Criterio de operación</p>
                     <div class="mt-4 space-y-3 text-sm text-gray-700">
                         <p><span class="font-semibold text-gray-900">Dinero:</span> todo en centavos.</p>
@@ -50,69 +46,64 @@
                         <p><span class="font-semibold text-gray-900">Compras:</span> se corrigen solo si sus lotes no fueron consumidos.</p>
                         <p><span class="font-semibold text-gray-900">Reportes:</span> ya distinguen bruto, anulado/revertido y neto.</p>
                     </div>
-                </div>
+                </x-partials.catalog-card>
             </div>
 
+            {{-- Catalog grid --}}
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <a href="{{ route('categories.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
-                    <p class="text-sm font-medium text-gray-500">Categorías</p>
-                    <p class="mt-2 text-lg font-semibold text-gray-900">Administrar catálogo base</p>
-                </a>
-                <a href="{{ route('brands.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
-                    <p class="text-sm font-medium text-gray-500">Marcas</p>
-                    <p class="mt-2 text-lg font-semibold text-gray-900">Registrar marcas activas</p>
-                </a>
-                <a href="{{ route('base-units.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
-                    <p class="text-sm font-medium text-gray-500">Unidades base</p>
-                    <p class="mt-2 text-lg font-semibold text-gray-900">Definir unidad y símbolo</p>
-                </a>
-                <a href="{{ route('products.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
-                    <p class="text-sm font-medium text-gray-500">Productos</p>
-                    <p class="mt-2 text-lg font-semibold text-gray-900">Crear productos, variantes y precios</p>
-                </a>
+                <x-stat-card label="Categorías" href="{{ route('categories.index') }}" class="hover:ring-catalog-primary">
+                    <p class="text-lg font-semibold text-gray-900">Administrar catálogo base</p>
+                </x-stat-card>
+                <x-stat-card label="Marcas" href="{{ route('brands.index') }}" class="hover:ring-catalog-primary">
+                    <p class="text-lg font-semibold text-gray-900">Registrar marcas activas</p>
+                </x-stat-card>
+                <x-stat-card label="Unidades base" href="{{ route('base-units.index') }}" class="hover:ring-catalog-primary">
+                    <p class="text-lg font-semibold text-gray-900">Definir unidad y símbolo</p>
+                </x-stat-card>
+                <x-stat-card label="Productos" href="{{ route('products.index') }}" class="hover:ring-catalog-primary">
+                    <p class="text-lg font-semibold text-gray-900">Crear productos, variantes y precios</p>
+                </x-stat-card>
             </div>
 
+            {{-- Suppliers / Purchases / Sales / Reports grid --}}
             <div class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <a href="{{ route('suppliers.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
-                    <p class="text-sm font-medium text-gray-500">Proveedores</p>
-                    <p class="mt-2 text-lg font-semibold text-gray-900">Gestionar proveedores y relaciones de compra</p>
-                </a>
-                <a href="{{ route('purchases.create') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
-                    <p class="text-sm font-medium text-gray-500">Compra rápida</p>
-                    <p class="mt-2 text-lg font-semibold text-gray-900">Registrar entradas de mercadería</p>
-                </a>
-                <a href="{{ route('sales.create') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
-                    <p class="text-sm font-medium text-gray-500">Venta rápida</p>
-                    <p class="mt-2 text-lg font-semibold text-gray-900">Registrar ventas y pagos</p>
-                </a>
-                <a href="{{ route('reports.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
-                    <p class="text-sm font-medium text-gray-500">Reportes</p>
-                    <p class="mt-2 text-lg font-semibold text-gray-900">Consultar resultados operativos</p>
-                </a>
+                <x-stat-card label="Proveedores" href="{{ route('suppliers.index') }}" class="hover:ring-catalog-primary">
+                    <p class="text-lg font-semibold text-gray-900">Gestionar proveedores y relaciones de compra</p>
+                </x-stat-card>
+                <x-stat-card label="Compra rápida" href="{{ route('purchases.create') }}" class="hover:ring-catalog-primary">
+                    <p class="text-lg font-semibold text-gray-900">Registrar entradas de mercadería</p>
+                </x-stat-card>
+                <x-stat-card label="Venta rápida" href="{{ route('sales.create') }}" class="hover:ring-catalog-primary">
+                    <p class="text-lg font-semibold text-gray-900">Registrar ventas y pagos</p>
+                </x-stat-card>
+                <x-stat-card label="Reportes" href="{{ route('reports.index') }}" class="hover:ring-catalog-primary">
+                    <p class="text-lg font-semibold text-gray-900">Consultar resultados operativos</p>
+                </x-stat-card>
             </div>
 
-            <div class="mt-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+            {{-- Next focus + Quick links --}}
+            <x-partials.catalog-card class="mt-6">
                 <div class="grid gap-6 lg:grid-cols-3">
                     <div class="lg:col-span-2">
                         <p class="text-lg font-medium text-gray-900">Siguiente foco recomendado</p>
                         <p class="mt-2 text-sm text-gray-600">El núcleo ya registra y explica la operación. Lo siguiente con mejor retorno es seguir puliendo consistencia visual y luego enriquecer exportaciones.</p>
                         <div class="mt-4 flex flex-wrap gap-2">
                             <x-signal-badge tone="success">Captura estable</x-signal-badge>
-                            <x-signal-badge tone="info">Detalle operativo</x-signal-badge>
+                            <x-signal-badge tone="neutral">Detalle operativo</x-signal-badge>
                             <x-signal-badge tone="warning">UX fina pendiente</x-signal-badge>
                         </div>
                     </div>
                     <div class="text-sm text-gray-700">
                         <p class="font-semibold text-gray-900">Accesos rápidos</p>
                         <div class="mt-3 space-y-2">
-                            <p><a href="{{ route('pos.index') }}" class="text-indigo-700 hover:text-indigo-900">POS de mostrador</a></p>
-                            <p><a href="{{ route('customers.index') }}" class="text-indigo-700 hover:text-indigo-900">Clientes y fiados</a></p>
-                            <p><a href="{{ route('inventory-lots.index') }}" class="text-indigo-700 hover:text-indigo-900">Lotes de inventario</a></p>
-                            <p><a href="{{ route('suppliers.index') }}" class="text-indigo-700 hover:text-indigo-900">Proveedores</a></p>
+                            <p><a href="{{ route('pos.index') }}" class="text-catalog-primary hover:text-catalog-accent">POS de mostrador</a></p>
+                            <p><a href="{{ route('customers.index') }}" class="text-catalog-primary hover:text-catalog-accent">Clientes y fiados</a></p>
+                            <p><a href="{{ route('inventory-lots.index') }}" class="text-catalog-primary hover:text-catalog-accent">Lotes de inventario</a></p>
+                            <p><a href="{{ route('suppliers.index') }}" class="text-catalog-primary hover:text-catalog-accent">Proveedores</a></p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </x-partials.catalog-card>
         </div>
     </div>
 </x-app-layout>

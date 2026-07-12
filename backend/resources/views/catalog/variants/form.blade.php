@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">{{ $variant->exists ? 'Editar variante' : 'Nueva variante' }} — {{ $product->name }}</h2>
+        <x-page-header :title="($variant->exists ? 'Editar variante' : 'Nueva variante') . ' — ' . $product->name" />
     </x-slot>
 
     <div class="py-8">
         <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
-            <form method="POST" action="{{ $variant->exists ? route('products.variants.update', [$product, $variant]) : route('products.variants.store', $product) }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+            <form method="POST" action="{{ $variant->exists ? route('products.variants.update', [$product, $variant]) : route('products.variants.store', $product) }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-border">
                 @csrf
                 @if ($variant->exists)
                     @method('PUT')
@@ -50,12 +50,12 @@
                 <div class="flex items-center justify-between">
                     <div>
                         @if ($variant->exists)
-                            <a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-sm text-indigo-600">Administrar presentaciones</a>
+                            <a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-sm text-catalog-primary hover:text-catalog-accent">Administrar presentaciones</a>
                         @endif
                     </div>
                     <div class="flex items-center gap-3">
                         <a href="{{ route('products.variants.index', $product) }}" class="text-sm text-gray-600">Cancelar</a>
-                        <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
+                        <button class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar</button>
                     </div>
                 </div>
             </form>

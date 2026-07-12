@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">{{ $brand->exists ? 'Editar marca' : 'Nueva marca' }}</h2>
+        <x-page-header :title="$brand->exists ? 'Editar marca' : 'Nueva marca'" />
     </x-slot>
 
     <div class="py-8">
         <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
-            <form method="POST" action="{{ $brand->exists ? route('brands.update', $brand) : route('brands.store') }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+            <form method="POST" action="{{ $brand->exists ? route('brands.update', $brand) : route('brands.store') }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-border">
                 @csrf
                 @if ($brand->exists)
                     @method('PUT')
@@ -24,7 +24,7 @@
 
                 <div class="flex items-center justify-end gap-3">
                     <a href="{{ route('brands.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                    <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
+                    <button class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar</button>
                 </div>
             </form>
         </div>
