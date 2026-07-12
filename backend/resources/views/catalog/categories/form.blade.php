@@ -24,7 +24,7 @@
 
                 <div class="flex items-center justify-end gap-3">
                     <a href="{{ route('categories.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                    <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
+                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
                 </div>
             </form>
         </div>

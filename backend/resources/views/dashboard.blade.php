@@ -22,19 +22,19 @@
                     </div>
 
                     <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                        <a href="{{ route('sales.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-indigo-300 hover:bg-indigo-50/30">
+                        <a href="{{ route('sales.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-emerald-300 hover:bg-emerald-50/30">
                             <p class="text-sm text-gray-500">Ventas</p>
                             <p class="mt-1 font-semibold text-gray-900">Registrar, anular y auditar ventas</p>
                         </a>
-                        <a href="{{ route('purchases.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-indigo-300 hover:bg-indigo-50/30">
+                        <a href="{{ route('purchases.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-emerald-300 hover:bg-emerald-50/30">
                             <p class="text-sm text-gray-500">Compras</p>
                             <p class="mt-1 font-semibold text-gray-900">Controlar entradas, lotes y bloqueos</p>
                         </a>
-                        <a href="{{ route('cash.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-indigo-300 hover:bg-indigo-50/30">
+                        <a href="{{ route('cash.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-emerald-300 hover:bg-emerald-50/30">
                             <p class="text-sm text-gray-500">Caja</p>
                             <p class="mt-1 font-semibold text-gray-900">Abrir, mover y cerrar caja</p>
                         </a>
-                        <a href="{{ route('reports.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-indigo-300 hover:bg-indigo-50/30">
+                        <a href="{{ route('reports.index') }}" class="rounded-lg border border-gray-200 p-4 hover:border-emerald-300 hover:bg-emerald-50/30">
                             <p class="text-sm text-gray-500">Reportes</p>
                             <p class="mt-1 font-semibold text-gray-900">Leer bruto/neto y saltar a detalle</p>
                         </a>
@@ -54,38 +54,38 @@
             </div>
 
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <a href="{{ route('categories.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('categories.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm font-medium text-gray-500">Categorías</p>
                     <p class="mt-2 text-lg font-semibold text-gray-900">Administrar catálogo base</p>
                 </a>
-                <a href="{{ route('brands.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('brands.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm font-medium text-gray-500">Marcas</p>
                     <p class="mt-2 text-lg font-semibold text-gray-900">Registrar marcas activas</p>
                 </a>
-                <a href="{{ route('base-units.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('base-units.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm font-medium text-gray-500">Unidades base</p>
                     <p class="mt-2 text-lg font-semibold text-gray-900">Definir unidad y símbolo</p>
                 </a>
-                <a href="{{ route('products.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('products.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm font-medium text-gray-500">Productos</p>
                     <p class="mt-2 text-lg font-semibold text-gray-900">Crear productos, variantes y precios</p>
                 </a>
             </div>
 
             <div class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <a href="{{ route('suppliers.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('suppliers.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm font-medium text-gray-500">Proveedores</p>
                     <p class="mt-2 text-lg font-semibold text-gray-900">Gestionar proveedores y relaciones de compra</p>
                 </a>
-                <a href="{{ route('purchases.create') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('purchases.create') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm font-medium text-gray-500">Compra rápida</p>
                     <p class="mt-2 text-lg font-semibold text-gray-900">Registrar entradas de mercadería</p>
                 </a>
-                <a href="{{ route('sales.create') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('sales.create') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm font-medium text-gray-500">Venta rápida</p>
                     <p class="mt-2 text-lg font-semibold text-gray-900">Registrar ventas y pagos</p>
                 </a>
-                <a href="{{ route('reports.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('reports.index') }}" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm font-medium text-gray-500">Reportes</p>
                     <p class="mt-2 text-lg font-semibold text-gray-900">Consultar resultados operativos</p>
                 </a>
@@ -105,10 +105,10 @@
                     <div class="text-sm text-gray-700">
                         <p class="font-semibold text-gray-900">Accesos rápidos</p>
                         <div class="mt-3 space-y-2">
-                            <p><a href="{{ route('pos.index') }}" class="text-indigo-700 hover:text-indigo-900">POS de mostrador</a></p>
-                            <p><a href="{{ route('customers.index') }}" class="text-indigo-700 hover:text-indigo-900">Clientes y fiados</a></p>
-                            <p><a href="{{ route('inventory-lots.index') }}" class="text-indigo-700 hover:text-indigo-900">Lotes de inventario</a></p>
-                            <p><a href="{{ route('suppliers.index') }}" class="text-indigo-700 hover:text-indigo-900">Proveedores</a></p>
+                            <p><a href="{{ route('pos.index') }}" class="text-emerald-700 hover:text-emerald-900">POS de mostrador</a></p>
+                            <p><a href="{{ route('customers.index') }}" class="text-emerald-700 hover:text-emerald-900">Clientes y fiados</a></p>
+                            <p><a href="{{ route('inventory-lots.index') }}" class="text-emerald-700 hover:text-emerald-900">Lotes de inventario</a></p>
+                            <p><a href="{{ route('suppliers.index') }}" class="text-emerald-700 hover:text-emerald-900">Proveedores</a></p>
                         </div>
                     </div>
                 </div>

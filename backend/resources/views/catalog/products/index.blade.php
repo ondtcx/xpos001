@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-800">Productos</h2>
-            <a href="{{ route('products.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nuevo producto</a>
+            <a href="{{ route('products.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nuevo producto</a>
         </div>
     </x-slot>
 
@@ -39,8 +39,8 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $product->variants->count() }}</td>
                                 <td class="px-4 py-3 text-right">
                                     <div class="flex justify-end gap-4">
-                                        <a href="{{ route('products.variants.index', $product) }}" class="text-indigo-600 hover:text-indigo-800">Variantes</a>
-                                        <a href="{{ route('products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-800">Editar</a>
+                                        <a href="{{ route('products.variants.index', $product) }}" class="text-emerald-600 hover:text-emerald-800">Variantes</a>
+                                        <a href="{{ route('products.edit', $product) }}" class="text-emerald-600 hover:text-emerald-800">Editar</a>
                                     </div>
                                 </td>
                             </tr>

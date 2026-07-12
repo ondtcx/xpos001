@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-800">Marcas</h2>
-            <a href="{{ route('brands.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nueva marca</a>
+            <a href="{{ route('brands.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nueva marca</a>
         </div>
     </x-slot>
 
@@ -28,7 +28,7 @@
                                 <td class="px-4 py-3">
                                     <span class="rounded-full px-2.5 py-1 text-xs font-medium {{ $brand->is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600' }}">{{ $brand->is_active ? 'Activa' : 'Inactiva' }}</span>
                                 </td>
-                                <td class="px-4 py-3 text-right"><a href="{{ route('brands.edit', $brand) }}" class="text-indigo-600 hover:text-indigo-800">Editar</a></td>
+                                <td class="px-4 py-3 text-right"><a href="{{ route('brands.edit', $brand) }}" class="text-emerald-600 hover:text-emerald-800">Editar</a></td>
                             </tr>
                         @empty
                             <tr><td colspan="3" class="px-4 py-6 text-center text-gray-500">Aún no hay marcas registradas.</td></tr>

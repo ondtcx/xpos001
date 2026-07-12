@@ -6,7 +6,7 @@
             @if ($currentSession)
                 <a href="{{ route('cash.close-form', $currentSession) }}" class="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white">Cerrar caja actual</a>
             @else
-                <a href="{{ route('cash.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Abrir caja</a>
+                <a href="{{ route('cash.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Abrir caja</a>
             @endif
         </div>
     </x-slot>
@@ -40,7 +40,7 @@
                             <input name="end_date" type="date" value="{{ $cashRange['end_date'] }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                         </div>
                         <div class="flex items-end gap-3">
-                            <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Filtrar</button>
+                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Filtrar</button>
                             <a href="{{ route('cash.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Restablecer</a>
                         </div>
                     </form>
@@ -233,7 +233,7 @@
                                     <input name="notes" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                 </div>
                             </div>
-                            <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar movimiento</button>
+                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar movimiento</button>
                         </form>
                     @else
                         <p class="mt-4 text-sm text-gray-600">No hay una caja abierta en este momento.</p>

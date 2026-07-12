@@ -57,12 +57,12 @@
                 <div class="flex items-center justify-between">
                     <div>
                         @if ($product->exists)
-                            <a href="{{ route('products.variants.index', $product) }}" class="text-sm text-indigo-600">Administrar variantes</a>
+                            <a href="{{ route('products.variants.index', $product) }}" class="text-sm text-emerald-600">Administrar variantes</a>
                         @endif
                     </div>
                     <div class="flex items-center gap-3">
                         <a href="{{ route('products.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                        <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
+                        <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
                     </div>
                 </div>
             </form>

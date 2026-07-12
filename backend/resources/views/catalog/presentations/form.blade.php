@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">{{ $presentation->exists ? 'Editar presentación' : 'Nueva presentación' }} — {{ $variant->name }}</h2>
+        <x-page-header :title="($presentation->exists ? 'Editar presentación' : 'Nueva presentación') . ' — ' . $variant->name" />
     </x-slot>
 
     <div class="py-8">
         <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
-            <form method="POST" action="{{ $presentation->exists ? route('products.variants.presentations.update', [$product, $variant, $presentation]) : route('products.variants.presentations.store', [$product, $variant]) }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+            <form method="POST" action="{{ $presentation->exists ? route('products.variants.presentations.update', [$product, $variant, $presentation]) : route('products.variants.presentations.store', [$product, $variant]) }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-border">
                 @csrf
                 @if ($presentation->exists)
                     @method('PUT')
@@ -32,12 +32,12 @@
                 <div class="flex items-center justify-between">
                     <div>
                         @if ($presentation->exists)
-                            <a href="{{ route('products.variants.presentations.prices.index', [$product, $variant, $presentation]) }}" class="text-sm text-indigo-600">Ver historial de precios</a>
+                            <a href="{{ route('products.variants.presentations.prices.index', [$product, $variant, $presentation]) }}" class="text-sm text-catalog-primary hover:text-catalog-accent">Ver historial de precios</a>
                         @endif
                     </div>
                     <div class="flex items-center gap-3">
                         <a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-sm text-gray-600">Cancelar</a>
-                        <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
+                        <button class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar</button>
                     </div>
                 </div>
             </form>

@@ -65,7 +65,7 @@
                                 <td class="px-4 py-3 text-gray-700">{{ Money::format($receivable->original_amount) }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ Money::format($receivable->pending_amount) }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $receivable->status }}</td>
-                                <td class="px-4 py-3 text-right"><a href="{{ route('receivables.show', $receivable) }}" class="text-indigo-600">Ver detalle</a></td>
+                                <td class="px-4 py-3 text-right"><a href="{{ route('receivables.show', $receivable) }}" class="text-emerald-600">Ver detalle</a></td>
                             </tr>
                         @empty
                             <tr><td colspan="7" class="px-4 py-6 text-center text-gray-500">Aún no hay cuentas por cobrar registradas.</td></tr>

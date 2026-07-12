@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-800">Categorías</h2>
-            <a href="{{ route('categories.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nueva categoría</a>
+            <a href="{{ route('categories.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nueva categoría</a>
         </div>
     </x-slot>
 
@@ -31,7 +31,7 @@
                                     </span>
                                 </td>
                                 <td class="px-4 py-3 text-right">
-                                    <a href="{{ route('categories.edit', $category) }}" class="text-indigo-600 hover:text-indigo-800">Editar</a>
+                                    <a href="{{ route('categories.edit', $category) }}" class="text-emerald-600 hover:text-emerald-800">Editar</a>
                                 </td>
                             </tr>
                         @empty

@@ -88,9 +88,9 @@ class AdminSidebarTest extends TestCase
             'Expected exactly one active link with bg-emerald-50 text-emerald-700',
         );
 
-        // REQ-2: The active link should be the Categorías link
-        // The label "Categorías" appears right after the active class in the DOM
-        $response->assertSeeText('Categorías');
+        // REQ-2: The active link should be the Categor├¡as link
+        // The label "Categor├¡as" appears right after the active class in the DOM
+        $response->assertSeeText('Categor├¡as');
     }
 
     #[Test]
@@ -138,6 +138,24 @@ class AdminSidebarTest extends TestCase
         // REQ-2: The active link should be the Inventario link
         // (inventory-lots.* pattern is mapped to the same nav item)
         $response->assertSeeText('Inventario');
+    }
+
+    #[Test]
+    public function primary_button_uses_emerald_accent(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // REQ-6: GET a page that has a primary action button
+        // Customers index has "Nuevo cliente" with bg-emerald-600
+        $response = $this->get(route('customers.index'));
+        $response->assertOk();
+
+        // The primary action button MUST use emerald accent
+        $response->assertSee('bg-emerald-600', false);
+
+        // The primary action button must NOT use indigo accent
+        $response->assertDontSee('bg-indigo-600', false);
     }
 
     #[Test]

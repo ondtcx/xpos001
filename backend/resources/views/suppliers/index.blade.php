@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-800">Proveedores</h2>
-            <a href="{{ route('suppliers.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nuevo proveedor</a>
+            <a href="{{ route('suppliers.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nuevo proveedor</a>
         </div>
     </x-slot>
 
@@ -30,7 +30,7 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $supplier->phone ?: '—' }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $supplier->tax_id ?: '—' }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $supplier->is_active ? 'Activo' : 'Inactivo' }}</td>
-                                <td class="px-4 py-3 text-right"><a href="{{ route('suppliers.edit', $supplier) }}" class="text-indigo-600 hover:text-indigo-800">Editar</a></td>
+                                <td class="px-4 py-3 text-right"><a href="{{ route('suppliers.edit', $supplier) }}" class="text-emerald-600 hover:text-emerald-800">Editar</a></td>
                             </tr>
                         @empty
                             <tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">Aún no hay proveedores registrados.</td></tr>

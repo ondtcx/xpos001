@@ -5,7 +5,7 @@
                 <h2 class="text-xl font-semibold text-gray-800">Variantes de {{ $product->name }}</h2>
                 <p class="text-sm text-gray-500">Define versiones específicas del producto.</p>
             </div>
-            <a href="{{ route('products.variants.create', $product) }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nueva variante</a>
+            <a href="{{ route('products.variants.create', $product) }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nueva variante</a>
         </div>
     </x-slot>
 
@@ -15,7 +15,7 @@
                 <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
-            <div class="mb-4 text-sm"><a href="{{ route('products.index') }}" class="text-indigo-600">← Volver a productos</a></div>
+            <div class="mb-4 text-sm"><a href="{{ route('products.index') }}" class="text-emerald-600">← Volver a productos</a></div>
 
             <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
@@ -38,8 +38,8 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $variant->is_active ? 'Activa' : 'Inactiva' }}</td>
                                 <td class="px-4 py-3 text-right">
                                     <div class="flex justify-end gap-4">
-                                        <a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-indigo-600">Presentaciones</a>
-                                        <a href="{{ route('products.variants.edit', [$product, $variant]) }}" class="text-indigo-600">Editar</a>
+                                        <a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-emerald-600">Presentaciones</a>
+                                        <a href="{{ route('products.variants.edit', [$product, $variant]) }}" class="text-emerald-600">Editar</a>
                                     </div>
                                 </td>
                             </tr>

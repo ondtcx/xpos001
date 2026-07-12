@@ -4,8 +4,8 @@
         <div class="flex items-center justify-between gap-3">
             <h2 class="text-xl font-semibold text-gray-800">Compras</h2>
             <div class="flex items-center gap-2">
-                <a href="{{ route('purchases.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Compra rápida</a>
-                <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-700">Compra detallada</a>
+                <a href="{{ route('purchases.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Compra rápida</a>
+                <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Compra detallada</a>
             </div>
         </div>
     </x-slot>
@@ -61,10 +61,10 @@
                                 <td class="px-4 py-3 text-sm">
                                     @if ($purchase->isConfirmed())
                                         <div class="flex flex-col items-start gap-2">
-                                            <a href="{{ route('purchases.show', $purchase) }}" class="text-indigo-700 hover:text-indigo-900">Ver detalle</a>
+                                            <a href="{{ route('purchases.show', $purchase) }}" class="text-emerald-700 hover:text-emerald-900">Ver detalle</a>
 
                                             @if ($purchase->can_edit_detailed)
-                                                <a href="{{ route('purchases.detailed.edit', $purchase) }}" class="text-indigo-700 hover:text-indigo-900">Editar</a>
+                                                <a href="{{ route('purchases.detailed.edit', $purchase) }}" class="text-emerald-700 hover:text-emerald-900">Editar</a>
                                             @elseif ($purchase->isDetailed())
                                                 <span class="text-xs text-gray-400">Edición bloqueada por consumo</span>
                                             @else
@@ -83,7 +83,7 @@
                                         </div>
                                     @else
                                         <div class="text-xs text-gray-500">
-                                            <p><a href="{{ route('purchases.show', $purchase) }}" class="text-indigo-700 hover:text-indigo-900">Ver detalle</a></p>
+                                            <p><a href="{{ route('purchases.show', $purchase) }}" class="text-emerald-700 hover:text-emerald-900">Ver detalle</a></p>
                                             <p>{{ $purchase->void_reason }}</p>
                                             <p class="mt-1">por {{ $purchase->voider?->name ?? '—' }}</p>
                                         </div>
