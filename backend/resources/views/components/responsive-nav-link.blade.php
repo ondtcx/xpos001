@@ -1,3 +1,6 @@
+{{-- DEPRECATED: No longer used since navigation.blade.php was replaced by sidebar.blade.php (PR #1). --}}
+{{-- The sidebar handles both desktop and mobile navigation natively. --}}
+{{-- This component is kept for backward compatibility but will be removed in a future cleanup. --}}
 @props(['active'])
 
 @php

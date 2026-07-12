@@ -68,4 +68,94 @@ class AdminSidebarTest extends TestCase
         // REQ-7: POS must NOT have the main content offset that comes with the sidebar
         $response->assertDontSee('md:pl-64', false);
     }
+
+    #[Test]
+    public function active_route_highlighting_for_categories(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('categories.index'));
+        $response->assertOk();
+
+        // REQ-2: The active link MUST show bg-emerald-50 text-emerald-700
+        $response->assertSee('bg-emerald-50 text-emerald-700', false);
+
+        // REQ-2: Exactly one link should be active (no false positives)
+        $this->assertEquals(
+            1,
+            substr_count($response->content(), 'bg-emerald-50 text-emerald-700'),
+            'Expected exactly one active link with bg-emerald-50 text-emerald-700',
+        );
+
+        // REQ-2: The active link should be the Categorías link
+        // The label "Categorías" appears right after the active class in the DOM
+        $response->assertSeeText('Categorías');
+    }
+
+    #[Test]
+    public function active_route_highlighting_for_opening_inventory(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('opening-inventory.index'));
+        $response->assertOk();
+
+        // REQ-2: The active link MUST show bg-emerald-50 text-emerald-700
+        $response->assertSee('bg-emerald-50 text-emerald-700', false);
+
+        // REQ-2: Exactly one link should be active
+        $this->assertEquals(
+            1,
+            substr_count($response->content(), 'bg-emerald-50 text-emerald-700'),
+            'Expected exactly one active link with bg-emerald-50 text-emerald-700',
+        );
+
+        // REQ-2: The active link should be the Inventario link
+        $response->assertSeeText('Inventario');
+    }
+
+    #[Test]
+    public function active_route_highlighting_for_inventory_lots(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('inventory-lots.index'));
+        $response->assertOk();
+
+        // REQ-2: The active link MUST show bg-emerald-50 text-emerald-700
+        $response->assertSee('bg-emerald-50 text-emerald-700', false);
+
+        // REQ-2: Exactly one link should be active
+        $this->assertEquals(
+            1,
+            substr_count($response->content(), 'bg-emerald-50 text-emerald-700'),
+            'Expected exactly one active link with bg-emerald-50 text-emerald-700',
+        );
+
+        // REQ-2: The active link should be the Inventario link
+        // (inventory-lots.* pattern is mapped to the same nav item)
+        $response->assertSeeText('Inventario');
+    }
+
+    #[Test]
+    public function heroicons_present_on_every_nav_link(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('dashboard'));
+        $response->assertOk();
+
+        // REQ-3: Each of the 12 nav links MUST contain an inline SVG with viewBox
+        // Count all occurrences of viewBox="0 0 24 24" (one per icon)
+        $svgCount = substr_count($response->content(), 'viewBox="0 0 24 24"');
+        $this->assertEquals(12, $svgCount, 'Expected exactly 12 heroicon SVGs (one per nav link)');
+
+        // Verify they are all outline-style Heroicons
+        $response->assertSee('stroke="currentColor"', false);
+        $response->assertSee('stroke-width="1.5"', false);
+    }
 }
