@@ -1,9 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Unidades base</h2>
-            <a href="{{ route('base-units.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nueva unidad</a>
-        </div>
+        <x-page-header title="Unidades base" description="Administra las unidades de medida del catálogo.">
+            <x-slot name="action">
+                <a href="{{ route('base-units.create') }}"
+                   class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+                    Nueva unidad
+                </a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -12,7 +16,7 @@
                 <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
+            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-border">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -26,10 +30,14 @@
                             <tr>
                                 <td class="px-4 py-3 text-gray-900">{{ $baseUnit->name }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $baseUnit->symbol }}</td>
-                                <td class="px-4 py-3 text-right"><a href="{{ route('base-units.edit', $baseUnit) }}" class="text-indigo-600 hover:text-indigo-800">Editar</a></td>
+                                <td class="px-4 py-3 text-right">
+                                    <a href="{{ route('base-units.edit', $baseUnit) }}" class="text-catalog-primary hover:text-catalog-accent">Editar</a>
+                                </td>
                             </tr>
                         @empty
-                            <tr><td colspan="3" class="px-4 py-6 text-center text-gray-500">Aún no hay unidades base registradas.</td></tr>
+                            <tr>
+                                <td colspan="3" class="px-4 py-6 text-center text-gray-500">Aún no hay unidades base registradas.</td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
