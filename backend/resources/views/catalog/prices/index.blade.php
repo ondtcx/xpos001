@@ -1,13 +1,14 @@
 @php use App\Support\Money; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">Historial de precios — {{ $presentation->name }}</h2>
-                <p class="text-sm text-gray-500">{{ $product->name }} / {{ $variant->name }}</p>
-            </div>
-            <a href="{{ route('products.variants.presentations.prices.create', [$product, $variant, $presentation]) }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nuevo precio</a>
-        </div>
+        <x-page-header title="Historial de precios — {{ $presentation->name }}" description="{{ $product->name }} / {{ $variant->name }}">
+            <x-slot name="action">
+                <a href="{{ route('products.variants.presentations.prices.create', [$product, $variant, $presentation]) }}"
+                   class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+                    Nuevo precio
+                </a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -16,9 +17,9 @@
                 <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
-            <div class="mb-4 text-sm"><a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-indigo-600">← Volver a presentaciones</a></div>
+            <div class="mb-4 text-sm"><a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-catalog-primary hover:text-catalog-accent">← Volver a presentaciones</a></div>
 
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
+            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-border">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -43,7 +44,9 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $price->reason ?: '—' }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="7" class="px-4 py-6 text-center text-gray-500">Aún no hay precios registrados.</td></tr>
+                            <tr>
+                                <td colspan="7" class="px-4 py-6 text-center text-gray-500">Aún no hay precios registrados.</td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
