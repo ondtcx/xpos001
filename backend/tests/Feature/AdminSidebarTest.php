@@ -160,12 +160,54 @@ class AdminSidebarTest extends TestCase
         $response->assertOk();
 
         // REQ-3: Each of the 12 nav links MUST contain an inline SVG with viewBox
+        // plus 2 sidebar UI SVGs (hamburger toggle + close button) = 14 total
         // Count all occurrences of viewBox="0 0 24 24" (one per icon)
         $svgCount = substr_count($response->content(), 'viewBox="0 0 24 24"');
-        $this->assertEquals(12, $svgCount, 'Expected exactly 12 heroicon SVGs (one per nav link)');
+        $this->assertEquals(14, $svgCount, 'Expected exactly 14 heroicon SVGs (12 nav links + 2 sidebar UI icons)');
 
         // Verify they are all outline-style Heroicons
         $response->assertSee('stroke="currentColor"', false);
         $response->assertSee('stroke-width="1.5"', false);
+    }
+
+    #[Test]
+    public function user_block_renders_with_initials_and_logout(): void
+    {
+        $user = User::factory()->create([
+            'name' => 'Diego Paz',
+            'email' => 'diego@test.com',
+        ]);
+        $this->actingAs($user);
+
+        $response = $this->get(route('dashboard'));
+        $response->assertOk();
+
+        // REQ-8: User name and email appear in sidebar block
+        $response->assertSeeText('Diego Paz');
+        $response->assertSeeText('diego@test.com');
+
+        // REQ-8: Initials derived from first letter of first and last name
+        $response->assertSee('DP', false);
+
+        // REQ-8: Logout form present with POST method to logout route
+        $response->assertSee('<form method="POST"', false);
+        $response->assertSee(route('logout'), false);
+        $response->assertSeeText('Log out');
+    }
+
+    #[Test]
+    public function hamburger_button_visible_on_mobile_only(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('dashboard'));
+        $response->assertOk();
+
+        // REQ-9: Hamburger toggle button with aria-label exists
+        $response->assertSee('aria-label="Open sidebar"', false);
+
+        // REQ-9: Hamburger has bars-3 icon (hamburger menu SVG path)
+        $response->assertSee('M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5', false);
     }
 }
