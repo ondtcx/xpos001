@@ -15,12 +15,18 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+        <div class="min-h-screen bg-gray-100 flex">
+            @php
+                $showSidebar = !request()->routeIs('pos.*') && !request()->routeIs('sales.*');
+            @endphp
+
+            @if ($showSidebar)
+                @include('layouts.sidebar')
+            @endif
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white shadow">
+                <header @class(['bg-white shadow', 'md:pl-64' => $showSidebar])>
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
@@ -28,7 +34,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main @class(['md:pl-64' => $showSidebar])>
                 {{ $slot }}
             </main>
         </div>
