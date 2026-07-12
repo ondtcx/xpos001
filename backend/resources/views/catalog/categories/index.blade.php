@@ -1,9 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Categorías</h2>
-            <a href="{{ route('categories.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nueva categoría</a>
-        </div>
+        <x-page-header title="Categorías" description="Administra las categorías del catálogo de productos.">
+            <x-slot name="action">
+                <a href="{{ route('categories.create') }}"
+                   class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+                    Nueva categoría
+                </a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -12,7 +16,7 @@
                 <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
+            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-border">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -31,7 +35,7 @@
                                     </span>
                                 </td>
                                 <td class="px-4 py-3 text-right">
-                                    <a href="{{ route('categories.edit', $category) }}" class="text-indigo-600 hover:text-indigo-800">Editar</a>
+                                    <a href="{{ route('categories.edit', $category) }}" class="text-catalog-primary hover:text-catalog-accent">Editar</a>
                                 </td>
                             </tr>
                         @empty
