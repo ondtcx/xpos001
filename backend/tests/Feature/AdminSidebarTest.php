@@ -72,17 +72,24 @@ class AdminSidebarTest extends TestCase
     #[Test]
     public function active_route_highlighting_for_categories(): void
     {
-        // SKIPPED: this test fails on the tracker even though the feature works
-        // correctly (sidebar correctly applies bg-emerald-50 text-emerald-700 to
-        // the active Categorias link when on /categories). The assertSee failure
-        // is non-deterministic and appears to be a test-harness issue specific
-        // to this method being a member of the AdminSidebarTest class. The same
-        // setup and assertion pass when extracted to a separate test class. Root
-        // cause is a future investigation. Tracked for follow-up: rewrite this
-        // test with assertStringContainsString on $response->getContent() instead
-        // of $response->assertSee() to bypass any TestResponse method
-        // peculiarities.
-        $this->markTestSkipped('Active route highlighting for categories: see comment in test.');
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('categories.index'));
+        $response->assertOk();
+
+        // REQ-2: The active link MUST show bg-emerald-50 text-emerald-700
+        $response->assertSee('bg-emerald-50 text-emerald-700', false);
+
+        // REQ-2: Exactly one link should be active
+        $this->assertEquals(
+            1,
+            substr_count($response->content(), 'bg-emerald-50 text-emerald-700'),
+            'Expected exactly one active link with bg-emerald-50 text-emerald-700',
+        );
+
+        // REQ-2: The active link should be the Categorias link
+        $response->assertSeeText('Categorías');
     }
 
     #[Test]
