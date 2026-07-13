@@ -5,7 +5,7 @@
             <h2 class="text-xl font-semibold text-gray-800">Inventario inicial</h2>
             <div class="flex gap-3">
                 <a href="{{ route('inventory-lots.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver lotes</a>
-                <a href="{{ route('opening-inventory.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Registrar inventario inicial</a>
+                <a href="{{ route('opening-inventory.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Registrar inventario inicial</a>
             </div>
         </div>
     </x-slot>
@@ -18,12 +18,12 @@
 
             @if (session('opening_inventory_context'))
                 @php($context = session('opening_inventory_context'))
-                <div class="mb-4 rounded-lg border border-indigo-200 bg-indigo-50 p-4 text-sm">
-                    <p class="font-medium text-indigo-900">Último registro creado</p>
-                    <p class="mt-1 text-indigo-800">{{ $context['variant_label'] }} · entrada #{{ $context['entry_id'] }} · lote #{{ $context['lot_id'] }}</p>
+                <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm">
+                    <p class="font-medium text-emerald-900">Último registro creado</p>
+                    <p class="mt-1 text-emerald-800">{{ $context['variant_label'] }} · entrada #{{ $context['entry_id'] }} · lote #{{ $context['lot_id'] }}</p>
                     <div class="mt-3 flex flex-wrap gap-2">
-                        <a href="{{ route('inventory-lots.index') }}" class="rounded-md border border-indigo-300 bg-white px-3 py-2 text-sm font-medium text-indigo-700">Revisar lotes</a>
-                        <a href="{{ route('opening-inventory.create') }}" class="rounded-md border border-indigo-300 bg-white px-3 py-2 text-sm font-medium text-indigo-700">Registrar otra tanda</a>
+                        <a href="{{ route('inventory-lots.index') }}" class="rounded-md border border-emerald-300 bg-white px-3 py-2 text-sm font-medium text-emerald-700">Revisar lotes</a>
+                        <a href="{{ route('opening-inventory.create') }}" class="rounded-md border border-emerald-300 bg-white px-3 py-2 text-sm font-medium text-emerald-700">Registrar otra tanda</a>
                     </div>
                 </div>
             @endif

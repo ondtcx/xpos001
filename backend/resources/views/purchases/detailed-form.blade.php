@@ -56,22 +56,22 @@
                 <h2 class="text-xl font-semibold text-gray-800">{{ $isEditing ? 'Editar compra detallada' : 'Nueva compra detallada' }}</h2>
                 <p class="text-sm text-gray-500">Usa este modo cuando necesitas fidelidad: globales, bonificaciones separadas, descuentos e impuestos reproducibles.</p>
             </div>
-            <a href="{{ route('purchases.create') }}" class="rounded-md border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-700">Volver a compra rápida</a>
+            <a href="{{ route('purchases.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Volver a compra rápida</a>
         </div>
     </x-slot>
 
     <div class="py-8">
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
             <div class="grid gap-4 lg:grid-cols-2">
-                <div class="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
+                <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
                     <div class="flex items-center justify-between gap-3">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-wide text-indigo-700">Modo actual</p>
-                            <h3 class="mt-1 text-base font-semibold text-indigo-900">Compra detallada = fidelidad y trazabilidad</h3>
+                            <p class="text-xs font-semibold uppercase tracking-wide text-emerald-700">Modo actual</p>
+                            <h3 class="mt-1 text-base font-semibold text-emerald-900">Compra detallada = fidelidad y trazabilidad</h3>
                         </div>
                         <x-status-badge tone="info">Detallada</x-status-badge>
                     </div>
-                    <ul class="mt-3 space-y-1 text-sm text-indigo-800">
+                    <ul class="mt-3 space-y-1 text-sm text-emerald-800">
                         <li>- descuentos e impuestos por línea</li>
                         <li>- bonificación del mismo producto o producto distinto</li>
                         <li>- globales y costos extra con lectura auditable</li>
@@ -162,18 +162,18 @@
                             <textarea name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $purchase?->notes) }}</textarea>
                         </div>
 
-                        <div class="grid gap-4 rounded-lg border border-indigo-100 bg-indigo-50 p-4 lg:grid-cols-3 text-sm">
+                        <div class="grid gap-4 rounded-lg border border-emerald-100 bg-emerald-50 p-4 lg:grid-cols-3 text-sm">
                             <div>
-                                <p class="font-medium text-indigo-900">Cómo leer el costo estimado</p>
-                                <p class="mt-1 text-indigo-800">Cada línea muestra base, descuentos, impuestos de línea y un costo estimado final antes de guardar.</p>
+                                <p class="font-medium text-emerald-900">Cómo leer el costo estimado</p>
+                                <p class="mt-1 text-emerald-800">Cada línea muestra base, descuentos, impuestos de línea y un costo estimado final antes de guardar.</p>
                             </div>
                             <div>
-                                <p class="font-medium text-indigo-900">Líneas normales</p>
-                                <p class="mt-1 text-indigo-800">Usa cantidad, bonus del mismo producto, costo base y tributos directos. El sistema reparte globales después.</p>
+                                <p class="font-medium text-emerald-900">Líneas normales</p>
+                                <p class="mt-1 text-emerald-800">Usa cantidad, bonus del mismo producto, costo base y tributos directos. El sistema reparte globales después.</p>
                             </div>
                             <div>
-                                <p class="font-medium text-indigo-900">Líneas bonificación</p>
-                                <p class="mt-1 text-indigo-800">Sirven para producto distinto. Puedes dejar costo 0 o asignar un costo total manual.</p>
+                                <p class="font-medium text-emerald-900">Líneas bonificación</p>
+                                <p class="mt-1 text-emerald-800">Sirven para producto distinto. Puedes dejar costo 0 o asignar un costo total manual.</p>
                             </div>
                         </div>
 
@@ -183,7 +183,7 @@
                                     <h3 class="font-medium text-gray-800">Líneas detalladas</h3>
                                     <p class="mt-1 text-sm text-gray-500">Usa línea normal para compra pagada y línea bonificación para producto distinto con costo manual o costo 0.</p>
                                 </div>
-                                <button type="button" id="add-item" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white">Agregar línea</button>
+                                <button type="button" id="add-item" class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white">Agregar línea</button>
                             </div>
 
                             <div class="overflow-x-auto">
@@ -286,7 +286,7 @@
 
                         <div class="flex items-center justify-end gap-3">
                             <a href="{{ route('purchases.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                            <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">{{ $isEditing ? 'Actualizar compra detallada' : 'Guardar compra detallada' }}</button>
+                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">{{ $isEditing ? 'Actualizar compra detallada' : 'Guardar compra detallada' }}</button>
                         </div>
                     </div>
 
@@ -366,7 +366,7 @@
                     success: 'bg-emerald-100 text-emerald-700',
                     warning: 'bg-amber-100 text-amber-800',
                     danger: 'bg-red-100 text-red-700',
-                    info: 'bg-indigo-100 text-indigo-700',
+                    info: 'bg-emerald-100 text-emerald-700',
                     neutral: 'bg-slate-100 text-slate-700',
                 };
                 element.className = `rounded-full px-2.5 py-1 text-xs font-medium ${tones[tone] ?? tones.neutral}`;

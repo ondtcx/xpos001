@@ -117,7 +117,7 @@
                         <label class="block text-sm font-medium text-gray-700">Notas</label>
                         <textarea name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                     </div>
-                    <button class="w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar abono</button>
+                    <button class="w-full rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar abono</button>
                     @if ($errors->has('amount'))
                         <p class="text-sm text-red-600">{{ $errors->first('amount') }}</p>
                     @endif

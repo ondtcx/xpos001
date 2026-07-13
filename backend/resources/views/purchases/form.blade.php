@@ -16,7 +16,7 @@
                 <h2 class="text-xl font-semibold text-gray-800">Nueva compra rápida</h2>
                 <p class="text-sm text-gray-500">Usa este modo cuando prima la velocidad: una línea por variante, sin prorrateos finos ni bonificaciones complejas.</p>
             </div>
-            <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-700">Ir a compra detallada</a>
+            <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Ir a compra detallada</a>
         </div>
     </x-slot>
 
@@ -38,15 +38,15 @@
                     </ul>
                 </div>
 
-                <div class="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
+                <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
                     <div class="flex items-center justify-between gap-3">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-wide text-indigo-700">Alternativa</p>
-                            <h3 class="mt-1 text-base font-semibold text-indigo-900">Compra detallada = mayor fidelidad</h3>
+                            <p class="text-xs font-semibold uppercase tracking-wide text-emerald-700">Alternativa</p>
+                            <h3 class="mt-1 text-base font-semibold text-emerald-900">Compra detallada = mayor fidelidad</h3>
                         </div>
                         <x-status-badge tone="info">Detallada</x-status-badge>
                     </div>
-                    <ul class="mt-3 space-y-1 text-sm text-indigo-800">
+                    <ul class="mt-3 space-y-1 text-sm text-emerald-800">
                         <li>- impuestos, descuentos y bonificaciones</li>
                         <li>- costos globales y prorrateos</li>
                         <li>- mejor lectura tributaria y auditabilidad</li>
@@ -102,7 +102,7 @@
                                     <h3 class="font-medium text-gray-800">Líneas de compra</h3>
                                     <p class="mt-1 text-sm text-gray-500">Una línea por variante. Si necesitas bonificaciones separadas o globales finos, cambia a compra detallada.</p>
                                 </div>
-                                <button type="button" id="add-item" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white">Agregar línea</button>
+                                <button type="button" id="add-item" class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white">Agregar línea</button>
                             </div>
                             <div class="border-b border-gray-200 bg-white px-4 py-3">
                                 <label class="block text-sm font-medium text-gray-700">Ayuda rápida</label>
@@ -153,7 +153,7 @@
 
                         <div class="flex items-center justify-end gap-3">
                             <a href="{{ route('purchases.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                            <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar compra</button>
+                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar compra</button>
                         </div>
                     </div>
 
@@ -164,7 +164,7 @@
                                 <p id="quick-mode-title" class="mt-2 text-base font-semibold text-slate-900">Compra rápida alineada con el caso simple.</p>
                                 <p id="quick-mode-description" class="mt-1 text-sm text-slate-600">Úsala cuando no necesitas prorrateos, impuestos complejos ni líneas de bonificación separadas.</p>
                                 <div class="mt-4 flex flex-wrap gap-2">
-                                    <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-indigo-300 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700">Cambiar a detallada</a>
+                                    <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">Cambiar a detallada</a>
                                     <a href="{{ route('purchases.index') }}" class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700">Ver compras</a>
                                 </div>
                             </section>
@@ -244,7 +244,7 @@
                     success: 'bg-emerald-100 text-emerald-700',
                     warning: 'bg-amber-100 text-amber-800',
                     danger: 'bg-red-100 text-red-700',
-                    info: 'bg-indigo-100 text-indigo-700',
+                    info: 'bg-emerald-100 text-emerald-700',
                     neutral: 'bg-slate-100 text-slate-700',
                 };
 

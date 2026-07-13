@@ -3,7 +3,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-800">Clientes</h2>
-            <a href="{{ route('customers.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nuevo cliente</a>
+            <a href="{{ route('customers.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nuevo cliente</a>
         </div>
     </x-slot>
 
@@ -32,8 +32,8 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $customer->is_active ? 'Activo' : 'Inactivo' }}</td>
                                 <td class="px-4 py-3 text-right">
                                     <div class="flex justify-end gap-4">
-                                        <a href="{{ route('receivables.index') }}" class="text-indigo-600">Fiados</a>
-                                        <a href="{{ route('customers.edit', $customer) }}" class="text-indigo-600">Editar</a>
+                                        <a href="{{ route('receivables.index') }}" class="text-emerald-600">Fiados</a>
+                                        <a href="{{ route('customers.edit', $customer) }}" class="text-emerald-600">Editar</a>
                                     </div>
                                 </td>
                             </tr>
