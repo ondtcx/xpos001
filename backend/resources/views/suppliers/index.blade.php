@@ -1,9 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Proveedores</h2>
-            <a href="{{ route('suppliers.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nuevo proveedor</a>
-        </div>
+        <x-page-header title="Proveedores" description="Administra los proveedores registrados y su información de contacto.">
+            <x-slot name="action">
+                <a href="{{ route('suppliers.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Nuevo proveedor</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -36,7 +37,7 @@
                                         <x-status-badge tone="neutral">Inactivo</x-status-badge>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-right"><a href="{{ route('suppliers.edit', $supplier) }}" class="text-emerald-600 hover:text-emerald-800">Editar</a></td>
+                                <td class="px-4 py-3 text-right"><a href="{{ route('suppliers.edit', $supplier) }}" class="text-emerald-700 hover:text-emerald-900">Editar</a></td>
                             </tr>
                         @empty
                             <tr><td colspan="5" class="px-4 py-6 text-center text-gray-500">Aún no hay proveedores registrados.</td></tr>

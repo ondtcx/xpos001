@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">{{ $supplier->exists ? 'Editar proveedor' : 'Nuevo proveedor' }}</h2>
+        <x-page-header :title="$supplier->exists ? 'Editar proveedor' : 'Nuevo proveedor'" />
     </x-slot>
 
     <div class="py-8">
@@ -13,25 +13,25 @@
 
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                        <input name="name" type="text" value="{{ old('name', $supplier->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <input id="name" name="name" type="text" value="{{ old('name', $supplier->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Identificación tributaria</label>
-                        <input name="tax_id" type="text" value="{{ old('tax_id', $supplier->tax_id) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="tax_id" class="block text-sm font-medium text-gray-700">Identificación tributaria</label>
+                        <input id="tax_id" name="tax_id" type="text" value="{{ old('tax_id', $supplier->tax_id) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Teléfono</label>
-                        <input name="phone" type="text" value="{{ old('phone', $supplier->phone) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                        <input id="phone" name="phone" type="text" value="{{ old('phone', $supplier->phone) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Dirección</label>
-                        <input name="address" type="text" value="{{ old('address', $supplier->address) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="address" class="block text-sm font-medium text-gray-700">Dirección</label>
+                        <input id="address" name="address" type="text" value="{{ old('address', $supplier->address) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Notas</label>
-                        <textarea name="notes" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $supplier->notes) }}</textarea>
+                        <label for="notes" class="block text-sm font-medium text-gray-700">Notas</label>
+                        <textarea id="notes" name="notes" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $supplier->notes) }}</textarea>
                     </div>
                 </div>
 
@@ -42,7 +42,7 @@
 
                 <div class="flex items-center justify-end gap-3">
                     <a href="{{ route('suppliers.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
+                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar</button>
                 </div>
             </form>
         </div>
