@@ -37,16 +37,14 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">Caja / Punto de venta</h2>
-                <p class="text-sm text-gray-500">{{ auth()->user()?->name ?? '' }}</p>
-            </div>
-            <div class="flex flex-wrap gap-3">
-                <a href="{{ route('sales.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Historial de ventas</a>
-                <a href="{{ route('sales.create') }}" class="rounded-md border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">Venta completa</a>
-            </div>
-        </div>
+        <x-page-header title="Caja / Punto de venta" description="{{ auth()->user()?->name ?? '' }}">
+            <x-slot name="action">
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ route('sales.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Historial de ventas</a>
+                    <a href="{{ route('sales.create') }}" class="rounded-md border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">Venta completa</a>
+                </div>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <script>window.__POS_INITIAL_V2__ = {!! $initialV2Json !!};</script>
@@ -111,7 +109,7 @@
                             </article>
                         </template>
                     </div>
-                    <div x-show="$store.posStore.filteredProductos.length === 0" class="px-4 pb-4 text-sm text-gray-500">
+                    <div x-show="$store.posStore.filteredProductos.length === 0" class="px-4 pb-4 text-sm text-gray-500" style="display: none;">
                         No se encontraron productos para <span x-text="$store.posStore.busqueda"></span>
                     </div>
                 </section>
@@ -126,7 +124,7 @@
                             </svg>
                             <h2 class="text-base font-semibold text-gray-900">Venta actual <span class="ml-1 rounded-full bg-slate-200 px-2 py-0.5 text-xs" x-text="$store.posStore.itemsCount"></span></h2>
                         </div>
-                        <div class="flex gap-2" x-show="$store.posStore.items.length > 0">
+                        <div class="flex gap-2" x-show="$store.posStore.items.length > 0" style="display: none;">
                             <button type="button" @click="$store.posStore.limpiar()" class="rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700">Vaciar</button>
                             <button type="button" @click="$store.posStore.anularVenta()" class="rounded-md border border-red-300 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">Anular venta</button>
                         </div>
@@ -140,7 +138,7 @@
                         <p>Agrega productos para iniciar la venta.</p>
                     </div>
 
-                    <ul class="mt-4 space-y-2" x-show="$store.posStore.items.length > 0">
+                    <ul class="mt-4 space-y-2" x-show="$store.posStore.items.length > 0" style="display: none;">
                         <template x-for="item in $store.posStore.items" :key="item.id">
                             <li class="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 text-sm shadow-sm">
                                 <div class="min-w-0 flex-1">
