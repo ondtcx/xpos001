@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">{{ $customer->exists ? 'Editar cliente' : 'Nuevo cliente' }}</h2>
+        <x-page-header :title="$customer->exists ? 'Editar cliente' : 'Nuevo cliente'" />
     </x-slot>
 
     <div class="py-8">
@@ -12,20 +12,20 @@
                 @endif
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                        <input name="name" type="text" value="{{ old('name', $customer->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <input id="name" name="name" type="text" value="{{ old('name', $customer->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Teléfono</label>
-                        <input name="phone" type="text" value="{{ old('phone', $customer->phone) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                        <input id="phone" name="phone" type="text" value="{{ old('phone', $customer->phone) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Dirección</label>
-                        <input name="address" type="text" value="{{ old('address', $customer->address) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="address" class="block text-sm font-medium text-gray-700">Dirección</label>
+                        <input id="address" name="address" type="text" value="{{ old('address', $customer->address) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Notas</label>
-                        <textarea name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $customer->notes) }}</textarea>
+                        <label for="notes" class="block text-sm font-medium text-gray-700">Notas</label>
+                        <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $customer->notes) }}</textarea>
                     </div>
                 </div>
                 <label class="flex items-center gap-2 text-sm text-gray-700">
@@ -34,7 +34,7 @@
                 </label>
                 <div class="flex items-center justify-end gap-3">
                     <a href="{{ route('customers.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar</button>
+                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar</button>
                 </div>
             </form>
         </div>

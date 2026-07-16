@@ -1,10 +1,11 @@
 @php use App\Support\Money; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Clientes</h2>
-            <a href="{{ route('customers.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nuevo cliente</a>
-        </div>
+        <x-page-header title="Clientes" description="Administra los clientes registrados y su estado de cuenta.">
+            <x-slot name="action">
+                <a href="{{ route('customers.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Nuevo cliente</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -38,8 +39,8 @@
                                 </td>
                                 <td class="px-4 py-3 text-right">
                                     <div class="flex justify-end gap-4">
-                                        <a href="{{ route('receivables.index') }}" class="text-emerald-600">Fiados</a>
-                                        <a href="{{ route('customers.edit', $customer) }}" class="text-emerald-600">Editar</a>
+                                        <a href="{{ route('receivables.index') }}" class="text-emerald-700 hover:text-emerald-900">Fiados</a>
+                                        <a href="{{ route('customers.edit', $customer) }}" class="text-emerald-700 hover:text-emerald-900">Editar</a>
                                     </div>
                                 </td>
                             </tr>
