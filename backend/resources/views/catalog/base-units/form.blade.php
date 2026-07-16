@@ -5,7 +5,7 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
-            <form method="POST" action="{{ $baseUnit->exists ? route('base-units.update', $baseUnit) : route('base-units.store') }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-border">
+            <form method="POST" action="{{ $baseUnit->exists ? route('base-units.update', $baseUnit) : route('base-units.store') }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-catalog-border">
                 @csrf
                 @if ($baseUnit->exists)
                     @method('PUT')
