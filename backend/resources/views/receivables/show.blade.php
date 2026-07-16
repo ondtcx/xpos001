@@ -23,7 +23,15 @@
                         <div><dt class="text-gray-500">Original</dt><dd class="font-medium text-gray-900">{{ Money::format($receivable->original_amount) }}</dd></div>
                         <div><dt class="text-gray-500">Pendiente</dt><dd class="font-medium text-gray-900">{{ Money::format($receivable->pending_amount) }}</dd></div>
                         <div><dt class="text-gray-500">Fecha</dt><dd class="font-medium text-gray-900">{{ optional($receivable->opened_at)->format('Y-m-d H:i') }}</dd></div>
-                        <div><dt class="text-gray-500">Estado</dt><dd class="font-medium text-gray-900">{{ $receivable->status }}</dd></div>
+                        <div><dt class="text-gray-500">Estado</dt><dd>
+                            @if ($receivable->status === 'open')
+                                <x-status-badge tone="warning">Abierta</x-status-badge>
+                            @elseif ($receivable->status === 'paid')
+                                <x-status-badge tone="success">Pagada</x-status-badge>
+                            @else
+                                <x-status-badge tone="danger">Cancelada</x-status-badge>
+                            @endif
+                        </dd></div>
                     </dl>
                 </div>
 
@@ -48,13 +56,17 @@
                         </div>
                         <div>
                             <dt class="text-gray-500">Prioridad</dt>
-                            <dd @class([
-                                'font-medium',
-                                'text-emerald-700' => $receivableTracking['aging_label'] === 'Deuda reciente',
-                                'text-amber-700' => $receivableTracking['aging_label'] === 'Seguimiento activo',
-                                'text-red-700' => $receivableTracking['aging_label'] === 'Deuda antigua',
-                                'text-gray-900' => $receivableTracking['aging_label'] === 'Cuenta cerrada',
-                            ])>{{ $receivableTracking['aging_label'] }}</dd>
+                            <dd>
+                                @php
+                                    $agingTone = match ($receivableTracking['aging_label']) {
+                                        'Deuda reciente' => 'success',
+                                        'Seguimiento activo' => 'warning',
+                                        'Deuda antigua' => 'danger',
+                                        default => 'neutral',
+                                    };
+                                @endphp
+                                <x-status-badge :tone="$agingTone">{{ $receivableTracking['aging_label'] }}</x-status-badge>
+                            </dd>
                         </div>
                     </dl>
                 </div>

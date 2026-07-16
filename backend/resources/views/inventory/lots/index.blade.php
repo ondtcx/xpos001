@@ -48,7 +48,13 @@
                                 <td class="px-4 py-3 text-gray-700">{{ number_format((float) $lot->initial_quantity, 3, '.', '') }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ number_format((float) $lot->available_quantity, 3, '.', '') }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ Money::format($lot->unit_cost_final_amount) }}</td>
-                                <td class="px-4 py-3 text-gray-700">{{ $lot->status }}</td>
+                                <td class="px-4 py-3">
+                                    @if ($lot->status === 'active')
+                                        <x-status-badge tone="success">Disponible</x-status-badge>
+                                    @else
+                                        <x-status-badge tone="neutral">Agotado</x-status-badge>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr><td colspan="8" class="px-4 py-6 text-center text-gray-500">Aún no hay lotes registrados.</td></tr>

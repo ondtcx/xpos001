@@ -67,7 +67,13 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $entry->variant->name }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ number_format((float) $entry->quantity, 3, '.', '') }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ Money::format($entry->estimated_unit_cost_amount) }}</td>
-                                <td class="px-4 py-3 text-gray-700">{{ $entry->is_audited ? 'Sí' : 'No' }}</td>
+                                <td class="px-4 py-3">
+                                    @if ($entry->is_audited)
+                                        <x-status-badge tone="success">Sí</x-status-badge>
+                                    @else
+                                        <x-status-badge tone="warning">No</x-status-badge>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">Aún no hay inventario inicial registrado.</td></tr>

@@ -29,7 +29,13 @@
                                 <td class="px-4 py-3 text-gray-900">{{ $supplier->name }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $supplier->phone ?: '—' }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $supplier->tax_id ?: '—' }}</td>
-                                <td class="px-4 py-3 text-gray-700">{{ $supplier->is_active ? 'Activo' : 'Inactivo' }}</td>
+                                <td class="px-4 py-3">
+                                    @if ($supplier->is_active)
+                                        <x-status-badge tone="success">Activo</x-status-badge>
+                                    @else
+                                        <x-status-badge tone="neutral">Inactivo</x-status-badge>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-right"><a href="{{ route('suppliers.edit', $supplier) }}" class="text-emerald-600 hover:text-emerald-800">Editar</a></td>
                             </tr>
                         @empty

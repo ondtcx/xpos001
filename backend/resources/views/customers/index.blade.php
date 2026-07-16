@@ -29,7 +29,13 @@
                                 <td class="px-4 py-3 text-gray-900">{{ $customer->name }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $customer->phone ?: '—' }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ Money::format((int) ($customer->pending_receivable_amount ?? 0)) }}</td>
-                                <td class="px-4 py-3 text-gray-700">{{ $customer->is_active ? 'Activo' : 'Inactivo' }}</td>
+                                <td class="px-4 py-3">
+                                    @if ($customer->is_active)
+                                        <x-status-badge tone="success">Activo</x-status-badge>
+                                    @else
+                                        <x-status-badge tone="neutral">Inactivo</x-status-badge>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-right">
                                     <div class="flex justify-end gap-4">
                                         <a href="{{ route('receivables.index') }}" class="text-emerald-600">Fiados</a>
