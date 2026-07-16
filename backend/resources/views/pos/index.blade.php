@@ -169,18 +169,20 @@
             </div>
 
             <!-- RIGHT COLUMN: Checkout panel -->
-            <aside class="flex flex-col gap-4 rounded-3xl border border-gray-200 bg-white p-5">
+            <aside class="flex max-h-[85vh] flex-col gap-4 overflow-y-auto rounded-3xl border border-gray-200 bg-white p-5">
                 <!-- Customer dropdown with inline search -->
-                <div class="relative" @click.outside="$store.posStore.clienteOpen = false">
+                <div class="relative" @click.outside="$store.posStore.closeCliente()">
                     <label class="text-xs font-semibold uppercase tracking-wide text-gray-500">Cliente</label>
                     <button type="button"
-                            @click="$store.posStore.clienteOpen = !$store.posStore.clienteOpen; $store.posStore.clienteHighlight = -1"
-                            class="mt-1 flex w-full items-center justify-between rounded-2xl border border-gray-300 bg-white px-3 py-2 text-left text-sm shadow-sm">
+                            @click="$store.posStore.toggleCliente()"
+                            :aria-expanded="$store.posStore.clienteOpen"
+                            :class="$store.posStore.clienteOpen ? 'border-emerald-400 bg-emerald-50' : 'border-gray-300 bg-white'"
+                            class="mt-1 flex w-full items-center justify-between rounded-2xl border px-3 py-2 text-left text-sm shadow-sm">
                         <span>
                             <span class="font-semibold" x-text="$store.posStore.cliente?.nombre || 'Seleccionar'"></span>
                             <span class="ml-2 text-xs text-gray-500" x-text="$store.posStore.cliente?.documento || ''"></span>
                         </span>
-                        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg class="h-4 w-4 text-gray-400 transition-transform" :class="$store.posStore.clienteOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
@@ -191,7 +193,7 @@
                         <input type="text"
                                x-model="$store.posStore.clienteQuery"
                                @input="$store.posStore.clienteHighlight = -1"
-                               @keydown.escape.prevent="$store.posStore.clienteOpen = false"
+                               @keydown.escape.prevent="$store.posStore.closeCliente()"
                                @keydown.arrow-down.prevent="$store.posStore.moveClienteHighlight(1)"
                                @keydown.arrow-up.prevent="$store.posStore.moveClienteHighlight(-1)"
                                @keydown.enter.prevent="if ($store.posStore.clienteHighlight >= 0) { $store.posStore.setCliente($store.posStore.filteredClientes[$store.posStore.clienteHighlight]); }"
@@ -223,15 +225,18 @@
                 <div class="grid grid-cols-3 gap-2">
                     <button type="button"
                             @click="$store.posStore.setMetodo('efectivo')"
+                            :aria-pressed="$store.posStore.metodo === 'efectivo'"
                             :class="$store.posStore.metodo === 'efectivo' ? 'border-emerald-400 bg-emerald-50 text-emerald-700' : 'border-gray-300 bg-white text-gray-700'"
                             class="rounded-2xl border px-3 py-2 text-sm font-medium">Efectivo</button>
                     <button type="button"
                             @click="$store.posStore.setMetodo('transfer')"
+                            :aria-pressed="$store.posStore.metodo === 'transfer'"
                             :class="$store.posStore.metodo === 'transfer' ? 'border-emerald-400 bg-emerald-50 text-emerald-700' : 'border-gray-300 bg-white text-gray-700'"
                             class="rounded-2xl border px-3 py-2 text-sm font-medium">Transfer.</button>
                     <button type="button"
                             @click="$store.posStore.setMetodo('fiado')"
                             :disabled="$store.posStore.cliente?.id === $store.posStore.generalId"
+                            :aria-pressed="$store.posStore.metodo === 'fiado'"
                             :class="[
                                 $store.posStore.metodo === 'fiado' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-300 bg-white text-gray-700',
                                 $store.posStore.cliente?.id === $store.posStore.generalId ? 'cursor-not-allowed opacity-50' : ''

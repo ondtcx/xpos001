@@ -191,7 +191,7 @@ class PosV2CustomerTest extends TestCase
         $content = $response->getContent();
 
         // The new view exposes keyboard nav bindings on the customer dropdown input.
-        $this->assertStringContainsString('@keydown.escape.prevent="$store.posStore.clienteOpen = false"', $content);
+        $this->assertStringContainsString('@keydown.escape.prevent="$store.posStore.closeCliente()"', $content);
         $this->assertStringContainsString('@keydown.arrow-down.prevent="$store.posStore.moveClienteHighlight(1)"', $content);
         $this->assertStringContainsString('@keydown.arrow-up.prevent="$store.posStore.moveClienteHighlight(-1)"', $content);
         $this->assertStringContainsString('@keydown.enter.prevent="if ($store.posStore.clienteHighlight >= 0) { $store.posStore.setCliente($store.posStore.filteredClientes[$store.posStore.clienteHighlight]); }"', $content);

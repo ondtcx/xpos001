@@ -142,6 +142,18 @@ export function registerPosStore(Alpine, initial = {}) {
       }
       this.metodo = metodo;
     },
+    toggleCliente() {
+      this.clienteOpen = !this.clienteOpen;
+      this.clienteHighlight = -1;
+      if (!this.clienteOpen) {
+        this.clienteQuery = '';
+      }
+    },
+    closeCliente() {
+      this.clienteOpen = false;
+      this.clienteHighlight = -1;
+      this.clienteQuery = '';
+    },
     setRecibido(value) {
       this.recibido = String(value ?? '');
     },
