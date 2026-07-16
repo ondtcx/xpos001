@@ -1,7 +1,7 @@
 @php use App\Support\Money; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">Reportes operativos</h2>
+        <x-page-header title="Reportes operativos" description="Consulta métricas de ventas, compras, cobranza e inventario del período seleccionado." />
     </x-slot>
 
     <div class="py-8">
@@ -27,15 +27,15 @@
 
             <form method="GET" action="{{ route('reports.index') }}" class="grid gap-4 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 md:grid-cols-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Fecha inicio</label>
-                    <input name="start_date" type="date" value="{{ $start->toDateString() }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <label for="start_date" class="block text-sm font-medium text-gray-700">Fecha inicio</label>
+                    <input id="start_date" name="start_date" type="date" value="{{ $start->toDateString() }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Fecha fin</label>
-                    <input name="end_date" type="date" value="{{ $end->toDateString() }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <label for="end_date" class="block text-sm font-medium text-gray-700">Fecha fin</label>
+                    <input id="end_date" name="end_date" type="date" value="{{ $end->toDateString() }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 </div>
                 <div class="flex items-end gap-3 md:col-span-2">
-                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Filtrar</button>
+                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Filtrar</button>
                     <a href="{{ route('reports.export.csv', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">CSV ejecutivo</a>
                     <a href="{{ route('reports.print', ['start_date' => $start->toDateString(), 'end_date' => $end->toDateString()]) }}" target="_blank" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Vista imprimible</a>
                 </div>
