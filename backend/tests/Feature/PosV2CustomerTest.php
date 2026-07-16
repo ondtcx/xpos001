@@ -155,6 +155,54 @@ class PosV2CustomerTest extends TestCase
     }
 
     #[Test]
+    public function quick_create_endpoint_creates_an_active_customer_with_document(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->postJson(route('pos.customers.store'), [
+            'name' => 'Lucía Torres',
+            'document' => '0934567890',
+            'phone' => '0991112233',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['name' => 'Lucía Torres', 'document' => '0934567890']);
+
+        $this->assertDatabaseHas('customers', [
+            'name' => 'Lucía Torres',
+            'document' => '0934567890',
+            'is_active' => true,
+        ]);
+    }
+
+    #[Test]
+    public function quick_create_endpoint_requires_name(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->postJson(route('pos.customers.store'), ['document' => '0934567890']);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['name']);
+    }
+
+    #[Test]
+    public function newly_created_customer_is_immediately_searchable(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->postJson(route('pos.customers.store'), ['name' => 'Lucía Torres', 'document' => '0934567890']);
+
+        $response = $this->getJson(route('pos.customers.search', ['q' => 'Lucía']));
+
+        $response->assertOk();
+        $response->assertJsonFragment(['name' => 'Lucía Torres']);
+    }
+
+    #[Test]
     public function pos_refuses_render_without_default_customer(): void
     {
         // New v2 view (enabled by default in PR 3) surfaces a missing-default guard.

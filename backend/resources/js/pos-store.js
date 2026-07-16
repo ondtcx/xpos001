@@ -37,6 +37,10 @@ export function registerPosStore(Alpine, initial = {}) {
     clienteHighlight: -1,
     clienteResults: [],
     clienteSearching: false,
+    clienteCreateOpen: false,
+    clienteCreateForm: { name: '', document: '', phone: '' },
+    clienteCreateSaving: false,
+    clienteCreateErrors: {},
 
     // --- Getters (Alpine evaluates these as functions on the store) ---
     get subtotal() {
@@ -187,6 +191,57 @@ export function registerPosStore(Alpine, initial = {}) {
           this.clienteSearching = false;
         }
       }, 250);
+    },
+    openClienteCreate() {
+      this.clienteCreateOpen = true;
+      this.clienteCreateForm = { name: this.clienteQuery || '', document: '', phone: '' };
+      this.clienteCreateErrors = {};
+    },
+    closeClienteCreate() {
+      this.clienteCreateOpen = false;
+      this.clienteCreateErrors = {};
+    },
+    async submitClienteCreate() {
+      if (this.clienteCreateSaving) return;
+      this.clienteCreateSaving = true;
+      this.clienteCreateErrors = {};
+
+      const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+
+      try {
+        const response = await fetch('/pos/customers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': csrf,
+          },
+          body: JSON.stringify(this.clienteCreateForm),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          this.clientes.push(data);
+          this.clienteCreateOpen = false;
+          this.closeCliente();
+          this.setCliente(data);
+          this.aviso = { tipo: 'success', mensaje: `Cliente "${data.name}" creado.` };
+          setTimeout(() => this.cerrarAviso(), 3500);
+          return;
+        }
+
+        const data = await response.json().catch(() => ({}));
+        if (response.status === 422 && data?.errors) {
+          this.clienteCreateErrors = data.errors;
+        } else {
+          this.aviso = { tipo: 'error', mensaje: data?.message ?? 'No se pudo crear el cliente.' };
+        }
+      } catch (e) {
+        this.aviso = { tipo: 'error', mensaje: 'Error de red al crear el cliente.' };
+      } finally {
+        this.clienteCreateSaving = false;
+      }
     },
     setRecibido(value) {
       this.recibido = String(value ?? '');

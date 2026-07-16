@@ -94,6 +94,29 @@ class PosController extends Controller
         ]);
     }
 
+    public function storeCustomer(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'document' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $customer = Customer::query()->create([
+            ...$validated,
+            'is_active' => true,
+        ]);
+
+        return response()->json([
+            'id' => $customer->id,
+            'name' => $customer->name,
+            'document' => $customer->document,
+            'phone' => $customer->phone,
+            'is_default' => false,
+            'saldo_fiado' => 0,
+        ], 201);
+    }
+
     public function store(
         StorePosSaleRequest $request,
         PosSaleDraftBuilder $draftBuilder,

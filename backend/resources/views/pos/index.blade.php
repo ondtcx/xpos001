@@ -219,6 +219,11 @@
                             <li x-show="$store.posStore.clienteSearching" class="px-3 py-2 text-xs text-gray-500">Buscando...</li>
                             <li x-show="!$store.posStore.clienteSearching && $store.posStore.filteredClientes.length === 0" class="px-3 py-2 text-xs text-gray-500">Sin resultados.</li>
                         </ul>
+                        <button type="button"
+                                @click="$store.posStore.openClienteCreate()"
+                                class="block w-full rounded-b-2xl border-t border-gray-200 px-3 py-2 text-left text-sm font-medium text-emerald-700 hover:bg-emerald-50">
+                            + Nuevo cliente
+                        </button>
                     </div>
                 </div>
 
@@ -300,6 +305,46 @@
                     <span x-show="$store.posStore.procesando" style="display: none;">Procesando...</span>
                 </button>
             </aside>
+
+            <!-- Quick-create customer modal -->
+            <div x-show="$store.posStore.clienteCreateOpen"
+                 class="fixed inset-0 z-50 overflow-y-auto px-4 py-6"
+                 style="display: none;">
+                <div class="fixed inset-0 bg-gray-500 opacity-75" @click="$store.posStore.closeClienteCreate()"></div>
+                <div class="relative mx-auto mb-6 w-full max-w-md rounded-lg bg-white shadow-xl">
+                    <form @submit.prevent="$store.posStore.submitClienteCreate()" class="space-y-4 p-6">
+                        <h3 class="text-base font-semibold text-gray-900">Nuevo cliente</h3>
+                        <div>
+                            <label for="cliente-create-name" class="block text-sm font-medium text-gray-700">Nombre</label>
+                            <input id="cliente-create-name" type="text" x-model="$store.posStore.clienteCreateForm.name"
+                                   class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm" required>
+                            <p x-show="$store.posStore.clienteCreateErrors.name" x-text="$store.posStore.clienteCreateErrors.name?.[0]" class="mt-1 text-sm text-red-600"></p>
+                        </div>
+                        <div>
+                            <label for="cliente-create-document" class="block text-sm font-medium text-gray-700">Documento</label>
+                            <input id="cliente-create-document" type="text" x-model="$store.posStore.clienteCreateForm.document"
+                                   class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm">
+                            <p x-show="$store.posStore.clienteCreateErrors.document" x-text="$store.posStore.clienteCreateErrors.document?.[0]" class="mt-1 text-sm text-red-600"></p>
+                        </div>
+                        <div>
+                            <label for="cliente-create-phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                            <input id="cliente-create-phone" type="text" x-model="$store.posStore.clienteCreateForm.phone"
+                                   class="mt-1 block w-full rounded-md border-gray-300 text-sm shadow-sm">
+                            <p x-show="$store.posStore.clienteCreateErrors.phone" x-text="$store.posStore.clienteCreateErrors.phone?.[0]" class="mt-1 text-sm text-red-600"></p>
+                        </div>
+                        <div class="flex justify-end gap-3">
+                            <button type="button" @click="$store.posStore.closeClienteCreate()"
+                                    class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Cancelar</button>
+                            <button type="submit" :disabled="$store.posStore.clienteCreateSaving"
+                                    :class="$store.posStore.clienteCreateSaving ? 'cursor-not-allowed bg-gray-300' : 'bg-emerald-600 hover:bg-emerald-700'"
+                                    class="rounded-md px-4 py-2 text-sm font-medium text-white transition-colors">
+                                <span x-show="!$store.posStore.clienteCreateSaving">Crear cliente</span>
+                                <span x-show="$store.posStore.clienteCreateSaving" style="display: none;">Guardando...</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         @endif
     </div>

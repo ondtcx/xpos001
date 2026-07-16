@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('pos', [PosController::class, 'index'])->name('pos.index');
     Route::post('pos', [PosController::class, 'store'])->name('pos.store');
     Route::get('pos/customers/search', [PosController::class, 'searchCustomers'])->name('pos.customers.search');
+    Route::post('pos/customers', [PosController::class, 'storeCustomer'])->name('pos.customers.store');
     Route::resource('sales', SaleController::class)->only(['index', 'create', 'show', 'store']);
     Route::get('sales/search/presentations', [SaleController::class, 'search'])->name('sales.search');
     Route::post('sales/{sale}/void', [SaleController::class, 'void'])->name('sales.void');
