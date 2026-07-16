@@ -4,7 +4,7 @@
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-800">Caja</h2>
             @if ($currentSession)
-                <a href="{{ route('cash.close-form', $currentSession) }}" class="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white">Cerrar caja actual</a>
+                <a href="{{ route('cash.close-form', $currentSession) }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Cerrar caja actual</a>
             @else
                 <a href="{{ route('cash.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Abrir caja</a>
             @endif

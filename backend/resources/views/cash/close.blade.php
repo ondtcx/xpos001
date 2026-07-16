@@ -29,7 +29,7 @@
                 </div>
                 <div class="flex items-center justify-end gap-3">
                     <a href="{{ route('cash.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                    <button class="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white">Cerrar caja</button>
+                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Cerrar caja</button>
                 </div>
             </form>
         </div>
