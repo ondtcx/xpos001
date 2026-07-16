@@ -1,13 +1,11 @@
 @php use App\Support\Money; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">Cuenta por cobrar #{{ $receivable->id }}</h2>
-                <p class="text-sm text-gray-500">Cliente: {{ $receivable->customer->name }}</p>
-            </div>
-            <a href="{{ route('receivables.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Volver</a>
-        </div>
+        <x-page-header :title="'Cuenta por cobrar #' . $receivable->id" :description="'Cliente: ' . $receivable->customer->name">
+            <x-slot name="action">
+                <a href="{{ route('receivables.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Volver</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -111,25 +109,25 @@
                     @csrf
                     <h3 class="font-semibold text-gray-900">Registrar abono</h3>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Monto</label>
-                        <input name="amount" type="number" step="0.01" min="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Monto</label>
+                        <input id="amount" name="amount" type="number" step="0.01" min="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Método de pago</label>
-                        <select name="payment_method" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="payment_method" class="block text-sm font-medium text-gray-700">Método de pago</label>
+                        <select id="payment_method" name="payment_method" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             <option value="cash">Efectivo</option>
                             <option value="transfer">Transferencia</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Fecha</label>
-                        <input name="paid_at" type="datetime-local" value="{{ now()->format('Y-m-d\TH:i') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="paid_at" class="block text-sm font-medium text-gray-700">Fecha</label>
+                        <input id="paid_at" name="paid_at" type="datetime-local" value="{{ now()->format('Y-m-d\TH:i') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Notas</label>
-                        <textarea name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                        <label for="notes" class="block text-sm font-medium text-gray-700">Notas</label>
+                        <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
                     </div>
-                    <button class="w-full rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar abono</button>
+                    <button class="w-full rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar abono</button>
                     @if ($errors->has('amount'))
                         <p class="text-sm text-red-600">{{ $errors->first('amount') }}</p>
                     @endif

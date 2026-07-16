@@ -1,10 +1,11 @@
 @php use App\Support\Money; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Fiados y cuentas por cobrar</h2>
-            <a href="{{ route('customers.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver clientes</a>
-        </div>
+        <x-page-header title="Fiados y cuentas por cobrar" description="Consulta la antigüedad de deuda y prioriza la cobranza.">
+            <x-slot name="action">
+                <a href="{{ route('customers.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver clientes</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -73,7 +74,7 @@
                                         <x-status-badge tone="danger">Cancelada</x-status-badge>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-right"><a href="{{ route('receivables.show', $receivable) }}" class="text-emerald-600">Ver detalle</a></td>
+                                <td class="px-4 py-3 text-right"><a href="{{ route('receivables.show', $receivable) }}" class="text-emerald-700 hover:text-emerald-900">Ver detalle</a></td>
                             </tr>
                         @empty
                             <tr><td colspan="7" class="px-4 py-6 text-center text-gray-500">Aún no hay cuentas por cobrar registradas.</td></tr>
