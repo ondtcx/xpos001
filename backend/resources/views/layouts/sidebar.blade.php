@@ -54,7 +54,7 @@
                     ['route' => 'products.index',    'label' => 'Productos',    'patterns' => ['products.*'],                         'icon' => 'archive-box'],
                     ['route' => 'suppliers.index',   'label' => 'Proveedores',  'patterns' => ['suppliers.*'],                        'icon' => 'truck'],
                     ['route' => 'purchases.index',   'label' => 'Compras',      'patterns' => ['purchases.*'],                        'icon' => 'arrow-down-tray'],
-                    ['route' => 'opening-inventory.index', 'label' => 'Inventario', 'patterns' => ['opening-inventory.*', 'inventory-lots.*'], 'icon' => 'inbox-arrow-down'],
+                    ['route' => 'inventory-stock.index', 'label' => 'Inventario', 'patterns' => ['inventory-stock.*', 'opening-inventory.*', 'inventory-lots.*'], 'icon' => 'inbox-arrow-down'],
                     ['route' => 'customers.index',   'label' => 'Clientes',     'patterns' => ['customers.*', 'receivables.*'],       'icon' => 'users'],
                     ['route' => 'sales.index',       'label' => 'Ventas',       'patterns' => ['sales.*'],                            'icon' => 'currency-dollar'],
                     ['route' => 'cash.index',        'label' => 'Caja',         'patterns' => ['cash.*'],                             'icon' => 'banknotes'],

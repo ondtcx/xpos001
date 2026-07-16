@@ -3,14 +3,18 @@
     <x-slot name="header">
         <x-page-header title="Lotes de inventario" description="Consulta la disponibilidad y el estado de los lotes de inventario.">
             <x-slot name="action">
-                <a href="{{ route('opening-inventory.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Volver a inventario</a>
+                <a href="{{ route('inventory-stock.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Volver a inventario</a>
             </x-slot>
         </x-page-header>
     </x-slot>
 
     <div class="py-8">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="mb-4 grid gap-4 md:grid-cols-3">
+            <div class="mb-4 grid gap-4 md:grid-cols-4">
+                <a href="{{ route('inventory-stock.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
+                    <p class="text-sm text-gray-500">Stock actual</p>
+                    <p class="mt-1 font-semibold text-gray-900">Ver stock por variante</p>
+                </a>
                 <a href="{{ route('opening-inventory.create') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm text-gray-500">Inventario inicial</p>
                     <p class="mt-1 font-semibold text-gray-900">Registrar nueva tanda</p>

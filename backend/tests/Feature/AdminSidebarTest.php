@@ -19,7 +19,7 @@ class AdminSidebarTest extends TestCase
         'products.index',
         'suppliers.index',
         'purchases.index',
-        'opening-inventory.index',
+        'inventory-stock.index',
         'customers.index',
         'sales.index',
         'cash.index',
@@ -90,6 +90,29 @@ class AdminSidebarTest extends TestCase
 
         // REQ-2: The active link should be the Categorias link
         $response->assertSeeText('Categorías');
+    }
+
+    #[Test]
+    public function active_route_highlighting_for_inventory_stock(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->get(route('inventory-stock.index'));
+        $response->assertOk();
+
+        // REQ-2: The active link MUST show bg-emerald-50 text-emerald-700
+        $response->assertSee('bg-emerald-50 text-emerald-700', false);
+
+        // REQ-2: Exactly one link should be active
+        $this->assertEquals(
+            1,
+            substr_count($response->content(), 'bg-emerald-50 text-emerald-700'),
+            'Expected exactly one active link with bg-emerald-50 text-emerald-700',
+        );
+
+        // REQ-2: The active link should be the Inventario link
+        $response->assertSeeText('Inventario');
     }
 
     #[Test]

@@ -4,6 +4,7 @@
         <x-page-header title="Inventario inicial" description="Registra y revisa las tandas de inventario inicial cargadas al sistema.">
             <x-slot name="action">
                 <div class="flex gap-3">
+                    <a href="{{ route('inventory-stock.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver stock actual</a>
                     <a href="{{ route('inventory-lots.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver lotes</a>
                     <a href="{{ route('opening-inventory.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Registrar inventario inicial</a>
                 </div>

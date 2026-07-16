@@ -5,6 +5,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CashSessionController;
 use App\Http\Controllers\InventoryLotController;
+use App\Http\Controllers\InventoryStockController;
 use App\Http\Controllers\OpeningInventoryController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\CustomerController;
@@ -46,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('purchases/{purchase}/void', [PurchaseController::class, 'void'])->name('purchases.void');
     Route::resource('opening-inventory', OpeningInventoryController::class)->only(['index', 'create', 'store']);
     Route::resource('inventory-lots', InventoryLotController::class)->only(['index']);
+    Route::get('inventory-stock', [InventoryStockController::class, 'index'])->name('inventory-stock.index');
     Route::resource('customers', CustomerController::class)->except(['show', 'destroy']);
     Route::get('pos', [PosController::class, 'index'])->name('pos.index');
     Route::post('pos', [PosController::class, 'store'])->name('pos.store');
