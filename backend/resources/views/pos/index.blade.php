@@ -191,8 +191,8 @@
                          class="absolute z-20 mt-1 w-full rounded-2xl border border-gray-200 bg-white shadow-lg"
                          style="display: none;">
                         <input type="text"
-                               x-model="$store.posStore.clienteQuery"
-                               @input="$store.posStore.clienteHighlight = -1"
+                               :value="$store.posStore.clienteQuery"
+                               @input="$store.posStore.searchCliente($event.target.value)"
                                @keydown.escape.prevent="$store.posStore.closeCliente()"
                                @keydown.arrow-down.prevent="$store.posStore.moveClienteHighlight(1)"
                                @keydown.arrow-up.prevent="$store.posStore.moveClienteHighlight(-1)"
@@ -216,7 +216,8 @@
                                     </button>
                                 </li>
                             </template>
-                            <li x-show="$store.posStore.filteredClientes.length === 0" class="px-3 py-2 text-xs text-gray-500">Sin resultados.</li>
+                            <li x-show="$store.posStore.clienteSearching" class="px-3 py-2 text-xs text-gray-500">Buscando...</li>
+                            <li x-show="!$store.posStore.clienteSearching && $store.posStore.filteredClientes.length === 0" class="px-3 py-2 text-xs text-gray-500">Sin resultados.</li>
                         </ul>
                     </div>
                 </div>

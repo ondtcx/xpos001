@@ -11,6 +11,7 @@ export function registerPosStore(Alpine, initial = {}) {
   const productos = Array.isArray(init.productos) ? init.productos : [];
   const clientes = Array.isArray(init.clientes) ? init.clientes : [];
   const defaultCliente = clientes.find((c) => c.is_default) ?? clientes[0] ?? null;
+  let clienteSearchTimer = null;
 
   Alpine.store('posStore', {
     // --- State ---
@@ -34,6 +35,8 @@ export function registerPosStore(Alpine, initial = {}) {
     clienteOpen: false,
     clienteQuery: '',
     clienteHighlight: -1,
+    clienteResults: [],
+    clienteSearching: false,
 
     // --- Getters (Alpine evaluates these as functions on the store) ---
     get subtotal() {
@@ -66,12 +69,9 @@ export function registerPosStore(Alpine, initial = {}) {
       });
     },
     get filteredClientes() {
-      const q = (this.clienteQuery || '').trim().toLowerCase();
+      const q = (this.clienteQuery || '').trim();
       if (q === '') return this.clientes;
-      return this.clientes.filter((c) => {
-        const haystack = [c.name, c.document, c.phone].filter(Boolean).join(' ').toLowerCase();
-        return haystack.includes(q);
-      });
+      return this.clienteResults;
     },
 
     // --- Actions ---
@@ -131,6 +131,7 @@ export function registerPosStore(Alpine, initial = {}) {
       this.clienteOpen = false;
       this.clienteHighlight = -1;
       this.clienteQuery = '';
+      this.clienteResults = [];
       // If Fiado is active and we just picked Cliente General, fall back to efectivo.
       if (this.metodo === 'fiado' && customer.id === this.generalId) {
         this.metodo = 'efectivo';
@@ -147,12 +148,45 @@ export function registerPosStore(Alpine, initial = {}) {
       this.clienteHighlight = -1;
       if (!this.clienteOpen) {
         this.clienteQuery = '';
+        this.clienteResults = [];
+        clearTimeout(clienteSearchTimer);
+        this.clienteSearching = false;
       }
     },
     closeCliente() {
       this.clienteOpen = false;
       this.clienteHighlight = -1;
       this.clienteQuery = '';
+      this.clienteResults = [];
+      clearTimeout(clienteSearchTimer);
+      this.clienteSearching = false;
+    },
+    searchCliente(query) {
+      this.clienteQuery = query;
+      this.clienteHighlight = -1;
+      clearTimeout(clienteSearchTimer);
+
+      const q = (query || '').trim();
+      if (q === '') {
+        this.clienteResults = [];
+        this.clienteSearching = false;
+        return;
+      }
+
+      this.clienteSearching = true;
+      clienteSearchTimer = setTimeout(async () => {
+        try {
+          const response = await fetch(`/pos/customers/search?q=${encodeURIComponent(q)}`, {
+            headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+          });
+          const data = await response.json();
+          this.clienteResults = Array.isArray(data.results) ? data.results : [];
+        } catch (e) {
+          this.clienteResults = [];
+        } finally {
+          this.clienteSearching = false;
+        }
+      }, 250);
     },
     setRecibido(value) {
       this.recibido = String(value ?? '');
