@@ -1,10 +1,11 @@
 @php use App\Support\Money; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Lotes de inventario</h2>
-            <a href="{{ route('opening-inventory.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Volver a inventario</a>
-        </div>
+        <x-page-header title="Lotes de inventario" description="Consulta la disponibilidad y el estado de los lotes de inventario.">
+            <x-slot name="action">
+                <a href="{{ route('opening-inventory.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Volver a inventario</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">

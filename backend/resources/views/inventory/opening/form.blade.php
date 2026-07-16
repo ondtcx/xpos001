@@ -7,16 +7,14 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">Registrar inventario inicial</h2>
-                <p class="text-sm text-gray-500">Carga stock de arranque con claridad sobre auditoría, lote generado y siguiente paso operativo.</p>
-            </div>
-            <div class="flex gap-3">
-                <a href="{{ route('inventory-lots.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver lotes</a>
-                <a href="{{ route('opening-inventory.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver historial</a>
-            </div>
-        </div>
+        <x-page-header title="Registrar inventario inicial" description="Carga stock de arranque con claridad sobre auditoría, lote generado y siguiente paso operativo.">
+            <x-slot name="action">
+                <div class="flex gap-3">
+                    <a href="{{ route('inventory-lots.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver lotes</a>
+                    <a href="{{ route('opening-inventory.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver historial</a>
+                </div>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -31,7 +29,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Variante</label>
+                            <label for="opening-variant-id" class="block text-sm font-medium text-gray-700">Variante</label>
                             <select id="opening-variant-id" name="variant_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                                 <option value="">Selecciona una variante</option>
                                 @foreach ($variants as $variant)
@@ -42,16 +40,16 @@
 
                         <div class="grid gap-6 md:grid-cols-3">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Cantidad</label>
+                                <label for="opening-quantity" class="block text-sm font-medium text-gray-700">Cantidad</label>
                                 <input id="opening-quantity" name="quantity" type="number" step="0.001" min="0.001" value="{{ old('quantity') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Costo estimado unitario</label>
+                                <label for="opening-cost" class="block text-sm font-medium text-gray-700">Costo estimado unitario</label>
                                 <input id="opening-cost" name="estimated_unit_cost" type="number" step="0.01" min="0" value="{{ old('estimated_unit_cost') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Fecha</label>
-                                <input name="recorded_at" type="datetime-local" value="{{ old('recorded_at', now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <label for="recorded_at" class="block text-sm font-medium text-gray-700">Fecha</label>
+                                <input id="recorded_at" name="recorded_at" type="datetime-local" value="{{ old('recorded_at', now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                             </div>
                         </div>
 
@@ -61,13 +59,13 @@
                         </label>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Notas</label>
-                            <textarea name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes') }}</textarea>
+                            <label for="notes" class="block text-sm font-medium text-gray-700">Notas</label>
+                            <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes') }}</textarea>
                         </div>
 
                         <div class="flex items-center justify-end gap-3">
                             <a href="{{ route('opening-inventory.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar inventario inicial</button>
+                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar inventario inicial</button>
                         </div>
                     </div>
 
