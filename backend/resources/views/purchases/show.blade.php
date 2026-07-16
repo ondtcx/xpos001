@@ -1,13 +1,11 @@
 @php use App\Models\PurchaseItem; use App\Support\Money; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">Detalle de compra #{{ $purchase->id }}</h2>
-                <p class="text-sm text-gray-500">Auditoría de cabecera, líneas, lotes creados y consumo posterior.</p>
-            </div>
-            <a href="{{ route('purchases.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Volver</a>
-        </div>
+        <x-page-header :title="'Compra #' . $purchase->id">
+            <x-slot name="action">
+                <a href="{{ route('purchases.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Volver</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">

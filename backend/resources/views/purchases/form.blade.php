@@ -11,13 +11,11 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">Nueva compra rápida</h2>
-                <p class="text-sm text-gray-500">Usa este modo cuando prima la velocidad: una línea por variante, sin prorrateos finos ni bonificaciones complejas.</p>
-            </div>
-            <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Ir a compra detallada</a>
-        </div>
+        <x-page-header title="Nueva compra rápida" description="Usa este modo cuando prima la velocidad: una línea por variante, sin prorrateos finos ni bonificaciones complejas.">
+            <x-slot name="action">
+                <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Ir a compra detallada</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -61,7 +59,7 @@
                     <div class="order-2 space-y-6 xl:order-1">
                         <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Proveedor</label>
+                                <label for="quick-supplier-id" class="block text-sm font-medium text-gray-700">Proveedor</label>
                                 <select id="quick-supplier-id" name="supplier_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                     <option value="">Sin proveedor</option>
                                     @foreach ($suppliers as $supplier)
@@ -70,15 +68,15 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Factura</label>
+                                <label for="quick-invoice-number" class="block text-sm font-medium text-gray-700">Factura</label>
                                 <input id="quick-invoice-number" name="invoice_number" type="text" value="{{ old('invoice_number') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Fecha</label>
-                                <input name="purchased_at" type="datetime-local" value="{{ old('purchased_at', now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <label for="purchased_at" class="block text-sm font-medium text-gray-700">Fecha</label>
+                                <input id="purchased_at" name="purchased_at" type="datetime-local" value="{{ old('purchased_at', now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Tipo de pago</label>
+                                <label for="quick-payment-type" class="block text-sm font-medium text-gray-700">Tipo de pago</label>
                                 <select id="quick-payment-type" name="payment_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                     <option value="cash" @selected(old('payment_type', 'cash') === 'cash')>Efectivo</option>
                                     <option value="transfer" @selected(old('payment_type') === 'transfer')>Transferencia</option>
@@ -92,8 +90,8 @@
                         </label>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Notas</label>
-                            <textarea name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes') }}</textarea>
+                            <label for="notes" class="block text-sm font-medium text-gray-700">Notas</label>
+                            <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes') }}</textarea>
                         </div>
 
                         <div class="overflow-hidden rounded-lg border border-gray-200">
@@ -102,7 +100,7 @@
                                     <h3 class="font-medium text-gray-800">Líneas de compra</h3>
                                     <p class="mt-1 text-sm text-gray-500">Una línea por variante. Si necesitas bonificaciones separadas o globales finos, cambia a compra detallada.</p>
                                 </div>
-                                <button type="button" id="add-item" class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white">Agregar línea</button>
+                                <button type="button" id="add-item" class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Agregar línea</button>
                             </div>
                             <div class="border-b border-gray-200 bg-white px-4 py-3">
                                 <label class="block text-sm font-medium text-gray-700">Ayuda rápida</label>
@@ -153,7 +151,7 @@
 
                         <div class="flex items-center justify-end gap-3">
                             <a href="{{ route('purchases.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar compra</button>
+                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar compra</button>
                         </div>
                     </div>
 

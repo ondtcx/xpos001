@@ -51,13 +51,11 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">{{ $isEditing ? 'Editar compra detallada' : 'Nueva compra detallada' }}</h2>
-                <p class="text-sm text-gray-500">Usa este modo cuando necesitas fidelidad: globales, bonificaciones separadas, descuentos e impuestos reproducibles.</p>
-            </div>
-            <a href="{{ route('purchases.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Volver a compra rápida</a>
-        </div>
+        <x-page-header :title="$isEditing ? 'Editar compra detallada' : 'Nueva compra detallada'" description="Usa este modo cuando necesitas fidelidad: globales, bonificaciones separadas, descuentos e impuestos reproducibles.">
+            <x-slot name="action">
+                <a href="{{ route('purchases.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Volver a compra rápida</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">
@@ -104,7 +102,7 @@
                     <div class="order-2 space-y-6 xl:order-1">
                         <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Proveedor</label>
+                                <label for="detailed-supplier-id" class="block text-sm font-medium text-gray-700">Proveedor</label>
                                 <select id="detailed-supplier-id" name="supplier_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                     <option value="">Sin proveedor</option>
                                     @foreach ($suppliers as $supplier)
@@ -114,17 +112,17 @@
                                 @error('supplier_id')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Factura</label>
+                                <label for="detailed-invoice-number" class="block text-sm font-medium text-gray-700">Factura</label>
                                 <input id="detailed-invoice-number" name="invoice_number" type="text" value="{{ old('invoice_number', $purchase?->invoice_number) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                 @error('invoice_number')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Fecha</label>
-                                <input name="purchased_at" type="datetime-local" value="{{ old('purchased_at', $purchase?->purchased_at?->format('Y-m-d\TH:i') ?? now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <label for="detailed-purchased-at" class="block text-sm font-medium text-gray-700">Fecha</label>
+                                <input id="detailed-purchased-at" name="purchased_at" type="datetime-local" value="{{ old('purchased_at', $purchase?->purchased_at?->format('Y-m-d\TH:i') ?? now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                                 @error('purchased_at')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Tipo de pago</label>
+                                <label for="detailed-payment-type" class="block text-sm font-medium text-gray-700">Tipo de pago</label>
                                 <select id="detailed-payment-type" name="payment_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                     <option value="cash" @selected(old('payment_type', $purchase?->payment_type ?? 'cash') === 'cash')>Efectivo</option>
                                     <option value="transfer" @selected(old('payment_type', $purchase?->payment_type) === 'transfer')>Transferencia</option>
@@ -136,30 +134,30 @@
 
                         <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Descuento global</label>
-                                <input name="global_discount_amount" type="number" step="0.01" min="0" value="{{ old('global_discount_amount', $purchase ? Money::centsToDollars($purchase->global_discount_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <label for="global_discount_amount" class="block text-sm font-medium text-gray-700">Descuento global</label>
+                                <input id="global_discount_amount" name="global_discount_amount" type="number" step="0.01" min="0" value="{{ old('global_discount_amount', $purchase ? Money::centsToDollars($purchase->global_discount_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">IVA global</label>
-                                <input name="global_tax_iva_amount" type="number" step="0.01" min="0" value="{{ old('global_tax_iva_amount', $purchase ? Money::centsToDollars($purchase->global_tax_iva_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <label for="global_tax_iva_amount" class="block text-sm font-medium text-gray-700">IVA global</label>
+                                <input id="global_tax_iva_amount" name="global_tax_iva_amount" type="number" step="0.01" min="0" value="{{ old('global_tax_iva_amount', $purchase ? Money::centsToDollars($purchase->global_tax_iva_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">ICE global</label>
-                                <input name="global_tax_ice_amount" type="number" step="0.01" min="0" value="{{ old('global_tax_ice_amount', $purchase ? Money::centsToDollars($purchase->global_tax_ice_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <label for="global_tax_ice_amount" class="block text-sm font-medium text-gray-700">ICE global</label>
+                                <input id="global_tax_ice_amount" name="global_tax_ice_amount" type="number" step="0.01" min="0" value="{{ old('global_tax_ice_amount', $purchase ? Money::centsToDollars($purchase->global_tax_ice_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Otro impuesto global</label>
-                                <input name="global_tax_other_amount" type="number" step="0.01" min="0" value="{{ old('global_tax_other_amount', $purchase ? Money::centsToDollars($purchase->global_tax_other_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <label for="global_tax_other_amount" class="block text-sm font-medium text-gray-700">Otro impuesto global</label>
+                                <input id="global_tax_other_amount" name="global_tax_other_amount" type="number" step="0.01" min="0" value="{{ old('global_tax_other_amount', $purchase ? Money::centsToDollars($purchase->global_tax_other_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Flete / otros costos</label>
-                                <input name="extra_costs_amount" type="number" step="0.01" min="0" value="{{ old('extra_costs_amount', $purchase ? Money::centsToDollars($purchase->extra_costs_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <label for="extra_costs_amount" class="block text-sm font-medium text-gray-700">Flete / otros costos</label>
+                                <input id="extra_costs_amount" name="extra_costs_amount" type="number" step="0.01" min="0" value="{{ old('extra_costs_amount', $purchase ? Money::centsToDollars($purchase->extra_costs_amount) : 0) }}" class="global-summary-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Notas</label>
-                            <textarea name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $purchase?->notes) }}</textarea>
+                            <label for="notes" class="block text-sm font-medium text-gray-700">Notas</label>
+                            <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $purchase?->notes) }}</textarea>
                         </div>
 
                         <div class="grid gap-4 rounded-lg border border-emerald-100 bg-emerald-50 p-4 lg:grid-cols-3 text-sm">
@@ -183,7 +181,7 @@
                                     <h3 class="font-medium text-gray-800">Líneas detalladas</h3>
                                     <p class="mt-1 text-sm text-gray-500">Usa línea normal para compra pagada y línea bonificación para producto distinto con costo manual o costo 0.</p>
                                 </div>
-                                <button type="button" id="add-item" class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white">Agregar línea</button>
+                                <button type="button" id="add-item" class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Agregar línea</button>
                             </div>
 
                             <div class="overflow-x-auto">
@@ -286,7 +284,7 @@
 
                         <div class="flex items-center justify-end gap-3">
                             <a href="{{ route('purchases.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">{{ $isEditing ? 'Actualizar compra detallada' : 'Guardar compra detallada' }}</button>
+                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">{{ $isEditing ? 'Actualizar compra detallada' : 'Guardar compra detallada' }}</button>
                         </div>
                     </div>
 

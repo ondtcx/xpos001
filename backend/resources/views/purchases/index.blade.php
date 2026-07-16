@@ -1,13 +1,14 @@
 @php use App\Support\Money; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-3">
-            <h2 class="text-xl font-semibold text-gray-800">Compras</h2>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('purchases.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Compra rápida</a>
-                <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Compra detallada</a>
-            </div>
-        </div>
+        <x-page-header title="Compras" description="Administra las compras registradas y su estado de confirmación.">
+            <x-slot name="action">
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('purchases.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Compra rápida</a>
+                    <a href="{{ route('purchases.detailed.create') }}" class="rounded-md border border-emerald-200 px-4 py-2 text-sm font-medium text-emerald-700">Compra detallada</a>
+                </div>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-8">

@@ -130,7 +130,7 @@ class PurchaseShowTest extends TestCase
         $response = $this->get(route('purchases.show', $purchase));
 
         $response->assertOk();
-        $response->assertSee('Detalle de compra #' . $purchase->id, false);
+        $response->assertSee('Compra #' . $purchase->id, false);
         $response->assertSee('Proveedor Auditoría', false);
         $response->assertSee('Compra para auditoría', false);
         $response->assertSee('Detallada', false);
