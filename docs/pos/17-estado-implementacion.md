@@ -130,6 +130,16 @@ Incluye:
 - costo unitario,
 - estado.
 
+### Stock actual
+
+Estado: ✅ implementado
+
+Incluye:
+
+- resumen por producto/variante de `SUM(inventory_lots.available_quantity)`,
+- incluye variantes activas sin stock (agotadas), no solo las que tienen lotes,
+- es la pantalla que abre el menú `Inventario` por defecto; `Inventario inicial` y `Lotes` quedan interlinkeadas desde ahí.
+
 ## Módulos del núcleo implementados y su estado
 
 ## 8. Ventas
@@ -257,7 +267,7 @@ Limitaciones actuales:
 - Los reportes ya cuentan con exportación formal en CSV, Excel y PDF para ventas, compras y cobranza; la cobertura de exportes más finos para caja/lotes queda como fase posterior.
 - Ya existen mejoras de UX operativa en compras, ventas, inventario inicial y dashboard para reducir fricción en tareas frecuentes.
 - Compras ya tiene separación clara entre flujo rápido y detallado, con cálculo encapsulado fuera del controller.
-- Compras ya impactan inventario real por lotes; cada compra confirmada crea lotes y movimientos de inventario. La confusión detectada no es de dominio sino de UX: el menú `Inventario` hoy abre `Inventario inicial`, no una vista resumida de stock actual.
+- Compras ya impactan inventario real por lotes; cada compra confirmada crea lotes y movimientos de inventario. La confusión de navegación ya se resolvió: existe `Stock actual` (`inventory-stock.index`), que lista todas las variantes activas con su disponibilidad real incluyendo las agotadas, y el menú `Inventario` la abre por defecto; `Inventario inicial` y `Lotes` quedan como vistas secundarias interlinkeadas entre sí.
 - Ventas ya tiene anulación total controlada y búsqueda POS en vivo; la anulación parcial sigue diferida por complejidad de caja/fiado/abonos.
 - Ventas funciona para casos completos, pero la pantalla principal todavía expone demasiada complejidad por defecto para el flujo habitual de mostrador: fecha editable, campos de pago mixto, override manual y confirmaciones de warning visibles aun cuando no aplican.
 - Caja ya cuenta con visibilidad consolidada por período y lectura histórica de diferencias; la siguiente prioridad ya no es caja/cobranza sino el refinamiento UX transversal del núcleo.
@@ -265,15 +275,11 @@ Limitaciones actuales:
 
 ## Hallazgos recientes de operación y UX
 
-### Inventario / stock
+### Inventario / stock — resuelto
 
 - El sistema **sí** lleva compras a inventario mediante lotes y movimientos (`purchase_entry`) tanto en compras rápidas como detalladas.
-- La pantalla llamada `Inventario` no representa stock general; representa **inventario inicial** y por eso solo lista entradas creadas en `opening_inventory_entries`.
-- En el dataset demo, `Funda mediana` aparece ahí porque fue la única carga de inventario inicial sembrada; el resto del catálogo entró por compras y se observa en `Ver lotes`.
-- La siguiente mejora correcta no es alterar el dominio de inventario sino **mejorar la semántica y la navegación**:
-  - separar claramente `Inventario inicial` de `Stock actual`,
-  - dejar `Lotes` como detalle trazable,
-  - ofrecer una vista resumida por producto/variante para consulta operativa rápida.
+- La confusión de navegación quedó resuelta: `Inventario inicial` (`opening_inventory_entries`), `Stock actual` (resumen por producto/variante, incluyendo agotados) y `Lotes` (detalle trazable) son ahora tres vistas separadas e interlinkeadas, con el menú `Inventario` abriendo `Stock actual` por defecto.
+- Alcance deliberadamente NO tocado: las 3 queries que calculan `SUM(inventory_lots.available_quantity)` (`PosController`, `PosSaleDraftBuilder`, `ReportController`) siguen duplicadas sin un service/scope compartido — quedó fuera de alcance a pedido explícito (solo UI/navegación, no refactor del cálculo).
 
 ### Ventas de mostrador
 
@@ -306,13 +312,12 @@ Limitaciones actuales:
   - fiado total o parcial desde efectivo,
   - transición a `Venta completa` cuando el caso lo requiere.
 - La base operativa quedó validada: el flujo de mostrador ya es útil y más directo que la pantalla completa para muchos casos habituales.
-- La deuda abierta principal ya no está en el dominio de ventas sino en la UX del frontend:
-  - los botones de acciones contextuales (`Asignar cliente`, `Ingresar monto recibido`, `Convertir a fiado`) todavía no se sienten consistentes en todos los recorridos,
-  - el operador espera que todos esos botones indiquen con claridad si están activados o desactivados,
-  - también espera que al volver a pulsar una acción ya usada esta se reactive o vuelva a mostrarse, sin comportamientos ambiguos,
-  - el layout lateral aún crece demasiado hacia abajo cuando se acumulan paneles abiertos,
-  - la selección de cliente sigue siendo básica y conviene evolucionarla hacia búsqueda explícita y alta rápida dentro de `POS`.
-- Conclusión actual: el frente `POS` ya no está bloqueado por reglas de negocio, sino por **consistencia de estado y composición de paneles** en la experiencia de uso.
+- La deuda de consistencia de estado quedó resuelta:
+  - el botón de cliente ahora indica su propio estado activo (igual que las tabs de método de pago), con `aria-expanded`/`aria-pressed` en los tres controles,
+  - cerrar el buscador de cliente sin elegir ya no deja una búsqueda vieja filtrando en silencio la próxima vez que se abre,
+  - el panel lateral tiene `max-height` + scroll interno, ya no crece sin límite al acumular paneles,
+  - la selección de cliente ahora hace búsqueda real contra el servidor (antes filtraba en el navegador un array con todos los clientes activos sin límite) y permite alta rápida de cliente sin salir del flujo de cobro.
+- Conclusión actual: el frente `POS` ya no está bloqueado por reglas de negocio ni por consistencia de estado del checkout. Deuda conocida y explícitamente aceptada: el CRUD de clientes de administración (`CustomerController`, `customers/form.blade.php`) sigue sin soportar el campo `document` — el alta rápida del POS sí lo soporta, pero vive en un endpoint aislado (`PosController::storeCustomer`) que no comparte código con el CRUD general.
 
 ## Dataset demo para pruebas manuales
 
@@ -359,19 +364,20 @@ php artisan db:seed --class=Database\\Seeders\\MinimarketDemoSeeder
 - `backend/database/seeders/MinimarketDemoSeeder.php`
 - `backend/tests/Feature/MinimarketDemoSeederTest.php`
 
+## Decisiones cerradas
+
+- **Fase 2 de Epic 12 (exportación formal Excel/PDF de lotes, movimientos de lote y caja): no se abre** salvo que aparezca una necesidad operativa concreta. Ventas, compras y cobranza ya tienen exportación formal (CSV/Excel/PDF); ampliarla a caja/lotes sin un caso de uso real sería completar por completar. Revisar esta decisión solo si surge un pedido operativo explícito, no por ciclo de refinamiento.
+
 ## Próximo bloque recomendado
 
-1. cerrar la decisión de no abrir fase 2 de Epic 12 salvo que aparezca una necesidad operativa concreta
-2. priorizar refinamientos del núcleo con fricción ya comprobada: `stock actual / semántica de inventario` y `venta rápida de mostrador`
-3. después reevaluar el siguiente frente funcional priorizado del backlog
+1. `venta rápida de mostrador`: seguir reduciendo la complejidad expuesta por defecto en la pantalla completa de ventas (fecha editable, pagos mixtos, overrides — ver sección "Ventas de mostrador" más arriba), reutilizando el dominio actual sin duplicar lógica de negocio
+2. después reevaluar el siguiente frente funcional priorizado del backlog
 
 ## Enfoque actual recomendado
 
 - consolidar primero la fidelidad del núcleo antes de abrir módulos nuevos,
-- priorizar que cualquier nueva exportación adicional responda a una necesidad operativa concreta, no a completar por completar,
-- resolver primero la fricción entre `inventario inicial`, `lotes` y `stock actual` antes de abrir automatizaciones de inventario más avanzadas,
+- priorizar que cualquier nueva exportación adicional responda a una necesidad operativa concreta, no a completar por completar (ver "Decisiones cerradas"),
 - tratar la `venta rápida` como refinamiento del núcleo POS, reutilizando el dominio actual y ocultando por defecto lo excepcional,
-- dentro de `POS`, priorizar ahora consistencia de estados de botones/paneles antes de abrir nuevas excepciones operativas,
 - mantener recargas fuera de iteración 1.
 
 ## Archivos clave actuales
