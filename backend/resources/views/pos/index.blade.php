@@ -240,7 +240,7 @@
                 </div>
 
                 <!-- Conditional: Efectivo input + chips + Vuelto -->
-                <div x-show="$store.posStore.metodo === 'efectivo'" class="flex flex-col gap-2" style="display: none;">
+                <div x-show="$store.posStore.metodo === 'efectivo'" class="flex flex-col gap-2">
                     <label class="text-xs font-semibold uppercase tracking-wide text-gray-500">Efectivo recibido</label>
                     <input type="number" step="0.01" min="0"
                            x-model="$store.posStore.recibido"
