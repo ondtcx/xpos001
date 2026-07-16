@@ -10,26 +10,26 @@
 
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Precio de venta</label>
-                        <input name="price" type="number" step="0.01" min="0.01" value="{{ old('price') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="price" class="block text-sm font-medium text-gray-700">Precio de venta</label>
+                        <input id="price" name="price" type="number" step="0.01" min="0.01" value="{{ old('price') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         @error('price') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Precio mínimo</label>
-                        <input name="min_price" type="number" step="0.01" min="0" value="{{ old('min_price') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="min_price" class="block text-sm font-medium text-gray-700">Precio mínimo</label>
+                        <input id="min_price" name="min_price" type="number" step="0.01" min="0" value="{{ old('min_price') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Margen sugerido (%)</label>
-                        <input name="suggested_margin_percent" type="number" step="0.01" min="0" value="{{ old('suggested_margin_percent') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="suggested_margin_percent" class="block text-sm font-medium text-gray-700">Margen sugerido (%)</label>
+                        <input id="suggested_margin_percent" name="suggested_margin_percent" type="number" step="0.01" min="0" value="{{ old('suggested_margin_percent') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Inicio de vigencia</label>
-                        <input name="starts_at" type="datetime-local" value="{{ old('starts_at', now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="starts_at" class="block text-sm font-medium text-gray-700">Inicio de vigencia</label>
+                        <input id="starts_at" name="starts_at" type="datetime-local" value="{{ old('starts_at', now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         @error('starts_at') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Motivo</label>
-                        <input name="reason" type="text" value="{{ old('reason') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Ej. Ajuste por aumento de costo">
+                        <label for="reason" class="block text-sm font-medium text-gray-700">Motivo</label>
+                        <input id="reason" name="reason" type="text" value="{{ old('reason') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Ej. Ajuste por aumento de costo">
                     </div>
                 </div>
 

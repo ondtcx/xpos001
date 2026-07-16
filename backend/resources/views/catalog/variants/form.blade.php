@@ -13,13 +13,13 @@
 
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Nombre de variante</label>
-                        <input name="name" type="text" value="{{ old('name', $variant->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Nombre de variante</label>
+                        <input id="name" name="name" type="text" value="{{ old('name', $variant->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Unidad base</label>
-                        <select name="base_unit_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="base_unit_id" class="block text-sm font-medium text-gray-700">Unidad base</label>
+                        <select id="base_unit_id" name="base_unit_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                             <option value="">Selecciona una unidad</option>
                             @foreach ($baseUnits as $unit)
                                 <option value="{{ $unit->id }}" @selected((string) old('base_unit_id', $variant->base_unit_id) === (string) $unit->id)>{{ $unit->name }} ({{ $unit->symbol }})</option>
@@ -28,16 +28,16 @@
                         @error('base_unit_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">SKU</label>
-                        <input name="sku" type="text" value="{{ old('sku', $variant->sku) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="sku" class="block text-sm font-medium text-gray-700">SKU</label>
+                        <input id="sku" name="sku" type="text" value="{{ old('sku', $variant->sku) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Código de barras</label>
-                        <input name="barcode" type="text" value="{{ old('barcode', $variant->barcode) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <label for="barcode" class="block text-sm font-medium text-gray-700">Código de barras</label>
+                        <input id="barcode" name="barcode" type="text" value="{{ old('barcode', $variant->barcode) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700">Notas</label>
-                        <textarea name="notes" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $variant->notes) }}</textarea>
+                        <label for="notes" class="block text-sm font-medium text-gray-700">Notas</label>
+                        <textarea id="notes" name="notes" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('notes', $variant->notes) }}</textarea>
                     </div>
                 </div>
 

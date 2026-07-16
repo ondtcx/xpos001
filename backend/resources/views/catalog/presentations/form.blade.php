@@ -13,13 +13,13 @@
 
                 <div class="grid gap-6 md:grid-cols-2">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                        <input name="name" type="text" value="{{ old('name', $presentation->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <input id="name" name="name" type="text" value="{{ old('name', $presentation->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Factor de conversión</label>
-                        <input name="conversion_factor" type="number" step="0.001" min="0.001" value="{{ old('conversion_factor', $presentation->conversion_factor) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <label for="conversion_factor" class="block text-sm font-medium text-gray-700">Factor de conversión</label>
+                        <input id="conversion_factor" name="conversion_factor" type="number" step="0.001" min="0.001" value="{{ old('conversion_factor', $presentation->conversion_factor) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                         @error('conversion_factor') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
