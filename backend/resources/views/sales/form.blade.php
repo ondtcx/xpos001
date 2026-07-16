@@ -38,7 +38,7 @@
     <div class="py-8">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             @if (session('status'))
-                <div class="mb-4 rounded-md bg-indigo-50 px-4 py-3 text-sm text-indigo-700">{{ session('status') }}</div>
+                <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
             @if (! $currentCashSession)
@@ -82,7 +82,7 @@
                                     <h3 class="font-medium text-gray-800">Líneas de venta</h3>
                                     <p class="mt-1 text-xs text-gray-500">Busca por nombre, código o barcode; revisa por línea override y señales probables antes de guardar.</p>
                                 </div>
-                                <button type="button" id="add-sale-item" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white">Agregar línea</button>
+                                <button type="button" id="add-sale-item" class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white">Agregar línea</button>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full text-sm" id="sale-items-table">
@@ -178,7 +178,7 @@
 
                         <div class="flex items-center justify-end gap-3">
                             <a href="{{ route('sales.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                            <button class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Guardar venta</button>
+                            <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Guardar venta</button>
                         </div>
                     </div>
 
@@ -358,7 +358,7 @@
                 success: 'bg-emerald-100 text-emerald-700',
                 warning: 'bg-amber-100 text-amber-800',
                 danger: 'bg-red-100 text-red-700',
-                info: 'bg-indigo-100 text-indigo-700',
+                info: 'bg-emerald-100 text-emerald-700',
                 neutral: 'bg-slate-100 text-slate-700',
                 cost: 'bg-orange-100 text-orange-800',
             };
@@ -381,7 +381,7 @@
 
             function renderActionButton(href, label, tone = 'neutral') {
                 const classes = tone === 'primary'
-                    ? 'rounded-md border border-indigo-300 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700'
+                    ? 'rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700'
                     : 'rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700';
 
                 return `<a href="${href}" class="${classes}">${label}</a>`;
@@ -491,7 +491,7 @@
                         feedback.className = 'manual-price-feedback mt-1 text-xs text-red-600';
                     } else {
                         feedback.textContent = 'Override justificado para esta línea.';
-                        feedback.className = 'manual-price-feedback mt-1 text-xs text-indigo-600';
+                        feedback.className = 'manual-price-feedback mt-1 text-xs text-emerald-600';
                     }
                 } else {
                     feedback.textContent = 'Solo justifica si cambias el precio vigente.';

@@ -7,9 +7,9 @@
                 <p class="text-sm text-gray-500">Consulta ventas recientes y su relación con pagos y fiado.</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('pos.index') }}" class="rounded-md border border-indigo-300 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700">POS</a>
+                <a href="{{ route('pos.index') }}" class="rounded-md border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">POS</a>
                 <a href="{{ route('receivables.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Ver fiados</a>
-                <a href="{{ route('sales.create') }}" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Nueva venta</a>
+                <a href="{{ route('sales.create') }}" class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white">Nueva venta</a>
             </div>
         </div>
     </x-slot>
@@ -25,15 +25,15 @@
             @endif
 
             <div class="mb-4 grid gap-4 md:grid-cols-3">
-                <a href="{{ route('reports.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('reports.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm text-gray-500">Reportes</p>
                     <p class="mt-1 font-semibold text-gray-900">Ver utilidad y ventas del período</p>
                 </a>
-                <a href="{{ route('cash.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('cash.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm text-gray-500">Caja</p>
                     <p class="mt-1 font-semibold text-gray-900">Revisar pagos vinculados y cierres</p>
                 </a>
-                <a href="{{ route('customers.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-indigo-300">
+                <a href="{{ route('customers.index') }}" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200 hover:ring-emerald-300">
                     <p class="text-sm text-gray-500">Clientes</p>
                     <p class="mt-1 font-semibold text-gray-900">Gestionar clientes frecuentes y fiados</p>
                 </a>
@@ -90,7 +90,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm">
                                     <div class="mb-2">
-                                        <a href="{{ route('sales.show', $sale) }}" class="text-indigo-700 hover:text-indigo-900">Ver detalle</a>
+                                        <a href="{{ route('sales.show', $sale) }}" class="text-emerald-700 hover:text-emerald-900">Ver detalle</a>
                                     </div>
 
                                     @if ($sale->isVoided())

@@ -9,11 +9,6 @@ class AdminSidebarAccentMigrationTest extends TestCase
 {
     private const INDIGO_REGEX = '/indigo-(50|100|200|300|400|500|600|700|800|900)/';
 
-    private const OOS_PATHS = [
-        'pos/',
-        'sales/',
-    ];
-
     private const OOS_FILE = 'welcome.blade.php';
 
     // Already migrated in PR #2 (sidebar mode uses emerald; these classes
@@ -50,17 +45,6 @@ class AdminSidebarAccentMigrationTest extends TestCase
 
             // Skip legacy files already migrated in PR #2
             if (in_array($relativePath, self::LEGACY_FILES, true)) {
-                continue;
-            }
-
-            $isOos = false;
-            foreach (self::OOS_PATHS as $oosPrefix) {
-                if (str_starts_with($relativePath, $oosPrefix)) {
-                    $isOos = true;
-                    break;
-                }
-            }
-            if ($isOos) {
                 continue;
             }
 

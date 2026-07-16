@@ -2,7 +2,7 @@
 // Run with: php backend/tests/standalone/accent-check.php
 //
 // Standalone CLI script to verify no indigo-* Tailwind classes remain
-// in Blade view files outside the OOS paths (pos/*, sales/*, welcome.blade.php).
+// in Blade view files outside the OOS paths (welcome.blade.php).
 // Exits 0 if clean, exits 1 with offending file list if not.
 
 $viewsDir = __DIR__ . '/../../resources/views';
@@ -28,9 +28,7 @@ foreach ($iterator as $file) {
     $relativePath = substr($relativePath, strlen(str_replace('\\', '/', $viewsDir)) + 1);
 
     // Skip OOS paths
-    if (str_starts_with($relativePath, 'pos/') ||
-        str_starts_with($relativePath, 'sales/') ||
-        $relativePath === 'welcome.blade.php') {
+    if ($relativePath === 'welcome.blade.php') {
         continue;
     }
 

@@ -44,7 +44,7 @@
             </div>
             <div class="flex flex-wrap gap-3">
                 <a href="{{ route('sales.index') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">Historial de ventas</a>
-                <a href="{{ route('sales.create') }}" class="rounded-md border border-indigo-300 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700">Venta completa</a>
+                <a href="{{ route('sales.create') }}" class="rounded-md border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">Venta completa</a>
             </div>
         </div>
     </x-slot>

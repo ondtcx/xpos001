@@ -147,7 +147,7 @@
                                     <td class="px-4 py-3 align-top">
                                         <p class="font-medium text-gray-900">{{ $item->description_snapshot }}</p>
                                         @if ($item->has_manual_price_override && $item->manual_price_reason)
-                                            <p class="mt-1 text-xs text-indigo-700">Motivo override: {{ $item->manual_price_reason }}</p>
+                                            <p class="mt-1 text-xs text-emerald-700">Motivo override: {{ $item->manual_price_reason }}</p>
                                         @endif
                                     </td>
                                     <td class="px-4 py-3 align-top text-gray-700">{{ number_format((float) $item->quantity, 3, '.', '') }}</td>
