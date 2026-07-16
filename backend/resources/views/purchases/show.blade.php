@@ -181,7 +181,11 @@
                                     <p class="font-medium text-gray-900">Lote #{{ $lot->id }}</p>
                                     <p class="text-sm text-gray-600">{{ $lot->variant?->product?->name }} — {{ $lot->variant?->name }}</p>
                                 </div>
-                                <x-status-badge tone="neutral">{{ $lot->status }}</x-status-badge>
+                                @if ($lot->status === 'active')
+                                    <x-status-badge tone="success">Disponible</x-status-badge>
+                                @else
+                                    <x-status-badge tone="neutral">Agotado</x-status-badge>
+                                @endif
                             </div>
 
                             <dl class="mt-4 grid gap-3 md:grid-cols-2 text-sm">
