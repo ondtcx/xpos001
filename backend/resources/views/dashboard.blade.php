@@ -34,7 +34,8 @@
                         <x-stat-card label="Reportes" href="{{ route('reports.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
                             <p class="font-semibold text-gray-900">Leer bruto/neto y saltar a detalle</p>
                         </x-stat-card>
-                    </x-partials.catalog-card>
+                    </div>
+                </x-partials.catalog-card>
 
                 {{-- Criteria card --}}
                 <x-partials.catalog-card>
