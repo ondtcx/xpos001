@@ -3,7 +3,7 @@
         <x-page-header title="Unidades base" description="Administra las unidades de medida del catálogo.">
             <x-slot name="action">
                 <a href="{{ route('base-units.create') }}"
-                   class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+                   class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
                     Nueva unidad
                 </a>
             </x-slot>
@@ -16,7 +16,7 @@
                 <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-catalog-border">
+            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -31,7 +31,7 @@
                                 <td class="px-4 py-3 text-gray-900">{{ $baseUnit->name }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $baseUnit->symbol }}</td>
                                 <td class="px-4 py-3 text-right">
-                                    <a href="{{ route('base-units.edit', $baseUnit) }}" class="text-catalog-primary hover:text-catalog-accent">Editar</a>
+                                    <a href="{{ route('base-units.edit', $baseUnit) }}" class="text-emerald-700 hover:text-emerald-900">Editar</a>
                                 </td>
                             </tr>
                         @empty

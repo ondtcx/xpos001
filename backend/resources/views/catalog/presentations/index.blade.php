@@ -4,7 +4,7 @@
         <x-page-header title="Presentaciones de {{ $variant->name }}" description="Producto: {{ $product->name }}">
             <x-slot name="action">
                 <a href="{{ route('products.variants.presentations.create', [$product, $variant]) }}"
-                   class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+                   class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
                     Nueva presentación
                 </a>
             </x-slot>
@@ -17,9 +17,9 @@
                 <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
-            <div class="mb-4 text-sm"><a href="{{ route('products.variants.index', $product) }}" class="text-catalog-primary hover:text-catalog-accent">← Volver a variantes</a></div>
+            <div class="mb-4 text-sm"><a href="{{ route('products.variants.index', $product) }}" class="text-emerald-700 hover:text-emerald-900">← Volver a variantes</a></div>
 
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-catalog-border">
+            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -37,7 +37,7 @@
                                 <td class="px-4 py-3 text-gray-900">
                                     <div class="font-medium">{{ $presentation->name }}</div>
                                     @if ($presentation->is_default)
-                                        <span class="text-xs text-catalog-primary">Predeterminada</span>
+                                        <span class="text-xs text-emerald-700">Predeterminada</span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-gray-700">{{ number_format((float) $presentation->conversion_factor, 3, '.', '') }}</td>
@@ -45,8 +45,8 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $presentation->is_active ? 'Activa' : 'Inactiva' }}</td>
                                 <td class="px-4 py-3 text-right">
                                     <div class="flex justify-end gap-4">
-                                        <a href="{{ route('products.variants.presentations.prices.index', [$product, $variant, $presentation]) }}" class="text-catalog-primary hover:text-catalog-accent">Precios</a>
-                                        <a href="{{ route('products.variants.presentations.edit', [$product, $variant, $presentation]) }}" class="text-catalog-primary hover:text-catalog-accent">Editar</a>
+                                        <a href="{{ route('products.variants.presentations.prices.index', [$product, $variant, $presentation]) }}" class="text-emerald-700 hover:text-emerald-900">Precios</a>
+                                        <a href="{{ route('products.variants.presentations.edit', [$product, $variant, $presentation]) }}" class="text-emerald-700 hover:text-emerald-900">Editar</a>
                                     </div>
                                 </td>
                             </tr>

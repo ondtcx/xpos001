@@ -3,7 +3,7 @@
         <x-page-header title="Productos" description="Administra los productos del catálogo.">
             <x-slot name="action">
                 <a href="{{ route('products.create') }}"
-                   class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+                   class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
                     Nuevo producto
                 </a>
             </x-slot>
@@ -16,7 +16,7 @@
                 <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-catalog-border">
+            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -43,8 +43,8 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $product->variants->count() }}</td>
                                 <td class="px-4 py-3 text-right">
                                     <div class="flex justify-end gap-4">
-                                        <a href="{{ route('products.variants.index', $product) }}" class="text-catalog-primary hover:text-catalog-accent">Variantes</a>
-                                        <a href="{{ route('products.edit', $product) }}" class="text-catalog-primary hover:text-catalog-accent">Editar</a>
+                                        <a href="{{ route('products.variants.index', $product) }}" class="text-emerald-700 hover:text-emerald-900">Variantes</a>
+                                        <a href="{{ route('products.edit', $product) }}" class="text-emerald-700 hover:text-emerald-900">Editar</a>
                                     </div>
                                 </td>
                             </tr>

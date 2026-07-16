@@ -5,7 +5,7 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
-            <form method="POST" action="{{ $category->exists ? route('categories.update', $category) : route('categories.store') }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-catalog-border">
+            <form method="POST" action="{{ $category->exists ? route('categories.update', $category) : route('categories.store') }}" class="space-y-6 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                 @csrf
                 @if ($category->exists)
                     @method('PUT')
@@ -24,7 +24,7 @@
 
                 <div class="flex items-center justify-end gap-3">
                     <a href="{{ route('categories.index') }}" class="text-sm text-gray-600">Cancelar</a>
-                    <button class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar</button>
+                    <button class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">Guardar</button>
                 </div>
             </form>
         </div>

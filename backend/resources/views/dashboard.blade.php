@@ -22,16 +22,16 @@
                     </div>
 
                     <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                        <x-stat-card label="Ventas" href="{{ route('sales.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
+                        <x-stat-card label="Ventas" href="{{ route('sales.index') }}" class="hover:ring-emerald-300 hover:bg-emerald-50">
                             <p class="font-semibold text-gray-900">Registrar, anular y auditar ventas</p>
                         </x-stat-card>
-                        <x-stat-card label="Compras" href="{{ route('purchases.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
+                        <x-stat-card label="Compras" href="{{ route('purchases.index') }}" class="hover:ring-emerald-300 hover:bg-emerald-50">
                             <p class="font-semibold text-gray-900">Controlar entradas, lotes y bloqueos</p>
                         </x-stat-card>
-                        <x-stat-card label="Caja" href="{{ route('cash.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
+                        <x-stat-card label="Caja" href="{{ route('cash.index') }}" class="hover:ring-emerald-300 hover:bg-emerald-50">
                             <p class="font-semibold text-gray-900">Abrir, mover y cerrar caja</p>
                         </x-stat-card>
-                        <x-stat-card label="Reportes" href="{{ route('reports.index') }}" class="hover:ring-catalog-primary hover:bg-catalog-accent">
+                        <x-stat-card label="Reportes" href="{{ route('reports.index') }}" class="hover:ring-emerald-300 hover:bg-emerald-50">
                             <p class="font-semibold text-gray-900">Leer bruto/neto y saltar a detalle</p>
                         </x-stat-card>
                     </div>
@@ -52,32 +52,32 @@
 
             {{-- Catalog grid --}}
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <x-stat-card label="Categorías" href="{{ route('categories.index') }}" class="hover:ring-catalog-primary">
+                <x-stat-card label="Categorías" href="{{ route('categories.index') }}" class="hover:ring-emerald-300">
                     <p class="text-lg font-semibold text-gray-900">Administrar catálogo base</p>
                 </x-stat-card>
-                <x-stat-card label="Marcas" href="{{ route('brands.index') }}" class="hover:ring-catalog-primary">
+                <x-stat-card label="Marcas" href="{{ route('brands.index') }}" class="hover:ring-emerald-300">
                     <p class="text-lg font-semibold text-gray-900">Registrar marcas activas</p>
                 </x-stat-card>
-                <x-stat-card label="Unidades base" href="{{ route('base-units.index') }}" class="hover:ring-catalog-primary">
+                <x-stat-card label="Unidades base" href="{{ route('base-units.index') }}" class="hover:ring-emerald-300">
                     <p class="text-lg font-semibold text-gray-900">Definir unidad y símbolo</p>
                 </x-stat-card>
-                <x-stat-card label="Productos" href="{{ route('products.index') }}" class="hover:ring-catalog-primary">
+                <x-stat-card label="Productos" href="{{ route('products.index') }}" class="hover:ring-emerald-300">
                     <p class="text-lg font-semibold text-gray-900">Crear productos, variantes y precios</p>
                 </x-stat-card>
             </div>
 
             {{-- Suppliers / Purchases / Sales / Reports grid --}}
             <div class="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <x-stat-card label="Proveedores" href="{{ route('suppliers.index') }}" class="hover:ring-catalog-primary">
+                <x-stat-card label="Proveedores" href="{{ route('suppliers.index') }}" class="hover:ring-emerald-300">
                     <p class="text-lg font-semibold text-gray-900">Gestionar proveedores y relaciones de compra</p>
                 </x-stat-card>
-                <x-stat-card label="Compra rápida" href="{{ route('purchases.create') }}" class="hover:ring-catalog-primary">
+                <x-stat-card label="Compra rápida" href="{{ route('purchases.create') }}" class="hover:ring-emerald-300">
                     <p class="text-lg font-semibold text-gray-900">Registrar entradas de mercadería</p>
                 </x-stat-card>
-                <x-stat-card label="Venta rápida" href="{{ route('sales.create') }}" class="hover:ring-catalog-primary">
+                <x-stat-card label="Venta rápida" href="{{ route('sales.create') }}" class="hover:ring-emerald-300">
                     <p class="text-lg font-semibold text-gray-900">Registrar ventas y pagos</p>
                 </x-stat-card>
-                <x-stat-card label="Reportes" href="{{ route('reports.index') }}" class="hover:ring-catalog-primary">
+                <x-stat-card label="Reportes" href="{{ route('reports.index') }}" class="hover:ring-emerald-300">
                     <p class="text-lg font-semibold text-gray-900">Consultar resultados operativos</p>
                 </x-stat-card>
             </div>
@@ -97,10 +97,10 @@
                     <div class="text-sm text-gray-700">
                         <p class="font-semibold text-gray-900">Accesos rápidos</p>
                         <div class="mt-3 space-y-2">
-                            <p><a href="{{ route('pos.index') }}" class="text-catalog-primary hover:text-catalog-accent">POS de mostrador</a></p>
-                            <p><a href="{{ route('customers.index') }}" class="text-catalog-primary hover:text-catalog-accent">Clientes y fiados</a></p>
-                            <p><a href="{{ route('inventory-lots.index') }}" class="text-catalog-primary hover:text-catalog-accent">Lotes de inventario</a></p>
-                            <p><a href="{{ route('suppliers.index') }}" class="text-catalog-primary hover:text-catalog-accent">Proveedores</a></p>
+                            <p><a href="{{ route('pos.index') }}" class="text-emerald-700 hover:text-emerald-900">POS de mostrador</a></p>
+                            <p><a href="{{ route('customers.index') }}" class="text-emerald-700 hover:text-emerald-900">Clientes y fiados</a></p>
+                            <p><a href="{{ route('inventory-lots.index') }}" class="text-emerald-700 hover:text-emerald-900">Lotes de inventario</a></p>
+                            <p><a href="{{ route('suppliers.index') }}" class="text-emerald-700 hover:text-emerald-900">Proveedores</a></p>
                         </div>
                     </div>
                 </div>

@@ -3,7 +3,7 @@
         <x-page-header title="Variantes de {{ $product->name }}" description="Define versiones específicas del producto.">
             <x-slot name="action">
                 <a href="{{ route('products.variants.create', $product) }}"
-                   class="rounded-md bg-catalog-primary px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+                   class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
                     Nueva variante
                 </a>
             </x-slot>
@@ -16,9 +16,9 @@
                 <div class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('status') }}</div>
             @endif
 
-            <div class="mb-4 text-sm"><a href="{{ route('products.index') }}" class="text-catalog-primary hover:text-catalog-accent">← Volver a productos</a></div>
+            <div class="mb-4 text-sm"><a href="{{ route('products.index') }}" class="text-emerald-700 hover:text-emerald-900">← Volver a productos</a></div>
 
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-catalog-border">
+            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -39,8 +39,8 @@
                                 <td class="px-4 py-3 text-gray-700">{{ $variant->is_active ? 'Activa' : 'Inactiva' }}</td>
                                 <td class="px-4 py-3 text-right">
                                     <div class="flex justify-end gap-4">
-                                        <a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-catalog-primary hover:text-catalog-accent">Presentaciones</a>
-                                        <a href="{{ route('products.variants.edit', [$product, $variant]) }}" class="text-catalog-primary hover:text-catalog-accent">Editar</a>
+                                        <a href="{{ route('products.variants.presentations.index', [$product, $variant]) }}" class="text-emerald-700 hover:text-emerald-900">Presentaciones</a>
+                                        <a href="{{ route('products.variants.edit', [$product, $variant]) }}" class="text-emerald-700 hover:text-emerald-900">Editar</a>
                                     </div>
                                 </td>
                             </tr>
